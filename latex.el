@@ -3285,80 +3285,65 @@ supply the corresponding macro such as \\right before the right brace macro."
         (LaTeX-insert-corresponding-right-macro-and-brace
          left-macro left-brace optional)))))
 
+(defun LaTeX-insert-left-brace-electric (brace)
+  "Insert typed left BRACE and a corresponding right brace.
+
+BRACE should be a character.  See `LaTeX-insert-left-brace' for
+allowed BRACE values."
+  (when (and (TeX-active-mark) (> (point) (mark)))
+    (exchange-point-and-mark))
+  (let ((lbrace (char-to-string brace)) lmacro skip-p)
+    ;; Use `insert' rather than `self-insert-command' so that
+    ;; unexpected side effects from `post-self-insert-hook',
+    ;; e.g. `electric-pair-mode', won't mess up the following
+    ;; outcomes. (bug#47936)
+    (insert brace)
+    (save-excursion
+      (backward-char)
+      ;; The brace "{" is exceptional in two aspects.
+      ;; 1. "\{" should be considered as a single brace
+      ;;    like "(" and "[".
+      ;; 2. "\left{" is nonsense while "\left\{" and
+      ;;    "\left(" are not.
+      (if (string= lbrace TeX-grop)
+          ;; If "{" follows "\", set lbrace to "\{".
+          (if (TeX-escaped-p)
+              (progn
+                (backward-char)
+                (setq lbrace (concat TeX-esc TeX-grop)))
+            ;; Otherwise, don't search for left macros.
+            (setq skip-p t)))
+      (unless skip-p
+        ;; Obtain the name of preceding left macro, if any,
+        ;; such as "left", "bigl" etc.
+        (setq lmacro (LaTeX--find-preceding-left-macro-name))))
+    (let ((TeX-arg-right-insert-p t)
+          ;; "{" and "}" are paired temporally so that typing
+          ;; a single "{" should insert a pair "{}".
+          (TeX-braces-association
+           (cons (cons TeX-grop TeX-grcl) TeX-braces-association)))
+      (save-excursion
+        (if (TeX-active-mark)
+            (goto-char (mark)))
+        (LaTeX-insert-corresponding-right-macro-and-brace
+         lmacro lbrace)))))
+
 (defun LaTeX-insert-left-brace (arg)
-  "Insert typed left brace ARG times and possibly a correspondig right brace.
+  "Insert typed left brace ARG times and possibly a corresponding right brace.
 Automatic right brace insertion is done only if no prefix ARG is given and
 `LaTeX-electric-left-right-brace' is non-nil.
 Normally bound to keys \(, { and [."
   (interactive "*P")
-  ;; If you change the condition for `auto-p', adjust the condition in
-  ;; the `delete-selection' property, just below this defun, accordingly.
-  (let ((auto-p (and LaTeX-electric-left-right-brace (not arg))))
-    (if (and auto-p
-             (TeX-active-mark)
-             (> (point) (mark)))
-        (exchange-point-and-mark))
-    (if auto-p
-        ;; Should supply corresponding right brace with possible
-        ;; \right-like macro.
-        (let ((lbrace (char-to-string last-command-event)) lmacro skip-p)
-          ;; Use `insert' rather than `self-insert-command' so that
-          ;; unexcpected side effects, e.g. `electric-pair-mode',
-          ;; won't mess up the following outcomes. (bug#47936)
-          (insert last-command-event)
-          (save-excursion
-            (backward-char)
-            ;; The brace "{" is exceptional in two aspects.
-            ;; 1. "\{" should be considered as a single brace
-            ;;    like "(" and "[".
-            ;; 2. "\left{" is nonsense while "\left\{" and
-            ;;    "\left(" are not.
-            (if (string= lbrace TeX-grop)
-                ;; If "{" follows "\", set lbrace to "\{".
-                (if (TeX-escaped-p)
-                    (progn
-                      (backward-char)
-                      (setq lbrace (concat TeX-esc TeX-grop)))
-                  ;; Otherwise, don't search for left macros.
-                  (setq skip-p t)))
-            (unless skip-p
-              ;; Obtain the name of preceding left macro, if any,
-              ;; such as "left", "bigl" etc.
-              (setq lmacro (LaTeX--find-preceding-left-macro-name))))
-          (let ((TeX-arg-right-insert-p t)
-                ;; "{" and "}" are paired temporally so that typing
-                ;; a single "{" should insert a pair "{}".
-                (TeX-braces-association
-                 (cons (cons TeX-grop TeX-grcl) TeX-braces-association)))
-            (save-excursion
-              (if (TeX-active-mark)
-                  (goto-char (mark)))
-              (LaTeX-insert-corresponding-right-macro-and-brace
-               lmacro lbrace))))
-      ;; Don't supply right brace and just act as ordinary
-      ;; `self-insert-command'.
-      (self-insert-command (prefix-numeric-value arg)))))
-;; Cater for `delete-selection-mode' (bug#36385)
-;; See the header comment of delsel.el for detail.
-(put #'LaTeX-insert-left-brace 'delete-selection
-     (lambda ()
-       ;; Consult `delete-selection' property when
-       ;; `LaTeX-insert-left-brace' works just the same as
-       ;; `self-insert-command'.
-       (and (or (not LaTeX-electric-left-right-brace)
-                current-prefix-arg)
-            (let ((f (get #'self-insert-command 'delete-selection)))
-              ;; If `delete-selection' property of
-              ;; `self-insert-command' is one of the predefined
-              ;; special symbols, just return itself.
-              (if (memq f '(yank supersede kill t nil))
-                  ;; FIXME: if this list of special symbols is
-                  ;; extended in future delsel.el, this discrimination
-                  ;; will become wrong.
-                  f
-                ;; Otherwise, call it as a function and return
-                ;; its value.
-                (funcall f))))))
+  (if (and LaTeX-electric-left-right-brace (not arg))
+      (LaTeX-insert-left-brace-electric last-command-event)
+    (self-insert-command (prefix-numeric-value arg))))
+
+;; Cater for `delete-selection-mode' (bug#36385). See the header
+;; comment of delsel.el for detail.  In short, whenever a function
+;; performs insertion, we ``inherit'' the `delete-selection' property.
+(TeX--put-electric-delete-selection
+ #'LaTeX-insert-left-brace
+ (lambda () (and LaTeX-electric-left-right-brace (not current-prefix-arg))))
 
 (defun LaTeX-insert-corresponding-right-macro-and-brace
     (lmacro lbrace &optional optional prompt)

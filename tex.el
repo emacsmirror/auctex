@@ -5091,6 +5091,48 @@ affected.  See `TeX-electric-macro' for detail."
                  (const reindent-then-newline-and-indent)
                  (sexp :tag "Other")))
 
+(defun TeX--put-electric-delete-selection (symbol electricp)
+  "Set appropriate `delete-selection' property for electric functions.
+
+When the function bound to SYMBOL has «electric» behaviour, as
+determined by predicate ELECTRICP, `delete-selection' is set to
+nil.  In the other case, `delete-selection' is delegated to that
+of the `self-insert-command'.
+
+Note, that it is assumed that SYMBOL uses `self-insert-command'
+to insert symbols on its non-electric path.
+
+The backstory.
+
+When a function bound to SYMBOL has optional «electric»
+behaviour, it might interfere with other «electric» modes,
+e.g. `electric-pair-mode', `smartparens-mode'; see bug#47936.
+
+As a way to «override» those modes, we use raw `insert' instead
+of `self-insert-command'.  That prevents those electric modes
+from running their hooks tied to `self-insert-command'.
+
+However, when /our/ electric behaviour is disabled (ELECTRICP
+returns nil), we want other electric modes to operate freely.
+That means, on the non-electric path, we should use
+`self-insert-command' instead of `insert'.
+
+Now, there arises an issue of `delete-selection'.  The electric
+path usually doesn't want to delete selection, it wants to
+operate some electricity on it; see bug#36385, bug#23177.  Now,
+we could think that `delete-selection' for the non-electric path
+should be t.  That would disable other electric modes from
+working, as they also need to operate on selection.  The decision
+is to inherit `delete-selection' from `self-insert-command',
+which queries hooks from other electric modes to determine
+whether deletion is necessary.
+
+This function implements the idea from the last paragraph."
+  (put symbol 'delete-selection
+       (lambda ()
+         (unless (funcall electricp)
+           (get #'self-insert-command 'delete-selection)))))
+
 (defun TeX-insert-backslash (arg)
   "Either insert typed key ARG times or call `TeX-electric-macro'.
 `TeX-electric-macro' will be called if `TeX-electric-escape' is non-nil."
