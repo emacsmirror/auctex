@@ -7417,7 +7417,7 @@ been set."
 Make sure you have one and that TeX binaries are in PATH environment variable%s"
                         (if (eq system-type 'darwin)
                             ".
-If you are using OS X El Capitan or later
+If you are using macOS 10.14 Mojave or later
 remember to add /Library/TeX/texbin/ to your PATH"
                           ""))))
 
