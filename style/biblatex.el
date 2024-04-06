@@ -1,6 +1,6 @@
 ;;; biblatex.el --- AUCTeX style for `biblatex.sty' version 2.8a.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2012-2024  Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -419,7 +419,7 @@ for citation keys."
     '("Volcite"
       (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
       (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
-    '("Pvolcite"
+    '("pvolcite"
       (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
       (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
     '("Pvolcite"
@@ -428,7 +428,7 @@ for citation keys."
     '("fvolcite"
       (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
       (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
-    '("ftolcite"
+    '("ftvolcite"
       (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
       (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
     '("svolcite"
