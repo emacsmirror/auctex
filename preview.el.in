@@ -3268,6 +3268,8 @@ Return a new string."
     (setq result (concat result string))
     result))
 
+(defvar-local preview--region-begin nil)
+
 (defun preview-parse-messages (open-closure)
   "Turn all preview snippets into overlays.
 This parses the pseudo error messages from the preview
@@ -3538,6 +3540,15 @@ name(\\([^)]+\\))\\)\\|\
                         (goto-char (point-min))
                         (forward-line (1- line)))
                       (setq lpoint (point))
+
+                      ;; The following addresses the bug described at
+                      ;; https://lists.gnu.org/archive/html/bug-auctex/2023-03/msg00007.html
+                      ;; (bug#62445)
+                      (and preview--region-begin
+                           (< (point)
+                              preview--region-begin)
+                           (goto-char preview--region-begin))
+
                       (cond
                        ((search-forward (concat string after-string)
                                         (line-end-position) t)
@@ -4033,6 +4044,7 @@ stored in `preview-dumped-alist'."
                          "<none>")
                        (TeX-current-offset begin)))
   (setq TeX-current-process-region-p t)
+  (setq preview--region-begin begin)
   (preview-generate-preview (TeX-region-file)
                             (preview-do-replacements
                              (TeX-command-expand
