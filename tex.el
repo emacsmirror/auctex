@@ -9080,9 +9080,10 @@ original file."
                               (buffer-substring-no-properties
                                (point) (point-max))))))))))
     ;; file name should be relative to master
-    (setq original (TeX-quote-filename (file-relative-name
-                                        original (TeX-master-directory)))
-          master-name (TeX-quote-filename master-name))
+    (unless (string= original "<none>") ; cf. `preview-region'
+      (setq original (TeX-quote-filename (file-relative-name
+                                          original (TeX-master-directory)))))
+    (setq master-name (TeX-quote-filename master-name))
 
     ;; If the first line begins with "%&", put that line separately on
     ;; the very first line of the region file so that the first line
