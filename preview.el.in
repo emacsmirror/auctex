@@ -4030,6 +4030,11 @@ stored in `preview-dumped-alist'."
   (preview-format-kill old-format)
   (setcdr old-format nil))
 
+(defvar preview-preprocess-function nil
+  "Function used to preprocess region before previewing.
+The function bound to this variable will be called inside
+`preview-region' with one argument which is a string.")
+
 (defun preview-region (begin end)
   "Run preview on region between BEGIN and END."
   (interactive "r")
@@ -4038,7 +4043,10 @@ stored in `preview-dumped-alist'."
          (concat (preview--counter-information begin)
                  TeX-region-extra)))
     (TeX-region-create (TeX-region-file TeX-default-extension)
-                       (buffer-substring-no-properties begin end)
+                       (let ((str (buffer-substring-no-properties begin end)))
+                         (if preview-preprocess-function
+                             (funcall preview-preprocess-function str)
+                           str))
                        (if buffer-file-name
                            (file-name-nondirectory buffer-file-name)
                          "<none>")
