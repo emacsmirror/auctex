@@ -237,20 +237,56 @@ for citation keys."
         (TeX-argument-insert (mapconcat #'identity items ",") optional))
       (setq noinsert t))))
 
+;; Support for mcite-like Citation Commands, see § 3.9.10 of Biblatex
+;; reference manual.
+(defun LaTeX-arg-biblatex-mcite (optional)
+  "Query and insert the mandatory argument of \\mcite compat macros."
+  (let ((set-name (TeX-read-string
+                   (TeX-argument-prompt optional nil "Set")))
+        (read-cite (lambda (opt)
+                     (if (and (fboundp 'reftex-citation)
+                              (fboundp 'reftex-plug-flag)
+                              (reftex-plug-flag 3))
+                         (reftex-citation t)
+                       (TeX-completing-read-multiple
+                        (TeX-argument-prompt opt nil "Key(s)")
+                        (LaTeX-bibitem-list)))))
+        cite-keys arg)
+    (cond ((and (not (string-empty-p set-name))
+                (y-or-n-p "Add citation keys to the set name?"))
+           ;; We want \mcite{set-name,*key1,*key2,*key3}
+           (setq cite-keys (funcall read-cite optional))
+           (when cite-keys
+             (setq cite-keys (mapcar (lambda (x) (concat "*" x))
+                                     cite-keys)))
+           (setq arg (concat set-name
+                             (when cite-keys
+                               (concat "," (mapconcat #'identity
+                                                      cite-keys
+                                                      ","))))))
+          ;; We want \mcite{key1}.  FIXME: Are multiple keys
+          ;; allowed?
+          ((string-empty-p set-name)
+           (setq arg (mapconcat #'identity
+                                (funcall read-cite optional)
+                                ",")))
+          (t (setq arg "")))
+    (TeX-argument-insert arg optional)))
+
 (defun LaTeX-arg-biblatex-natbib-notes (optional)
   "Prompt for two note arguments of a natbib compat citation command."
   (when TeX-arg-cite-note-p
-      (let ((pre (TeX-read-string
-                  (TeX-argument-prompt optional nil "Prenote")))
-            (post (TeX-read-string
-                   (TeX-argument-prompt optional nil "Postnote"))))
-        (TeX-argument-insert pre optional)
-        (TeX-argument-insert post optional)
-        ;; pre is given, post is empty: Make sure that we insert an
-        ;; extra pair of `[]', otherwise pre becomes post
-        (when (and pre (not (string= pre ""))
-                   (string= post ""))
-          (insert LaTeX-optop LaTeX-optcl)))))
+    (let ((pre (TeX-read-string
+                (TeX-argument-prompt optional nil "Prenote")))
+          (post (TeX-read-string
+                 (TeX-argument-prompt optional nil "Postnote"))))
+      (TeX-argument-insert pre optional)
+      (TeX-argument-insert post optional)
+      ;; pre is given, post is empty: Make sure that we insert an
+      ;; extra pair of `[]', otherwise pre becomes post
+      (when (and pre (not (string= pre ""))
+                 (string= post ""))
+        (insert LaTeX-optop LaTeX-optcl)))))
 
 (TeX-add-style-hook
  "biblatex"
@@ -334,32 +370,45 @@ for citation keys."
       (TeX-arg-completing-read-multiple (LaTeX-bibitem-list) "Keys"))
     ;;; Citation Commands
     '("cite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                  (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                  (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("Cite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                  (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                  (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("parencite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                       (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("Parencite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                       (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("footcite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                      (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("footcitetext" (TeX-arg-conditional TeX-arg-cite-note-p
-                                          (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                          (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     ;; Style-specific Commands
     '("textcite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                      (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("Textcite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                      (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("smartcite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                       (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("Smartcite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                       (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("cite*" (TeX-arg-conditional TeX-arg-cite-note-p
-                                   (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                   (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("parencite*" (TeX-arg-conditional TeX-arg-cite-note-p
-                                        (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                        (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("supercite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                       (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     ;; Qualified Citation Lists
     '("cites" LaTeX-arg-biblatex-cites)
     '("Cites" LaTeX-arg-biblatex-cites)
@@ -374,45 +423,62 @@ for citation keys."
     '("supercites" LaTeX-arg-biblatex-cites)
     ;; Style-independent Commands
     '("autocite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                      (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("Autocite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                      (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("autocite*" (TeX-arg-conditional TeX-arg-cite-note-p
-                                       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                       (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("Autocite*" (TeX-arg-conditional TeX-arg-cite-note-p
-                                       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                       (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("autocites" LaTeX-arg-biblatex-cites)
     '("Autocites" LaTeX-arg-biblatex-cites)
     ;; Text Commands
     '("citeauthor" (TeX-arg-conditional TeX-arg-cite-note-p
-                                        (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                        (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("Citeauthor" (TeX-arg-conditional TeX-arg-cite-note-p
-                                        (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                        (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("citeauthor*" (TeX-arg-conditional TeX-arg-cite-note-p
-                                         (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                         (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("Citeauthor*" (TeX-arg-conditional TeX-arg-cite-note-p
-                                         (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                         (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("citetitle" (TeX-arg-conditional TeX-arg-cite-note-p
-                                       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                       (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("citetitle*" (TeX-arg-conditional TeX-arg-cite-note-p
-                                        (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                        (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("citeyear" (TeX-arg-conditional TeX-arg-cite-note-p
-                                      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                      (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("citeyear*" (TeX-arg-conditional TeX-arg-cite-note-p
-                                       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                       (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("citedate" (TeX-arg-conditional TeX-arg-cite-note-p
-                                      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                      (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("citedate*" (TeX-arg-conditional TeX-arg-cite-note-p
-                                       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                       (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("citeurl" (TeX-arg-conditional TeX-arg-cite-note-p
-                                     (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                     (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("parentext" "Text")
     '("brackettext" "Text")
     ;; Special Commands
     '("fullcite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                      (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("footfullcite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                          (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                          (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("volcite"
       (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
       (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
@@ -450,15 +516,20 @@ for citation keys."
       (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"]) ()) "Volume"
       (TeX-arg-conditional TeX-arg-cite-note-p (["Page"]) ()) TeX-arg-cite)
     '("notecite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                      (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("Notecite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                      (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                      (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("pnotecite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                       (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("Pnotecite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                       (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     '("fnotecite" (TeX-arg-conditional TeX-arg-cite-note-p
-                                       (["Prenote"] ["Postnote"]) ()) TeX-arg-cite)
+                                       (["Prenote"] ["Postnote"]) ())
+      TeX-arg-cite)
     ;; Low-level Commands
     '("citename"
       (TeX-arg-conditional TeX-arg-cite-note-p (["Prenote"] ["Postnote"]) ())
@@ -526,7 +597,6 @@ for citation keys."
                                     nil)
               #'TeX-arg-cite))))
          cmds))
-
        ;; Fontification for compat macros does not go into `font-latex.el':
        (when (and (featurep 'font-latex)
                   (eq TeX-install-font-lock 'font-latex-setup))
@@ -538,6 +608,44 @@ for citation keys."
                                     ("Citealt"      "*[[{")
                                     ("citealp"      "*[[{")
                                     ("Citealp"      "*[[{"))
+                                  'biblatex))))
+
+   ;; § 3.9.10 mcite-like Citation Commands
+   (when (or (LaTeX-provided-package-options-member "biblatex" "mcite")
+             (LaTeX-provided-package-options-member "biblatex" "mcite=true"))
+     (let ((cmds '("mcite"      "Mcite"
+                   "mparencite" "Mparencite"
+                   "mfootcite"  "mfootcitetext"
+                   "mtextcite"  "Mtextcite"
+                   "msupercite"
+                   "mautocite"  "Mautocite"))
+           (spec "*[[{"))
+       ;; Add the macros incl. optional arguments:
+       (apply #'TeX-add-symbols
+              (mapcar
+               (lambda (cmd)
+                 (list cmd
+                       '(TeX-arg-conditional TeX-arg-cite-note-p
+                                             (["Prenote"] ["Postnote"])
+                                             nil)
+                       #'LaTeX-arg-biblatex-mcite))
+               cmds))
+       ;; Cater for the starred versions as well:
+       (apply #'TeX-add-symbols
+              (mapcar
+               (lambda (cmd)
+                 (list (concat cmd "*")
+                       '(TeX-arg-conditional TeX-arg-cite-note-p
+                                             (["Prenote"] ["Postnote"])
+                                             nil)
+                       #'LaTeX-arg-biblatex-mcite))
+               cmds))
+       ;; Fontification for compat macros does not go into `font-latex.el':
+       (when (and (featurep 'font-latex)
+                  (eq TeX-install-font-lock 'font-latex-setup))
+         (font-latex-add-keywords (mapcar (lambda (cmd)
+                                            (list cmd spec))
+                                          cmds)
                                   'biblatex))))
 
    (LaTeX-add-environments
