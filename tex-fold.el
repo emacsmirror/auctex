@@ -816,7 +816,9 @@ That means, put respective properties onto overlay OV."
                            (setq arg-list (append arg-list (list (car arg)))))
                          (setq n (1+ n)))
                        (or (condition-case nil
-                               (apply spec arg-list)
+                               (save-excursion
+                                 (goto-char ov-start)
+                                 (apply spec arg-list))
                              (error nil))
                            "[Error: No content or function found]")))
                     (t (or (TeX-fold-macro-nth-arg spec ov-start ov-end)
