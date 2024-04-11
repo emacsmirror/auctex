@@ -672,6 +672,10 @@ accordingly @code{split} is one entry in
 This boolean variable determines whether previews generated on top of the
 current point should be temporarily opened.  Default value is @code{nil}.
 
+@item preview-leave-open-previews-visible
+This boolean variable determines whether to leave preview images visible
+(above their generating TeX code) when they are opened.
+
 @end vtable
 
 @node The preview images, Misplaced previews, The Emacs interface, For advanced users
