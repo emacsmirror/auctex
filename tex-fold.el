@@ -324,6 +324,12 @@ and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
       (TeX-fold-clearout-region start end)
       (TeX-fold-region start end))))
 
+(defcustom TeX-fold-region-functions nil
+  "List of additional functions to call when folding a region.
+Each function is called with two arguments, the start and end positions
+of the region to fold."
+  :type '(repeat function))
+
 (defun TeX-fold-region (start end)
   "Fold all items in region from START to END."
   (interactive "r")
@@ -335,7 +341,8 @@ and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
   (when (memq 'math TeX-fold-type-list)
     (TeX-fold-region-macro-or-env start end 'math))
   (when (memq 'comment TeX-fold-type-list)
-    (TeX-fold-region-comment start end)))
+    (TeX-fold-region-comment start end))
+  (run-hook-with-args 'TeX-fold-region-functions start end))
 
 (defun TeX-fold-region-macro-or-env (start end type)
   "Fold all items of type TYPE in region from START to END.

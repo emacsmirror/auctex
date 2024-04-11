@@ -2649,6 +2649,12 @@ When this variable is non-@code{nil} and there is an active regione, text
 around the mark will be kept unfolded.
 @end defopt
 
+@defopt TeX-fold-region-functions
+This variable is a list of functions which allow the user, or external
+packages, to fold additional @LaTeX{} constructs beyond those supported by
+default.
+@end defopt
+
 @deffn Command TeX-fold-region
 @kindex C-c C-o C-r
 (@kbd{C-c C-o C-r}) Hide all configured macros in the marked region.
