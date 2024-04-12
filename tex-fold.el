@@ -245,12 +245,14 @@ After that, changing the prefix key requires manipulating keymaps."
     (define-key map "\C-b" #'TeX-fold-buffer)
     (define-key map "\C-r" #'TeX-fold-region)
     (define-key map "\C-p" #'TeX-fold-paragraph)
+    (define-key map "\C-s" #'TeX-fold-section)
     (define-key map "\C-m" #'TeX-fold-macro)
     (define-key map "\C-e" #'TeX-fold-env)
     (define-key map "\C-c" #'TeX-fold-comment)
     (define-key map "b"    #'TeX-fold-clearout-buffer)
     (define-key map "r"    #'TeX-fold-clearout-region)
     (define-key map "p"    #'TeX-fold-clearout-paragraph)
+    (define-key map "s"    #'TeX-fold-clearout-section)
     (define-key map "i"    #'TeX-fold-clearout-item)
     map))
 
@@ -321,6 +323,18 @@ and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
   (save-excursion
     (let ((end (progn (LaTeX-forward-paragraph) (point)))
           (start (progn (LaTeX-backward-paragraph) (point))))
+      (TeX-fold-clearout-region start end)
+      (TeX-fold-region start end))))
+
+(defun TeX-fold-section ()
+  "Hide all configured macros and environments in the current section.
+The relevant macros are specified in the variable `TeX-fold-macro-spec-list'
+and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
+  (interactive)
+  (save-mark-and-excursion
+    (LaTeX-mark-section)
+    (let ((start (point))
+          (end (mark)))
       (TeX-fold-clearout-region start end)
       (TeX-fold-region start end))))
 
@@ -740,6 +754,15 @@ breaks will be replaced by spaces."
   (save-excursion
     (let ((end (progn (LaTeX-forward-paragraph) (point)))
           (start (progn (LaTeX-backward-paragraph) (point))))
+      (TeX-fold-clearout-region start end))))
+
+(defun TeX-fold-clearout-section ()
+  "Permanently show all macros in the section point is located in."
+  (interactive)
+  (save-mark-and-excursion
+    (LaTeX-mark-section)
+    (let ((start (point))
+          (end (mark)))
       (TeX-fold-clearout-region start end))))
 
 (defun TeX-fold-clearout-region (start end)

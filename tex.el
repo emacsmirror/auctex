@@ -5257,6 +5257,9 @@ Brace insertion is only done if point is in a math construct and
     ["Hide All in Current Paragraph" TeX-fold-paragraph
      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
      :help "Hide all configured TeX constructs in the paragraph containing point"]
+    ["Hide All in Current Section" TeX-fold-section
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Hide all configured TeX constructs in the section containing point"]
     ["Hide Current Macro" TeX-fold-macro
      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
      :help "Hide the macro containing point"]
@@ -5277,6 +5280,9 @@ Brace insertion is only done if point is in a math construct and
     ["Show All in Current Paragraph" TeX-fold-clearout-paragraph
      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
      :help "Permanently show all folded content in paragraph containing point"]
+    ["Show All in Current Section" TeX-fold-clearout-section
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Permanently show all folded content in section containing point"]
     ["Show Current Item" TeX-fold-clearout-item
      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
      :help "Permanently show the item containing point"]
