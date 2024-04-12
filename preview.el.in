@@ -2238,7 +2238,7 @@ with a `timestamp' property of it are kept."
 (defun preview-clearout-section ()
   "Clearout previews from LaTeX section."
   (interactive)
-  (save-excursion
+  (save-mark-and-excursion
     (LaTeX-mark-section)
     (preview-clearout (region-beginning) (region-end))))
 
@@ -4142,7 +4142,7 @@ environments is selected."
 
 (defun preview-section ()
   "Run preview on LaTeX section." (interactive)
-  (save-excursion
+  (save-mark-and-excursion
     (LaTeX-mark-section)
     (preview-region (region-beginning) (region-end))))
 
