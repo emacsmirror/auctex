@@ -3066,14 +3066,14 @@ to add the preview functionality."
         ["(or toggle) at point" preview-at-point]
         ["for environment" preview-environment]
         ["for section" preview-section]
-        ["for region" preview-region mark-active]
+        ["for region" preview-region (TeX-active-mark)]
         ["for buffer" preview-buffer]
         ["for document" preview-document]
         "---"
         "Remove previews"
         ["at point" preview-clearout-at-point]
         ["from section" preview-clearout-section]
-        ["from region" preview-clearout mark-active]
+        ["from region" preview-clearout (TeX-active-mark)]
         ["from buffer" preview-clearout-buffer]
         ["from document" preview-clearout-document]
         "---"

@@ -5153,7 +5153,7 @@ Brace insertion is only done if point is in a math construct and
                        (<= (prefix-numeric-value prefix-arg) 0)
                      (and (boundp 'TeX-command-region-begin)
                           (markerp TeX-command-region-begin)))
-                   mark-active)
+                   (TeX-active-mark))
        ;;:visible (eq TeX-command-current 'TeX-command-region)
        :style toggle
        :selected (and (boundp 'TeX-command-region-begin)

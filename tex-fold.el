@@ -911,7 +911,7 @@ Return non-nil if called by one of the commands in LIST."
                         (TeX-fold-auto-reveal-p TeX-fold-auto-reveal))
                 ;; Open new overlays.
                 (dolist (ol (nconc (when (and TeX-fold-unfold-around-mark
-                                              mark-active)
+                                              (TeX-active-mark))
                                      (overlays-at (mark)))
                                    (overlays-at (point))))
                   (when (eq (overlay-get ol 'category) 'TeX-fold)
