@@ -2550,6 +2550,10 @@ it gets deleted as well."
 
 (defvar-local preview-buffer-has-counters nil)
 
+(defvar-local preview-current-region nil
+  "Cons cell (begin . end) tracking the region currently being previewed.
+Set in `preview-region', cleared in `preview-place-preview'.")
+
 (defun preview-place-preview (snippet start end
                                       box counters tempdir place-opts)
   "Generate and place an overlay preview image.
@@ -2564,6 +2568,7 @@ PLACE-OPTS are additional arguments passed into
 a list with additional info from the placement hook.
 Those lists get concatenated together and get passed
 to the close hook."
+  (setq preview-current-region nil)
   (preview-clearout start end tempdir)
   (let ((ov (make-overlay start end nil nil nil)))
     (overlay-put ov 'priority (TeX-overlay-prioritize start end))
@@ -3268,8 +3273,6 @@ Return a new string."
     (setq result (concat result string))
     result))
 
-(defvar-local preview--region-begin nil)
-
 (defvar preview-find-end-function nil
   "Function used to compute the end position for a new overlay.
 The function bound to this variable will be called inside
@@ -3563,10 +3566,10 @@ name(\\([^)]+\\))\\)\\|\
                       ;; The following addresses the bug described at
                       ;; https://lists.gnu.org/archive/html/bug-auctex/2023-03/msg00007.html
                       ;; (bug#62445)
-                      (and preview--region-begin
+                      (and preview-current-region
                            (< (point)
-                              preview--region-begin)
-                           (goto-char preview--region-begin))
+                              (car preview-current-region))
+                           (goto-char (car preview-current-region)))
 
                       (cond
                        ((search-forward (concat string after-string)
@@ -4083,7 +4086,7 @@ The function bound to this variable will be called inside
                          "<none>")
                        (TeX-current-offset begin)))
   (setq TeX-current-process-region-p t)
-  (setq preview--region-begin begin)
+  (setq preview-current-region (cons begin end))
   (preview-generate-preview (TeX-region-file)
                             (preview-do-replacements
                              (TeX-command-expand
