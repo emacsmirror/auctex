@@ -3278,6 +3278,8 @@ beginning of the overlay.  This is intended to be used in conjunction
 with `preview-preprocess-function' when the latter introduces
 significant modifications.")
 
+(defvar preview-locating-previews-message "locating previews...")
+
 (defun preview-parse-messages (open-closure)
   "Turn all preview snippets into overlays.
 This parses the pseudo error messages from the preview
@@ -3285,7 +3287,7 @@ document style for LaTeX.  OPEN-CLOSURE is called once
 it is certain that we have a valid output file, and it has
 to return in its CAR the PROCESS parameter for the CLOSE
 call, and in its CDR the final stuff for the placement hook."
-  (with-temp-message "locating previews..."
+  (with-temp-message preview-locating-previews-message
     (let (TeX-error-file TeX-error-offset snippet box counters
           file line
           (lsnippet 0) lstart (lfile "") lline lbuffer lpoint
