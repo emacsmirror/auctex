@@ -3617,9 +3617,8 @@ name(\\([^)]+\\))\\)\\|\
                                            (preview-TeX-bb box)
                                            (cons lcounters counters)
                                            tempdir
-                                           (cdr open-data)))
-                                     (ov (car ovl)))
-                                (setq close-data (nconc ovl close-data))
+                                           (cdr open-data))))
+                                (setq close-data (nconc ovl close-data)))
                             (with-current-buffer run-buffer
                               (preview-log-error
                                (list 'error
