@@ -3270,6 +3270,14 @@ Return a new string."
 
 (defvar-local preview--region-begin nil)
 
+(defvar preview-find-end-function nil
+  "Function used to compute the end position for a new overlay.
+The function bound to this variable will be called inside
+`preview-parse-messages' with one argument, an integer describing the
+beginning of the overlay.  This is intended to be used in conjunction
+with `preview-preprocess-function' when the latter introduces
+significant modifications.")
+
 (defun preview-parse-messages (open-closure)
   "Turn all preview snippets into overlays.
 This parses the pseudo error messages from the preview
@@ -3588,22 +3596,28 @@ name(\\([^)]+\\))\\)\\|\
                     (if box
                         (progn
                           (if (and lstart (= snippet lsnippet))
-                              (setq close-data
-                                    (nconc
-                                     (preview-place-preview
-                                      snippet
+                              (let* ((region-beg
                                       (save-excursion
                                         (preview-back-command
                                          (= (prog1 (point)
                                               (goto-char lstart))
                                             lstart))
-                                        (point))
-                                      (point)
-                                      (preview-TeX-bb box)
-                                      (cons lcounters counters)
-                                      tempdir
-                                      (cdr open-data))
-                                     close-data))
+                                        (point)))
+                                     (region-end
+                                      (if preview-find-end-function
+                                          (funcall preview-find-end-function
+                                                   region-beg)
+                                        (point)))
+                                     (ovl (preview-place-preview
+                                           snippet
+                                           region-beg
+                                           region-end
+                                           (preview-TeX-bb box)
+                                           (cons lcounters counters)
+                                           tempdir
+                                           (cdr open-data)))
+                                     (ov (car ovl)))
+                                (setq close-data (nconc ovl close-data))
                             (with-current-buffer run-buffer
                               (preview-log-error
                                (list 'error
