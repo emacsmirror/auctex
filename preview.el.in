@@ -3278,6 +3278,13 @@ beginning of the overlay.  This is intended to be used in conjunction
 with `preview-preprocess-function' when the latter introduces
 significant modifications.")
 
+(defcustom preview-protect-point nil
+  "Temporarily open new previews that would obscure point.
+If non-nil, then any new preview whose bounds contain point is
+temporarily opened, as if the user had entered it via movement commands."
+  :group 'preview-appearance
+  :type 'boolean)
+
 (defvar preview-locating-previews-message "locating previews...")
 
 (defun preview-parse-messages (open-closure)
@@ -3298,6 +3305,7 @@ call, and in its CDR the final stuff for the placement hook."
           (run-buffer (current-buffer))
           (run-directory default-directory)
           tempdir
+          point-current
           close-data
           open-data
           fast-hook
@@ -3520,6 +3528,7 @@ name(\\([^)]+\\))\\)\\|\
                   (setq lfile file))
                 (save-excursion
                   (save-restriction
+                    (setq point-current (point))
                     (widen)
                     ;; a fast hook might have positioned us already:
                     (if (number-or-marker-p string)
@@ -3618,7 +3627,14 @@ name(\\([^)]+\\))\\)\\|\
                                            (cons lcounters counters)
                                            tempdir
                                            (cdr open-data))))
-                                (setq close-data (nconc ovl close-data)))
+                                (setq close-data (nconc ovl close-data))
+                                (when (and preview-protect-point
+                                           (<= region-beg point-current)
+                                           (< point-current region-end))
+                                  ;; Temporarily open the preview if it
+                                  ;; would bump the point.
+                                  (preview-toggle (car ovl))
+                                  (push (car ovl) preview-temporary-opened)))
                             (with-current-buffer run-buffer
                               (preview-log-error
                                (list 'error
