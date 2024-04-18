@@ -2649,6 +2649,12 @@ When this variable is non-@code{nil} and there is an active regione, text
 around the mark will be kept unfolded.
 @end defopt
 
+@defopt TeX-fold-region-functions
+This variable is a list of functions which allow the user, or external
+packages, to fold additional @LaTeX{} constructs beyond those supported by
+default.
+@end defopt
+
 @deffn Command TeX-fold-region
 @kindex C-c C-o C-r
 (@kbd{C-c C-o C-r}) Hide all configured macros in the marked region.
@@ -2657,6 +2663,12 @@ around the mark will be kept unfolded.
 @deffn Command TeX-fold-paragraph
 @kindex C-c C-o C-p
 (@kbd{C-c C-o C-p}) Hide all configured macros in the paragraph
+containing point.
+@end deffn
+
+@deffn Command TeX-fold-section
+@kindex C-c C-o C-p
+(@kbd{C-c C-o C-p}) Hide all configured macros in the section
 containing point.
 @end deffn
 
@@ -2712,6 +2724,12 @@ marked region.
 paragraph containing point.
 @end deffn
 
+@deffn Command TeX-fold-clearout-section
+@kindex C-c C-o p
+(@kbd{C-c C-o p}) Permanently unfold all macros and environments in the
+section containing point.
+@end deffn
+
 @deffn Command TeX-fold-clearout-item
 @kindex C-c C-o i
 (@kbd{C-c C-o i}) Permanently show the macro or environment on which
@@ -2761,10 +2779,11 @@ respective mandatory argument of a @LaTeX{} macro will be used as the
 placeholder.
 
 If the first element is a function symbol, the function will be called
-with all mandatory arguments of the macro and the result of the function
-call will be used as a replacement for the macro.
-Such functions typically return a string, but may also return the
-symbol @code{abort} to indicate that the macro should not be folded.
+with all mandatory arguments of the macro, and with point positioned at
+the beginning of the macro.  The result of the function call will be used
+as a replacement for the macro.  Such functions typically return a string,
+but may also return the symbol @code{abort} to indicate that the macro
+should not be folded.
 
 The placeholder is made by copying the text from the buffer together with
 its properties, i.e.@: its face as well.  If fontification has not
@@ -2824,6 +2843,30 @@ after a certain amount of characters defined by the variable
 @defopt TeX-fold-help-echo-max-length
 Maximum length of original text displayed in a tooltip or the echo area
 for folded content.  Set it to zero in order to disable this feature.
+@end defopt
+
+@defopt TeX-fold-auto-reveal
+This option determines the auto-reveal behavior when the point enters the
+folded portion of the buffer.  Possible values and the corresponding
+behaviors are:
+@itemize
+@item
+@code{t}: @AUCTeX{} always opens the folded expression and reveal the
+original source text.
+@item
+@code{nil}: @AUCTeX{} never reveals.
+@item
+@var{SYMBOL}: The value of @var{SYMBOL} is used as a boolean flag.  If
+@var{SYMBOL} isn't bound as a variable, it is treated as @code{nil}.
+@item
+Cons cell @code{(@var{FUNCTION} . @var{ARGUMENTS})}: @AUCTeX{} calls the
+@var{FUNCTION} with arbitrary number of @var{ARGUMENTS}.  The return value
+is regarded as a boolean flag.
+@end itemize
+
+It has a reasonable default value to reveal when the point enters the
+folded portion with @kbd{@key{left}}, @kbd{@key{right}}, @kbd{C-b},
+@kbd{C-f} or mouse click under standard key binding.
 @end defopt
 
 

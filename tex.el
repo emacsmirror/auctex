@@ -5153,7 +5153,7 @@ Brace insertion is only done if point is in a math construct and
                        (<= (prefix-numeric-value prefix-arg) 0)
                      (and (boundp 'TeX-command-region-begin)
                           (markerp TeX-command-region-begin)))
-                   mark-active)
+                   (TeX-active-mark))
        ;;:visible (eq TeX-command-current 'TeX-command-region)
        :style toggle
        :selected (and (boundp 'TeX-command-region-begin)
@@ -5257,6 +5257,9 @@ Brace insertion is only done if point is in a math construct and
     ["Hide All in Current Paragraph" TeX-fold-paragraph
      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
      :help "Hide all configured TeX constructs in the paragraph containing point"]
+    ["Hide All in Current Section" TeX-fold-section
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Hide all configured TeX constructs in the section containing point"]
     ["Hide Current Macro" TeX-fold-macro
      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
      :help "Hide the macro containing point"]
@@ -5277,6 +5280,9 @@ Brace insertion is only done if point is in a math construct and
     ["Show All in Current Paragraph" TeX-fold-clearout-paragraph
      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
      :help "Permanently show all folded content in paragraph containing point"]
+    ["Show All in Current Section" TeX-fold-clearout-section
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Permanently show all folded content in section containing point"]
     ["Show Current Item" TeX-fold-clearout-item
      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
      :help "Permanently show the item containing point"]
@@ -7417,7 +7423,7 @@ been set."
 Make sure you have one and that TeX binaries are in PATH environment variable%s"
                         (if (eq system-type 'darwin)
                             ".
-If you are using OS X El Capitan or later
+If you are using macOS 10.14 Mojave or later
 remember to add /Library/TeX/texbin/ to your PATH"
                           ""))))
 
@@ -9080,9 +9086,10 @@ original file."
                               (buffer-substring-no-properties
                                (point) (point-max))))))))))
     ;; file name should be relative to master
-    (setq original (TeX-quote-filename (file-relative-name
-                                        original (TeX-master-directory)))
-          master-name (TeX-quote-filename master-name))
+    (unless (string= original "<none>") ; cf. `preview-region'
+      (setq original (TeX-quote-filename (file-relative-name
+                                          original (TeX-master-directory)))))
+    (setq master-name (TeX-quote-filename master-name))
 
     ;; If the first line begins with "%&", put that line separately on
     ;; the very first line of the region file so that the first line

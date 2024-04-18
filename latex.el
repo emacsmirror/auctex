@@ -8091,7 +8091,7 @@ taken."
     (narrow-to-region (line-beginning-position -40)
                       (line-beginning-position  40))
     (let ((args (or args (LaTeX-completion-macro-delimiters)))
-          (parse-sexp-ignore-comments t))
+          (parse-sexp-ignore-comments (not (eq major-mode 'docTeX-mode))))
       (condition-case nil
           (with-syntax-table (apply #'TeX-search-syntax-table args)
             (scan-lists (point) 1 1))
@@ -8941,7 +8941,9 @@ function would return non-nil and `(match-string 1)' would return
      '("fontencoding" "Encoding")
      '("fontfamily" "Family")
      '("fontseries" "Series")
+     '("fontseriesforce" "Series")
      '("fontshape" "Shape")
+     '("fontshapeforce" "Shape")
      '("fontsize" "Size" "Baselineskip")
      "selectfont"
      '("usefont" "Encoding" "Family" "Series" "Shape")

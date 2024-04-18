@@ -2238,7 +2238,7 @@ with a `timestamp' property of it are kept."
 (defun preview-clearout-section ()
   "Clearout previews from LaTeX section."
   (interactive)
-  (save-excursion
+  (save-mark-and-excursion
     (LaTeX-mark-section)
     (preview-clearout (region-beginning) (region-end))))
 
@@ -3066,14 +3066,14 @@ to add the preview functionality."
         ["(or toggle) at point" preview-at-point]
         ["for environment" preview-environment]
         ["for section" preview-section]
-        ["for region" preview-region mark-active]
+        ["for region" preview-region (TeX-active-mark)]
         ["for buffer" preview-buffer]
         ["for document" preview-document]
         "---"
         "Remove previews"
         ["at point" preview-clearout-at-point]
         ["from section" preview-clearout-section]
-        ["from region" preview-clearout mark-active]
+        ["from region" preview-clearout (TeX-active-mark)]
         ["from buffer" preview-clearout-buffer]
         ["from document" preview-clearout-document]
         "---"
@@ -3268,6 +3268,18 @@ Return a new string."
     (setq result (concat result string))
     result))
 
+(defvar-local preview--region-begin nil)
+
+(defvar preview-find-end-function nil
+  "Function used to compute the end position for a new overlay.
+The function bound to this variable will be called inside
+`preview-parse-messages' with one argument, an integer describing the
+beginning of the overlay.  This is intended to be used in conjunction
+with `preview-preprocess-function' when the latter introduces
+significant modifications.")
+
+(defvar preview-locating-previews-message "locating previews...")
+
 (defun preview-parse-messages (open-closure)
   "Turn all preview snippets into overlays.
 This parses the pseudo error messages from the preview
@@ -3275,7 +3287,7 @@ document style for LaTeX.  OPEN-CLOSURE is called once
 it is certain that we have a valid output file, and it has
 to return in its CAR the PROCESS parameter for the CLOSE
 call, and in its CDR the final stuff for the placement hook."
-  (with-temp-message "locating previews..."
+  (with-temp-message preview-locating-previews-message
     (let (TeX-error-file TeX-error-offset snippet box counters
           file line
           (lsnippet 0) lstart (lfile "") lline lbuffer lpoint
@@ -3538,6 +3550,15 @@ name(\\([^)]+\\))\\)\\|\
                         (goto-char (point-min))
                         (forward-line (1- line)))
                       (setq lpoint (point))
+
+                      ;; The following addresses the bug described at
+                      ;; https://lists.gnu.org/archive/html/bug-auctex/2023-03/msg00007.html
+                      ;; (bug#62445)
+                      (and preview--region-begin
+                           (< (point)
+                              preview--region-begin)
+                           (goto-char preview--region-begin))
+
                       (cond
                        ((search-forward (concat string after-string)
                                         (line-end-position) t)
@@ -3577,22 +3598,27 @@ name(\\([^)]+\\))\\)\\|\
                     (if box
                         (progn
                           (if (and lstart (= snippet lsnippet))
-                              (setq close-data
-                                    (nconc
-                                     (preview-place-preview
-                                      snippet
+                              (let* ((region-beg
                                       (save-excursion
                                         (preview-back-command
                                          (= (prog1 (point)
                                               (goto-char lstart))
                                             lstart))
-                                        (point))
-                                      (point)
-                                      (preview-TeX-bb box)
-                                      (cons lcounters counters)
-                                      tempdir
-                                      (cdr open-data))
-                                     close-data))
+                                        (point)))
+                                     (region-end
+                                      (if preview-find-end-function
+                                          (funcall preview-find-end-function
+                                                   region-beg)
+                                        (point)))
+                                     (ovl (preview-place-preview
+                                           snippet
+                                           region-beg
+                                           region-end
+                                           (preview-TeX-bb box)
+                                           (cons lcounters counters)
+                                           tempdir
+                                           (cdr open-data))))
+                                (setq close-data (nconc ovl close-data)))
                             (with-current-buffer run-buffer
                               (preview-log-error
                                (list 'error
@@ -4019,6 +4045,11 @@ stored in `preview-dumped-alist'."
   (preview-format-kill old-format)
   (setcdr old-format nil))
 
+(defvar preview-preprocess-function nil
+  "Function used to preprocess region before previewing.
+The function bound to this variable will be called inside
+`preview-region' with one argument which is a string.")
+
 (defun preview-region (begin end)
   "Run preview on region between BEGIN and END."
   (interactive "r")
@@ -4027,12 +4058,16 @@ stored in `preview-dumped-alist'."
          (concat (preview--counter-information begin)
                  TeX-region-extra)))
     (TeX-region-create (TeX-region-file TeX-default-extension)
-                       (buffer-substring-no-properties begin end)
+                       (let ((str (buffer-substring-no-properties begin end)))
+                         (if preview-preprocess-function
+                             (funcall preview-preprocess-function str)
+                           str))
                        (if buffer-file-name
                            (file-name-nondirectory buffer-file-name)
                          "<none>")
                        (TeX-current-offset begin)))
   (setq TeX-current-process-region-p t)
+  (setq preview--region-begin begin)
   (preview-generate-preview (TeX-region-file)
                             (preview-do-replacements
                              (TeX-command-expand
@@ -4106,7 +4141,7 @@ environments is selected."
 
 (defun preview-section ()
   "Run preview on LaTeX section." (interactive)
-  (save-excursion
+  (save-mark-and-excursion
     (LaTeX-mark-section)
     (preview-region (region-beginning) (region-end))))
 

@@ -245,14 +245,44 @@ After that, changing the prefix key requires manipulating keymaps."
     (define-key map "\C-b" #'TeX-fold-buffer)
     (define-key map "\C-r" #'TeX-fold-region)
     (define-key map "\C-p" #'TeX-fold-paragraph)
+    (define-key map "\C-s" #'TeX-fold-section)
     (define-key map "\C-m" #'TeX-fold-macro)
     (define-key map "\C-e" #'TeX-fold-env)
     (define-key map "\C-c" #'TeX-fold-comment)
     (define-key map "b"    #'TeX-fold-clearout-buffer)
     (define-key map "r"    #'TeX-fold-clearout-region)
     (define-key map "p"    #'TeX-fold-clearout-paragraph)
+    (define-key map "s"    #'TeX-fold-clearout-section)
     (define-key map "i"    #'TeX-fold-clearout-item)
     map))
+
+(defcustom TeX-fold-auto-reveal
+  '(eval (TeX-fold-arrived-via (key-binding [left]) (key-binding [right])
+                               #'backward-char #'forward-char
+                               #'mouse-set-point))
+  "Predicate to open a fold when entered.
+Possibilities are:
+t autoopens,
+nil doesn't,
+a symbol will have its value consulted if it exists,
+defaulting to nil if it doesn't.
+A CONS-cell means to call a function for determining the value.
+The CAR of the cell is the function to call which receives
+the CDR of the CONS-cell in the rest of the arguments, while
+point and current buffer point to the position in question.
+All of the options show reasonable defaults."
+  :group 'TeX-fold
+  :type '(choice (const :tag "Off" nil)
+                 (const :tag "On" t)
+                 (symbol :tag "Indirect variable" :value reveal-mode)
+                 (cons :tag "Function call"
+                       :value (eval (TeX-fold-arrived-via
+                                     (key-binding [left])
+                                     (key-binding [right])
+                                     #'backward-char #'forward-char
+                                     #'mouse-set-point))
+                       function (list :tag "Argument list"
+                                      (repeat :inline t sexp)))))
 
 
 ;;; Folding
@@ -296,6 +326,24 @@ and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
       (TeX-fold-clearout-region start end)
       (TeX-fold-region start end))))
 
+(defun TeX-fold-section ()
+  "Hide all configured macros and environments in the current section.
+The relevant macros are specified in the variable `TeX-fold-macro-spec-list'
+and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
+  (interactive)
+  (save-mark-and-excursion
+    (LaTeX-mark-section)
+    (let ((start (point))
+          (end (mark)))
+      (TeX-fold-clearout-region start end)
+      (TeX-fold-region start end))))
+
+(defcustom TeX-fold-region-functions nil
+  "List of additional functions to call when folding a region.
+Each function is called with two arguments, the start and end positions
+of the region to fold."
+  :type '(repeat function))
+
 (defun TeX-fold-region (start end)
   "Fold all items in region from START to END."
   (interactive "r")
@@ -307,7 +355,8 @@ and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
   (when (memq 'math TeX-fold-type-list)
     (TeX-fold-region-macro-or-env start end 'math))
   (when (memq 'comment TeX-fold-type-list)
-    (TeX-fold-region-comment start end)))
+    (TeX-fold-region-comment start end))
+  (run-hook-with-args 'TeX-fold-region-functions start end))
 
 (defun TeX-fold-region-macro-or-env (start end type)
   "Fold all items of type TYPE in region from START to END.
@@ -707,6 +756,15 @@ breaks will be replaced by spaces."
           (start (progn (LaTeX-backward-paragraph) (point))))
       (TeX-fold-clearout-region start end))))
 
+(defun TeX-fold-clearout-section ()
+  "Permanently show all macros in the section point is located in."
+  (interactive)
+  (save-mark-and-excursion
+    (LaTeX-mark-section)
+    (let ((start (point))
+          (end (mark)))
+      (TeX-fold-clearout-region start end))))
+
 (defun TeX-fold-clearout-region (start end)
   "Permanently show all macros in region starting at START and ending at END."
   (interactive "r")
@@ -781,7 +839,9 @@ That means, put respective properties onto overlay OV."
                            (setq arg-list (append arg-list (list (car arg)))))
                          (setq n (1+ n)))
                        (or (condition-case nil
-                               (apply spec arg-list)
+                               (save-excursion
+                                 (goto-char ov-start)
+                                 (apply spec arg-list))
                              (error nil))
                            "[Error: No content or function found]")))
                     (t (or (TeX-fold-macro-nth-arg spec ov-start ov-end)
@@ -833,6 +893,22 @@ Remove the respective properties from the overlay OV."
   (when font-lock-mode
     (overlay-put ov 'face TeX-fold-unfolded-face)))
 
+(defun TeX-fold-auto-reveal-p (mode)
+  "Decide whether to auto-reveal.
+Return non-nil if folded region should be auto-opened.
+See `TeX-fold-auto-reveal' for definitions of MODE."
+  (cond ((symbolp mode)
+         (and (boundp mode)
+              (symbol-value mode)))
+        ((consp mode)
+         (apply (car mode) (cdr mode)))
+        (t mode)))
+
+(defun TeX-fold-arrived-via (&rest list)
+  "Indicate auto-opening.
+Return non-nil if called by one of the commands in LIST."
+  (memq this-command list))
+
 ;; Copy and adaption of `reveal-post-command' from reveal.el in GNU
 ;; Emacs on 2004-07-04.
 (defun TeX-fold-post-command ()
@@ -855,14 +931,10 @@ Remove the respective properties from the overlay OV."
               (setq TeX-fold-open-spots (cdr spots))
               (when (or disable-point-adjustment
                         global-disable-point-adjustment
-                        ;; See preview.el on how to make this configurable.
-                        (memq this-command
-                              (list (key-binding [left]) (key-binding [right])
-                                    #'backward-char #'forward-char
-                                    #'mouse-set-point)))
+                        (TeX-fold-auto-reveal-p TeX-fold-auto-reveal))
                 ;; Open new overlays.
                 (dolist (ol (nconc (when (and TeX-fold-unfold-around-mark
-                                              mark-active)
+                                              (TeX-active-mark))
                                      (overlays-at (mark)))
                                    (overlays-at (point))))
                   (when (eq (overlay-get ol 'category) 'TeX-fold)

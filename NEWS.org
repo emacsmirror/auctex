@@ -1,0 +1,43 @@
+#+TITLE: AUCTeX NEWS -- History of notable and user-visible changes
+#+AUTHOR: AUCTeX Maintenance Team
+#+LANGUAGE: en
+#+OPTIONS: num:nil toc:nil
+# Copyright (C) 2024 Free Software Foundation, Inc.
+# License: GNU General Public License 3
+# The format is based on [[https://keepachangelog.com/en/1.1.0/][Keep a Changelog]]
+
+* [Unreleased]
+
+** Added
+
+- Add preliminary support for processing files with latexmk.  Support
+  for =dvipdfmx= and the choice for viewer after compilation are not
+  optimal, yet.  Overall, the support comes close to what the
+  =auctex-latexmk= library provides.
+- Support query and insert of ~mcite~ compatibility macros
+  (=style/biblatex.el=).
+- Support the =\verbatiminput*= macro (=style/verbatim.el=).
+- Add new custom variable ~TeX-fold-auto-reveal~ which contols how the
+  original source text is revealed when user clicks the folded portion
+  by mouse.
+
+* [14.0.4] - 2024-03-31
+
+** Added
+
+- Support completion for many commands described in =clsguide.tex=,
+  =fntguide.tex= and =usrguide.tex=.
+- Provide new custom variable ~LaTeX-flymake-chktex-options~ to enable
+  or disable specific warnings of =chktex= backend used by Flymake.
+- Provide new custom variable ~TeX-kill-process-without-query~ which
+  controls if user is asked before aborting a running process for a
+  TeX document.
+
+** Fixed
+
+- Improve guessing names for headers used in Imenu.
+
+** Removed
+
+- Revert usage of ~:local~ tag inside ~defcustom~.  This tag isn't
+  handled correctly in Emacs 27.1 and breaks AUCTeX.
