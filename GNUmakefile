@@ -93,10 +93,9 @@ doc/preview-dtxdoc.texi: latex/preview.dtx doc/preview-dtxdoc.pl
 TEXI_SOURCES:=$(wildcard doc/*.texi) doc/version.texi doc/preview-dtxdoc.texi
 $(INFO_FILES): %.info: $(TEXI_SOURCES)
 	cd doc; $(MAKEINFO) --no-split $*.texi
-	mv doc/$*.info $@
 
 dir: $(INFO_FILES)
-	for f in $(INFO_FILES); do $(INSTALL_INFO) --info-dir=. $$f; done
+	for f in $(INFO_FILES); do $(INSTALL_INFO) --info-dir=doc doc/$$f; done
 
 $(LATEX_FILES): latex/preview.dtx latex/bootstrap.ins
 	cd latex; $(TEX) '\nonstopmode \input bootstrap.ins'
