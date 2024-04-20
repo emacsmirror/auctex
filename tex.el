@@ -211,7 +211,7 @@ If nil, none is specified."
      TeX-run-TeX nil (AmSTeX-mode) :help "Run AMSTeX")
     ;; support for ConTeXt  --pg
     ;; first version of ConTeXt to support nonstopmode: 2003.2.10
-    ("ConTeXt" "%(cntxcom) --once --texutil %(extraopts) %(execopts)%t"
+    ("ConTeXt" "%(cntxcom) --once %(extraopts) %(execopts)%t"
      TeX-run-TeX nil (ConTeXt-mode) :help "Run ConTeXt once")
     ("ConTeXt Full" "%(cntxcom) %(extraopts) %(execopts)%t"
      TeX-run-TeX nil

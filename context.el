@@ -1747,8 +1747,13 @@ Use `ConTeXt-Mark-version' to choose the command."
    ((string= ConTeXt-Mark-version "IV")
     (concat
      (if TeX-source-correlate-mode
-         "--synctex=1 ")
-     (unless TeX-interactive-mode
+         "--synctex=repeat ")
+     ;; Omit nonstop option when we set synctex option.  According to
+     ;; Jim <zlists+context@jdvb.ca> in bug#70399 report,
+     ;; "if context is called with "--nonstopmode" (or "--nonstop")
+     ;;  the "--synctex=..." request to create a synctex file is
+     ;;  over-ridden."
+     (unless (or TeX-interactive-mode TeX-source-correlate-mode)
        ConTeXt-texexec-option-nonstop)))
    ;; In any other case fall back on Mark II.
    (t

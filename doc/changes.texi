@@ -188,6 +188,20 @@ folded portion by mouse.  You can customize the detailed behavior by
 new customize option @code{TeX-fold-auto-reveal}.
 
 @item
+@AUCTeX{} adjusts @ConTeXt{} option.
+@itemize @minus
+@item
+Obsolete option @option{--texutil} was removed.
+@item
+Now synctex option is @option{--synctex=repeat} instead of
+@option{--synctex=1} for @ConTeXt{}.
+@item
+@AUCTeX{} omits @option{--nonstop} option when
+@code{TeX-source-correlate-mode} is enabled because @command{context}
+ignores @option{--synctex} option if @option{--nonstop} is present.
+@end itemize
+
+@item
 @AUCTeX{} now requires GNU Emacs 27.1 or higher.
 @end itemize
 
