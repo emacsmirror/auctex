@@ -30,6 +30,10 @@
   (=style/biblatex.el=).
 - Support the =\verbatiminput*= macro (=style/verbatim.el=).
 
+** Fixed
+
+- Adjust options when processing files with ConTeXt.
+
 * [14.0.4] - 2024-03-31
 
 ** Added
