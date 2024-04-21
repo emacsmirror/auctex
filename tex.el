@@ -2608,6 +2608,16 @@ ARGNAME is prepended to the quoted output directory.  If
         (concat argname "\"" out-dir "\"")
       "")))
 
+(defun TeX-master-output-file (extension)
+  "Return the output file with given EXTENSION.
+If `TeX-output-dir' is nil, then defer to `TeX-master-file'.  Otherwise,
+return the file of the same name, but in the build directory specified by
+`TeX-output-dir'."
+  (let ((master (TeX-master-file extension)))
+    (if-let ((output-dir (TeX--master-output-dir (TeX-master-directory) t)))
+        (concat output-dir (file-name-nondirectory master))
+      master)))
+
 (defcustom TeX-style-local "style"
   "Directory containing hand generated TeX information.
 
