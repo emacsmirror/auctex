@@ -1,12 +1,8 @@
 # Rules to generate the files that need to go into the ELPA package.
 
-# Files we need to auto-generate:
-#   dir
-#   auctex.info
-#   preview-latex.info
+# Files we need to auto-generate for elpa:
 #   README
 #   ChangeLog
-#   auctex.el (or auctex-pkg.el)?
 #   tex-site.el
 #   doc: preview-dtxdoc.texi
 #   doc: version.texi
@@ -43,9 +39,12 @@ ALL_GENERATED_FILES=$(MAIN_GENERATED_FILES)	\
 		$(INFO_FILES)
 
 # Generate & compile everything including the manuals below doc/.
-all: $(ALL_GENERATED_FILES) compile
+all: $(ALL_GENERATED_FILES) compile autoloads
 
 compile: $(patsubst %.el,%.elc,$(wildcard *.el style/*.el))
+
+autoloads:
+	$(EMACS) -f loaddefs-generate-batch loaddefs.el .
 
 %.elc: %.el
 	$(EMACS) -f batch-byte-compile $<
@@ -62,7 +61,9 @@ elpa: $(MAIN_GENERATED_FILES)
 .PHONY: tex-site.el
 
 clean:
-	rm -f $(ALL_GENERATED_FILES) $(wildcard *.elc style/*.elc)
+	rm -f $(ALL_GENERATED_FILES) \
+		$(wildcard *.elc style/*.elc) \
+		loaddefs.el
 
 # Copied&adapted from doc/Makefile.in.
 MAKEINFO_PLAIN=$(MAKEINFO) -D rawfile --no-headers
