@@ -1641,9 +1641,18 @@ numbers (can be float if available)."
 Fallback to :inherit and \\='default implemented."
   :group 'preview-appearance)
 
+(defcustom preview-auto-reveal-commands
+  '((key-binding [left])
+    (key-binding [right])
+    backward-char
+    forward-char)
+  "List of commands that may cause a preview to be revealed.
+This list is consulted by the default value of `preview-auto-reveal'."
+  :type '(repeat (choice (function :tag "Function")
+                         (sexp :tag "Key binding"))))
+
 (defcustom preview-auto-reveal
-  '(eval (preview-arrived-via (key-binding [left]) (key-binding [right])
-                              #'backward-char #'forward-char))
+  '(eval (apply #'preview-arrived-via preview-auto-reveal-commands))
   "Cause previews to open automatically when entered.
 Possibilities are:
 t autoopens,

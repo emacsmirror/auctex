@@ -2864,9 +2864,15 @@ Cons cell @code{(@var{FUNCTION} . @var{ARGUMENTS})}: @AUCTeX{} calls the
 is regarded as a boolean flag.
 @end itemize
 
-It has a reasonable default value to reveal when the point enters the
-folded portion with @kbd{@key{left}}, @kbd{@key{right}}, @kbd{C-b},
-@kbd{C-f} or mouse click under standard key binding.
+The default behavior is to reveal when the point enters the folded portion
+via one of the commands specified in @code{TeX-fold-auto-reveal-commands}.
+@end defopt
+
+@defopt TeX-fold-auto-reveal-commands
+This is a list of commands, consulted under the default behavior of
+@code{TeX-fold-auto-reveal}.  By default, it consists of the commands
+@kbd{@key{left}}, @kbd{@key{right}}, @kbd{C-b}, @kbd{C-f} or mouse click
+under standard key binding.
 @end defopt
 
 
