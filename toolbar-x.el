@@ -1462,11 +1462,11 @@ line of buttons.  The only property supported for this button is
                  :command save-buffer
                  :enable (and
                            (buffer-modified-p)
-                           (buffer-file-name)
+                           (buffer-file-name (buffer-base-buffer))
                            (not (window-minibuffer-p
                                  (frame-selected-window menu-updating-frame))))
                  :help "Save current buffer to its file"
-                 :visible (or buffer-file-name
+                 :visible (or (buffer-file-name (buffer-base-buffer))
                               (not (eq 'special
                                        (get major-mode 'mode-class)))))
 
@@ -1476,7 +1476,7 @@ line of buttons.  The only property supported for this button is
                          (window-minibuffer-p
                           (frame-selected-window menu-updating-frame)))
                 :help "Write current buffer to another file"
-                :visible (or buffer-file-name
+                :visible (or (buffer-file-name (buffer-base-buffer))
                              (not (eq 'special (get major-mode 'mode-class)))))
 
     (undo :image "undo"

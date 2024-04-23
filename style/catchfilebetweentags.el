@@ -67,7 +67,7 @@ ENVIRONMENT is ignored."
   ;; several external files to a singular one.
   (let* ((file (file-name-sans-extension
                 (file-name-nondirectory
-                 (buffer-file-name (current-buffer)))))
+                 (TeX-buffer-file-name (current-buffer)))))
          (fn (when LaTeX-catchfilebetweentags-use-numeric-label
                (LaTeX-catchfilebetweentags-counter-inc)))
          (tag (concat file ":"

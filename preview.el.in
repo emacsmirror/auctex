@@ -3079,8 +3079,8 @@ pp")
        #'desktop-buffer-preview-misc-data)
   (add-hook 'pre-command-hook #'preview-mark-point nil t)
   (add-hook 'post-command-hook #'preview-move-point nil t)
-  (when buffer-file-name
-    (let* ((filename (expand-file-name buffer-file-name))
+  (when (TeX-buffer-file-name)
+    (let* ((filename (expand-file-name (TeX-buffer-file-name)))
            format-cons)
       (when (string-match (concat "\\." TeX-default-extension "\\'")
                           filename)
@@ -4128,8 +4128,8 @@ The function bound to this variable will be called inside
                          (if preview-preprocess-function
                              (funcall preview-preprocess-function str)
                            str))
-                       (if buffer-file-name
-                           (file-name-nondirectory buffer-file-name)
+                       (if (TeX-buffer-file-name)
+                           (file-name-nondirectory (TeX-buffer-file-name))
                          "<none>")
                        (TeX-current-offset begin)))
   (setq TeX-current-process-region-p t)
