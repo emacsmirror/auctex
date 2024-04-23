@@ -21,7 +21,7 @@
 #   latex: prtightpage.def
 #   latex: prtracingall.def
 
-
+EMACS=emacs --batch -q -no-site-file -no-init-file -l lpath.el
 MAKEINFO=makeinfo
 INSTALL_INFO=install-info
 PERL=perl
@@ -32,15 +32,29 @@ INFO_FILES=$(MANUALS:=.info)
 TEXMFGEN:=$(shell sed -n 's/^%<installer>.*file[{]\([^}.]*\.[sdc][tef][yfg]\)[}].*/\1/p' latex/preview.dtx)
 LATEX_FILES:=$(patsubst %, latex/%, $(shell echo $$(echo "$(TEXMFGEN)")))
 
-GENERATED_FILES=dir			\
-		$(INFO_FILES)		\
-		README			\
+MAIN_GENERATED_FILES=README 		\
 		tex-site.el		\
 		doc/version.texi	\
 		doc/preview-dtxdoc.texi	\
 		$(LATEX_FILES)
 
-all: $(GENERATED_FILES)
+ALL_GENERATED_FILES=$(MAIN_GENERATED_FILES)	\
+		dir				\
+		$(INFO_FILES)
+
+# Generate & compile everything including the manuals below doc/.
+all: $(ALL_GENERATED_FILES) compile
+
+compile: $(patsubst %.el,%.elc,$(wildcard *.el style/*.el))
+
+%.elc: %.el
+	$(EMACS) -f batch-byte-compile $<
+
+# Generate everything but don't compile or build the docs.  The docs
+# will be built on elpa due to :doc ("doc/auctex.texi"
+# "doc/preview-latex.texi") in the auctex recipe in elpa-packges and
+# compiling is done locally.
+elpa: $(MAIN_GENERATED_FILES)
 
 # We want the tex-site.el target to be always run so that the version
 # (especially the release version grabbed from the top of the git
@@ -48,7 +62,7 @@ all: $(GENERATED_FILES)
 .PHONY: tex-site.el
 
 clean:
-	rm -f $(GENERATED_FILES)
+	rm -f $(ALL_GENERATED_FILES) $(wildcard *.elc style/*.elc)
 
 # Copied&adapted from doc/Makefile.in.
 MAKEINFO_PLAIN=$(MAKEINFO) -D rawfile --no-headers
