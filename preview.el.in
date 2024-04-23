@@ -1213,7 +1213,13 @@ is located."
 (defcustom preview-leave-open-previews-visible nil
   "Whether to leave previews visible when they are opened.
 If nil, then the TeX preview icon is used when the preview is opened.
-If non-nil, then the preview image is moved above the text."
+If non-nil, then the preview image remains visible.  In either case, the
+TeX code appears either below or to the right of the displayed graphic.
+
+If you enable this option, the preview image doesn't turn into
+construction sign temporarily when you edit the underlying LaTeX code
+and regenerate the preview; it is just replaced by updated image when
+ready.  This behavior suppresses flicker in the appearance."
   :group 'preview-appearance
   :type 'boolean)
 
