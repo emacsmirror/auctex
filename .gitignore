@@ -57,3 +57,5 @@ auctex-dynvars
 # ELPA-generated files
 /auctex-autoloads.el
 /auctex-pkg.el
+README
+loaddefs.el
