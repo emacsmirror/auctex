@@ -211,7 +211,7 @@ If nil, none is specified."
      TeX-run-TeX nil (AmSTeX-mode) :help "Run AMSTeX")
     ;; support for ConTeXt  --pg
     ;; first version of ConTeXt to support nonstopmode: 2003.2.10
-    ("ConTeXt" "%(cntxcom) --once --texutil %(extraopts) %(execopts)%t"
+    ("ConTeXt" "%(cntxcom) --once %(extraopts) %(execopts)%t"
      TeX-run-TeX nil (ConTeXt-mode) :help "Run ConTeXt once")
     ("ConTeXt Full" "%(cntxcom) %(extraopts) %(execopts)%t"
      TeX-run-TeX nil
@@ -250,6 +250,9 @@ If nil, none is specified."
     ("Ps2pdf" "ps2pdf %f %(O?pdf)" TeX-run-ps2pdf nil
      (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Convert PostScript file to PDF")
+    ("LaTeXMk" "latexmk %(latexmk-out) %(file-line-error) \
+%`%(extraopts) %S%(mode)%' %t"
+     TeX-run-format nil (LaTeX-mode docTeX-mode) :help "Run LaTeXMk")
     ("Glossaries" "makeglossaries %(d-dir) %s" TeX-run-command nil
      (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Run makeglossaries to create glossary file")
@@ -672,7 +675,40 @@ string."
     ;; Okular forward PDF search requires absolute path.
     ("%a" (lambda nil (prin1-to-string (expand-file-name (buffer-file-name)))))
     ;; the following is for preview-latex.
-    ("%m" preview-create-subdirectory))
+    ("%m" preview-create-subdirectory)
+    ;; LaTeXMk support
+    ("%(latexmk-out)"
+     (lambda ()
+       (cond ((eq TeX-engine 'xetex)
+              " -pdfxe")
+             ((eq TeX-engine 'luatex)
+              (cond ((and TeX-PDF-mode
+                          (TeX-PDF-from-DVI))
+                     " -dvilua -pdfdvi")
+                    ((and (not TeX-PDF-mode)
+                          TeX-DVI-via-PDFTeX)
+                     " -dvilua -ps")
+                    ;; This covers the case:
+                    ;; (and TeX-PDF-mode (not (TeX-PDF-from-DVI)))
+                    (t
+                     " -pdflua")))
+             ;; This covers everything else since we ignore 'omega:
+             (t
+              (cond ((and TeX-PDF-mode
+                          (not (TeX-PDF-from-DVI)))
+                     " -pdf")
+                    ((and TeX-PDF-mode
+                          (string= (TeX-PDF-from-DVI) "Dvips"))
+                     " -pdfps")
+                    ;; FIXME: This might be inaccurate:
+                    ((and TeX-PDF-mode
+                          (string= (TeX-PDF-from-DVI) "Dvipdfmx"))
+                     " -pdfdvi")
+                    ((and (not TeX-PDF-mode)
+                          TeX-DVI-via-PDFTeX)
+                     " -pdflatex -dvi -ps")
+                    (t
+                     " -dvi -ps")))))))
   "List of built-in expansion strings for TeX command names.
 
 This should not be changed by the user who can use
@@ -2200,7 +2236,8 @@ Must be the car of an entry in `TeX-command-list'."
     "\\.glo" "\\.gls" "\\.idx" "\\.ilg" "\\.ind"
     "\\.lof" "\\.log" "\\.lot" "\\.nav" "\\.out"
     "\\.snm" "\\.toc" "\\.url" "\\.synctex\\.gz"
-    "\\.bcf" "\\.run\\.xml" "\\.fls" "-blx\\.bib")
+    "\\.bcf" "\\.run\\.xml" "\\.fls" "-blx\\.bib"
+    "\\.fdb_latexmk")
   "List of regexps matching suffixes of files to be cleaned.
 Used as a default in TeX, LaTeX and docTeX mode.")
 

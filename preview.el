@@ -1210,6 +1210,13 @@ is located."
     (setcdr (car img) (cdar replacement))
     (setcdr img (cdr replacement))))
 
+(defcustom preview-leave-open-previews-visible nil
+  "Whether to leave previews visible when they are opened.
+If nil, then the TeX preview icon is used when the preview is opened.
+If non-nil, then the preview image is moved above the text."
+  :group 'preview-appearance
+  :type 'boolean)
+
 (defun preview-gs-place (ov snippet box run-buffer tempdir ps-file _imagetype)
   "Generate an image placeholder rendered over by Ghostscript.
 This enters OV into all proper queues in order to make it render
@@ -1231,7 +1238,21 @@ for the file extension."
   (overlay-put ov 'queued
                (vector box nil snippet))
   (overlay-put ov 'preview-image
-               (list (preview-icon-copy preview-nonready-icon)))
+               (let ((default (list (preview-icon-copy preview-nonready-icon))))
+                 (if preview-leave-open-previews-visible
+                     (if-let ((img
+                               (car
+                                (delq
+                                 nil
+                                 (mapcar
+                                  (lambda (ovr)
+                                    (and
+                                     (eq (overlay-start ovr) (overlay-start ov))
+                                     (overlay-get ovr 'preview-image)))
+                                  (overlays-at (overlay-start ov)))))))
+                         img
+                       default)
+                   default)))
   (preview-add-urgentization #'preview-gs-urgentize ov run-buffer)
   (list ov))
 
@@ -1895,6 +1916,11 @@ Disable it if that is the case.  Ignores text properties."
                        text (overlay-get ov 'preview-prechange)))
                 (overlay-put ov 'insert-in-front-hooks nil)
                 (overlay-put ov 'insert-behind-hooks nil)
+                (when (and preview-leave-open-previews-visible
+                           (eq (overlay-get ov 'preview-state) 'active))
+                  ;; This is so that remote commands, such as `undo',
+                  ;; open active previews before disabling them.
+                  (preview-toggle ov))
                 (preview-disable ov)))))
       (error nil))
     (overlay-put ov 'preview-prechange nil))
@@ -2190,10 +2216,12 @@ active (`transient-mark-mode'), it is run through `preview-region'."
   "Change overlay behaviour of OVR after source edits."
   (overlay-put ovr 'queued nil)
   (preview-remove-urgentization ovr)
-  (overlay-put ovr 'preview-image nil)
+  (unless preview-leave-open-previews-visible
+    (overlay-put ovr 'preview-image nil))
   (overlay-put ovr 'timestamp nil)
   (setcdr (overlay-get ovr 'strings) (preview-disabled-string ovr))
-  (preview-toggle ovr)
+  (unless preview-leave-open-previews-visible
+    (preview-toggle ovr))
   (overlay-put ovr 'preview-state 'disabled)
   (dolist (filename (overlay-get ovr 'filenames))
     (condition-case nil
@@ -2213,17 +2241,20 @@ a hook in some cases"
           (preview-delete-file filename)
         (file-error nil)))))
 
-(defun preview-clearout (&optional start end timestamp)
+(defun preview-clearout (&optional start end timestamp exception)
   "Clear out all previews in the current region.
 When called interactively, the current region is used.
 Non-interactively, the region between START and END is
 affected.  Those two values default to the borders of
 the entire buffer.  If TIMESTAMP is non-nil, previews
-with a `timestamp' property of it are kept."
+with a `timestamp' property of it are kept.  If EXCEPTION
+is a non-nil overlay, then it is not cleared."
   (interactive "r")
   (dolist (ov (overlays-in (or start (point-min))
                            (or end (point-max))))
-    (and (overlay-get ov 'preview-state)
+    (and (or (not exception)
+             (not (eq ov exception)))
+         (overlay-get ov 'preview-state)
          (not (and timestamp
                    (equal timestamp (overlay-get ov 'timestamp))))
          (preview-delete ov))))
@@ -2429,7 +2460,9 @@ visible.  For efficiency reasons it is expected that the buffer
 is already selected and unnarrowed."
   (concat
    (preview-make-clickable (overlay-get ov 'preview-map)
-                           preview-icon
+                           (if preview-leave-open-previews-visible
+                               (overlay-get ov 'preview-image)
+                             preview-icon)
                            "\
 %s redisplays preview
 %s more options")
@@ -2550,6 +2583,10 @@ it gets deleted as well."
 
 (defvar-local preview-buffer-has-counters nil)
 
+(defvar-local preview-current-region nil
+  "Cons cell (begin . end) tracking the region currently being previewed.
+Set in `preview-region', cleared in `preview-place-preview'.")
+
 (defun preview-place-preview (snippet start end
                                       box counters tempdir place-opts)
   "Generate and place an overlay preview image.
@@ -2564,7 +2601,7 @@ PLACE-OPTS are additional arguments passed into
 a list with additional info from the placement hook.
 Those lists get concatenated together and get passed
 to the close hook."
-  (preview-clearout start end tempdir)
+  (setq preview-current-region nil)
   (let ((ov (make-overlay start end nil nil nil)))
     (overlay-put ov 'priority (TeX-overlay-prioritize start end))
     (overlay-put ov 'preview-map
@@ -2582,7 +2619,8 @@ to the close hook."
                   place-opts)
       (overlay-put ov 'strings
                    (list (preview-active-string ov)))
-      (preview-toggle ov t))))
+      (preview-toggle ov t)
+      (preview-clearout start end tempdir ov))))
 
 (defun preview-counter-find (begin)
   "Fetch the next preceding or next preview-counters property.
@@ -3268,8 +3306,6 @@ Return a new string."
     (setq result (concat result string))
     result))
 
-(defvar-local preview--region-begin nil)
-
 (defvar preview-find-end-function nil
   "Function used to compute the end position for a new overlay.
 The function bound to this variable will be called inside
@@ -3277,6 +3313,13 @@ The function bound to this variable will be called inside
 beginning of the overlay.  This is intended to be used in conjunction
 with `preview-preprocess-function' when the latter introduces
 significant modifications.")
+
+(defcustom preview-protect-point nil
+  "Temporarily open new previews that would obscure point.
+If non-nil, then any new preview whose bounds contain point is
+temporarily opened, as if the user had entered it via movement commands."
+  :group 'preview-appearance
+  :type 'boolean)
 
 (defvar preview-locating-previews-message "locating previews...")
 
@@ -3298,6 +3341,7 @@ call, and in its CDR the final stuff for the placement hook."
           (run-buffer (current-buffer))
           (run-directory default-directory)
           tempdir
+          point-current
           close-data
           open-data
           fast-hook
@@ -3520,6 +3564,7 @@ name(\\([^)]+\\))\\)\\|\
                   (setq lfile file))
                 (save-excursion
                   (save-restriction
+                    (setq point-current (point))
                     (widen)
                     ;; a fast hook might have positioned us already:
                     (if (number-or-marker-p string)
@@ -3554,10 +3599,10 @@ name(\\([^)]+\\))\\)\\|\
                       ;; The following addresses the bug described at
                       ;; https://lists.gnu.org/archive/html/bug-auctex/2023-03/msg00007.html
                       ;; (bug#62445)
-                      (and preview--region-begin
+                      (and preview-current-region
                            (< (point)
-                              preview--region-begin)
-                           (goto-char preview--region-begin))
+                              (car preview-current-region))
+                           (goto-char (car preview-current-region)))
 
                       (cond
                        ((search-forward (concat string after-string)
@@ -3618,7 +3663,14 @@ name(\\([^)]+\\))\\)\\|\
                                            (cons lcounters counters)
                                            tempdir
                                            (cdr open-data))))
-                                (setq close-data (nconc ovl close-data)))
+                                (setq close-data (nconc ovl close-data))
+                                (when (and preview-protect-point
+                                           (<= region-beg point-current)
+                                           (< point-current region-end))
+                                  ;; Temporarily open the preview if it
+                                  ;; would bump the point.
+                                  (preview-toggle (car ovl))
+                                  (push (car ovl) preview-temporary-opened)))
                             (with-current-buffer run-buffer
                               (preview-log-error
                                (list 'error
@@ -4067,7 +4119,7 @@ The function bound to this variable will be called inside
                          "<none>")
                        (TeX-current-offset begin)))
   (setq TeX-current-process-region-p t)
-  (setq preview--region-begin begin)
+  (setq preview-current-region (cons begin end))
   (preview-generate-preview (TeX-region-file)
                             (preview-do-replacements
                              (TeX-command-expand

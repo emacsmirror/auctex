@@ -2667,9 +2667,9 @@ containing point.
 @end deffn
 
 @deffn Command TeX-fold-section
-@kindex C-c C-o C-p
-(@kbd{C-c C-o C-p}) Hide all configured macros in the section
-containing point.
+@kindex C-c C-o C-s
+(@kbd{C-c C-o C-s}) Hide all configured macros in the section containing
+point.
 @end deffn
 
 @deffn Command TeX-fold-macro
@@ -2725,8 +2725,8 @@ paragraph containing point.
 @end deffn
 
 @deffn Command TeX-fold-clearout-section
-@kindex C-c C-o p
-(@kbd{C-c C-o p}) Permanently unfold all macros and environments in the
+@kindex C-c C-o s
+(@kbd{C-c C-o s}) Permanently unfold all macros and environments in the
 section containing point.
 @end deffn
 

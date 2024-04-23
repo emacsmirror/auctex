@@ -51,6 +51,7 @@
 (autoload 'LaTeX-backward-paragraph "latex")
 (autoload 'LaTeX-find-matching-begin "latex")
 (autoload 'LaTeX-find-matching-end "latex")
+(autoload 'LaTeX-mark-section "latex")
 (autoload 'ConTeXt-find-matching-start "context")
 (autoload 'ConTeXt-find-matching-stop "context")
 (autoload 'Texinfo-find-env-start "tex-info")
