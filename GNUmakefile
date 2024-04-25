@@ -83,7 +83,8 @@ clean:
 	rm -f $(ALL_GENERATED_FILES) \
 		$(wildcard *.elc style/*.elc) \
 		auctex-autoloads.el \
-		ChangeLog
+		ChangeLog \
+		$(DYNVARSFILES)
 
 # Copied&adapted from doc/Makefile.in.
 MAKEINFO_PLAIN=$(MAKEINFO) -D rawfile --no-headers
@@ -138,12 +139,12 @@ $(LATEX_FILES): latex/preview.dtx latex/bootstrap.ins
 
 DYNVARSFILES = *.dynvars style/*.dynvars auctex-dynvars
 dynvars-check:
-	rm -f $(wildcard *.elc) $(wildcard style/*elc) $(DYNVARSFILES)
+	rm -f $(wildcard *.elc) $(wildcard style/*.elc) $(DYNVARSFILES)
 	EMACS_GENERATE_DYNVARS=1 $(EMACS) -f batch-byte-compile \
-		$(wildcard *.el) $(wildcard style/*el) \
+		$(wildcard *.el) $(wildcard style/*.el) \
 		> /dev/null 2>&1
 	cat *.dynvars style/*.dynvars > auctex-dynvars
-	rm -f $(wildcard *.elc) $(wildcard style/*elc)
+	rm -f $(wildcard *.elc) $(wildcard style/*.elc)
 	EMACS_DYNVARS_FILE=auctex-dynvars $(EMACS) \
 		-f batch-byte-compile \
-		$(wildcard *.el) $(wildcard style/*el)
+		$(wildcard *.el) $(wildcard style/*.el)
