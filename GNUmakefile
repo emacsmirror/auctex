@@ -83,7 +83,6 @@ clean:
 	rm -f $(ALL_GENERATED_FILES) \
 		$(wildcard *.elc style/*.elc) \
 		auctex-autoloads.el \
-		ChangeLog \
 		$(DYNVARSFILES)
 
 # Copied&adapted from doc/Makefile.in.
