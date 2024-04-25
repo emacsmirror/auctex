@@ -40,12 +40,38 @@ ALL_GENERATED_FILES=$(MAIN_GENERATED_FILES)	\
 		$(INFO_FILES)
 
 # Generate & compile everything including the manuals below doc/.
-all: $(ALL_GENERATED_FILES) compile autoloads
+all: $(ALL_GENERATED_FILES) compile auctex-autoloads.el
 
 compile: $(patsubst %.el,%.elc,$(wildcard *.el style/*.el))
 
-autoloads:
-	$(EMACS) -f loaddefs-generate-batch loaddefs.el .
+# If we were depending on emacs 29.1, we could simply use
+# loaddefs-generate.  If we were depending on 28.1, we could still use
+# update-directory-autoloads...
+AUTOLOAD=--eval '\
+(let* ((autoload-file (expand-file-name "$@")) \
+       (autoload-file-dir (file-name-directory autoload-file))) \
+  (if (fboundp `loaddefs-generate) \
+      (loaddefs-generate autoload-file-dir autoload-file \
+                         (list "tex-wizard.el") \
+                         "(add-to-list `load-path\n\
+                                       (directory-file-name\n\
+                                         (file-name-directory load-file-name)))")\
+    (mapc (lambda (file) \
+            (update-file-autoloads file nil autoload-file)) \
+          command-line-args-left)) \
+  (save-buffers-kill-emacs t))'
+
+auctex-autoloads.el:
+	-rm -f $@
+	$(EMACS) $(AUTOLOAD) $(wildcard *.el)
+
+# auctex-autoloads.el:
+# 	$(EMACS) --eval \
+#           "(loaddefs-generate \".\" \"auctex-autoloads.el\" nil \"\
+# (add-to-list 'load-path\n\
+#              (directory-file-name\n\
+#               (file-name-directory load-file-name)))\
+# \")"
 
 %.elc: %.el
 	$(EMACS) -f batch-byte-compile $<
@@ -64,7 +90,7 @@ elpa: $(MAIN_GENERATED_FILES)
 clean:
 	rm -f $(ALL_GENERATED_FILES) \
 		$(wildcard *.elc style/*.elc) \
-		loaddefs.el
+		auctex-autoloads.el
 
 # Copied&adapted from doc/Makefile.in.
 MAKEINFO_PLAIN=$(MAKEINFO) -D rawfile --no-headers
