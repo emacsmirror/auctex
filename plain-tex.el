@@ -30,6 +30,9 @@
 
 (require 'tex)
 
+;; Silence the compiler for functions:
+(declare-function TeX-install-toolbar "tex-bar" nil)
+
 ;;; Tool bar
 
 (defcustom plain-TeX-enable-toolbar t

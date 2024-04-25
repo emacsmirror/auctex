@@ -39,12 +39,12 @@
     (require 'subr-x)))
 
 ;; Silence the compiler for functions:
-(declare-function outline-level "ext:outline"
-                  nil)
-(declare-function outline-mark-subtree "ext:outline"
-                  nil)
-(declare-function turn-off-filladapt-mode "ext:filladapt"
-                  nil)
+(declare-function multi-prompt "multi-prompt")
+(declare-function multi-prompt-key-value "multi-prompt")
+(declare-function LaTeX-install-toolbar "tex-bar" nil)
+(declare-function outline-level "ext:outline" nil)
+(declare-function outline-mark-subtree "ext:outline" nil)
+(declare-function turn-off-filladapt-mode "ext:filladapt" nil)
 
 ;; Silence the compiler for variables:
 (defvar outline-heading-alist)

@@ -54,11 +54,13 @@
                   (bus service path interface method &rest args))
 (declare-function dbus-register-signal "ext:dbus"
                   (bus service path interface signal handler &rest args))
+(declare-function font-latex-setup "font-latex" nil)
 (declare-function LaTeX-environment-list "latex" nil)
 (declare-function LaTeX-bibliography-list "latex" nil)
 (declare-function LaTeX-completion-label-annotation-function "latex" (label))
 (declare-function LaTeX-completion-label-list "latex" nil)
 (declare-function LaTeX-section-name "latex" (level))
+(declare-function TeX-fold-mode "tex-fold" (&optional arg))
 (declare-function comint-exec "ext:comint"
                   (buffer name command startfile switches))
 (declare-function comint-mode "ext:comint" nil)
@@ -801,12 +803,12 @@ emacs 24.1 and is then later run by emacs 24.5."
 (advice-add 'hack-one-local-variable :after #'TeX--call-minor-mode)
 (defun TeX--call-minor-mode (var val &rest _)
   "Call minor mode function if minor mode variable is found."
-    ;; Instead of checking for each mode explicitly `minor-mode-list'
-    ;; could be used.  But this may make the byte compiler pop up.
-    (when (memq var '(TeX-PDF-mode
-                      TeX-source-correlate-mode TeX-interactive-mode
-                      TeX-fold-mode LaTeX-math-mode))
-      (funcall var (if (symbol-value val) 1 0))))
+  ;; Instead of checking for each mode explicitly `minor-mode-list'
+  ;; could be used.  But this may make the byte compiler pop up.
+  (when (memq var '(TeX-PDF-mode
+                    TeX-source-correlate-mode TeX-interactive-mode
+                    TeX-fold-mode LaTeX-math-mode))
+    (funcall var (if (symbol-value val) 1 0))))
 
 (defvar TeX-overlay-priority-step 16
   "Numerical difference of priorities between nested overlays.
