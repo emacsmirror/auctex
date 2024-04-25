@@ -17,7 +17,8 @@
 #   latex: prtightpage.def
 #   latex: prtracingall.def
 
-EMACS=emacs --batch -q -no-site-file -no-init-file -l lpath.el
+EMACSBIN=emacs
+EMACS=$(EMACSBIN) --batch -q -no-site-file -no-init-file -l lpath.el
 MAKEINFO=makeinfo
 INSTALL_INFO=install-info
 PERL=perl
@@ -74,18 +75,16 @@ README: doc/intro.texi doc/preview-readme.texi doc/macros.texi
 # Commands copied&adapted from autogen.sh and doc/Makefile.in.
 IGNORED:=$(shell rm -f ChangeLog && ./build-aux/gitlog-to-auctexlog && cat ChangeLog.1 >> ChangeLog)
 # Committer date of HEAD.
-AUCTEXDATE:=$(shell git log -n1 --pretty=tformat:"%ci" \
-	| sed -nre 's/ /_/p' | sed -nre 's/ .*//p')
+AUCTEXDATE:=$(shell (git log -n1 --pretty=tformat:"%ci" 2>/dev/null \
+                     || date +"%Y-%m-%d %T") 		       	    \
+                    | sed -re 's/ /_/' -e 's/ .*//')
 # Extract the version number from the diff line "+;; Version: 14.0.4" of
 # the commit HEAD which is only filled when we did a release in the last
 # commit.
-THISVERSION:=$(shell git show HEAD -- auctex.el \
+THISVERSION:=$(shell git show HEAD -- auctex.el 2>/dev/null \
 	| sed -nre 's/[+];; Version: ([0-9]+.[0-9]+.[0-9]+)/\1/p')
-# Extract the last version number from the previous change to auctex.el,
-# i.e., only look at commits starting at HEAD~1.
-LASTVERSION:=$(shell git log HEAD~1 -p --first-parent -- auctex.el \
-	| grep "+;; Version: " \
-	| sed -nre 's/[+];; Version: ([0-9]+.[0-9]+.[0-9]+)/\1/p;q')
+# Extract the last released version number from `auctex.el`.
+LASTVERSION:=$(shell sed -nre '/Version:/{s/;; Version: ([0-9]+.[0-9]+.[0-9]+)/\1/p;q}' auctex.el)
 AUCTEXVERSION:=$(if $(THISVERSION),$(THISVERSION),$(LASTVERSION).$(AUCTEXDATE))
 
 tex-site.el: tex-site.el.in
