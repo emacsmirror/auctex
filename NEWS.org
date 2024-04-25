@@ -10,6 +10,10 @@
 
 ** Added
 
+- Add support for indirect buffers cloned from buffers visiting a file.
+  In indirect buffer, preview-latex works correctly when the command
+  ~preview-region~ is invoked.  The command ~preview-document~ puts
+  preview images in the base buffer, not in the indirect buffer itself.
 - Add preliminary support for processing files with latexmk.  Support
   for =dvipdfmx= and the choice for viewer after compilation are not
   optimal, yet.  Overall, the support comes close to what the
