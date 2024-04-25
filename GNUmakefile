@@ -62,7 +62,7 @@ AUTOLOAD=--eval '\
   (save-buffers-kill-emacs t))'
 
 auctex-autoloads.el:
-	-rm -f $@
+	rm -f $@
 	$(EMACS) $(AUTOLOAD) $(wildcard *.el)
 
 # auctex-autoloads.el:
@@ -80,17 +80,18 @@ auctex-autoloads.el:
 # will be built on elpa due to :doc ("doc/auctex.texi"
 # "doc/preview-latex.texi") in the auctex recipe in elpa-packges and
 # compiling is done locally.
-elpa: $(MAIN_GENERATED_FILES)
+elpa: $(MAIN_GENERATED_FILES) ChangeLog
 
 # We want the tex-site.el target to be always run so that the version
-# (especially the release version grabbed from the top of the git
-# log/ChangeLog) is correct.
+# (especially the release version grabbed from the top of the git log)
+# is correct.
 .PHONY: tex-site.el
 
 clean:
 	rm -f $(ALL_GENERATED_FILES) \
 		$(wildcard *.elc style/*.elc) \
-		auctex-autoloads.el
+		auctex-autoloads.el \
+		ChangeLog
 
 # Copied&adapted from doc/Makefile.in.
 MAKEINFO_PLAIN=$(MAKEINFO) -D rawfile --no-headers
@@ -98,8 +99,6 @@ README: doc/intro.texi doc/preview-readme.texi doc/macros.texi
 	(cd doc; $(MAKEINFO_PLAIN) intro.texi --output -) >$@
 	(cd doc; $(MAKEINFO_PLAIN) preview-readme.texi --output -) >> $@
 
-# Commands copied&adapted from autogen.sh and doc/Makefile.in.
-IGNORED:=$(shell rm -f ChangeLog && ./build-aux/gitlog-to-auctexlog && cat ChangeLog.1 >> ChangeLog)
 # Committer date of HEAD.
 AUCTEXDATE:=$(shell (git log -n1 --pretty=tformat:"%ci" 2>/dev/null \
                      || date +"%Y-%m-%d %T") 		       	    \
@@ -121,9 +120,13 @@ tex-site.el: tex-site.el.in
 	    -e 's|@AUCTEXDATE@|$(AUCTEXDATE)|'\
 	    $< >$@
 
-doc/version.texi: ChangeLog
+doc/version.texi:
 	echo @set VERSION $(AUCTEXVERSION) >$@
 	echo @set UPDATED $(AUCTEXDATE) >>$@
+
+ChangeLog:
+	rm -f $@
+	./build-aux/gitlog-to-auctexlog && cat ChangeLog.1 >> $@
 
 # Copied&adapted from doc/Makefile.in.
 doc/preview-dtxdoc.texi: latex/preview.dtx doc/preview-dtxdoc.pl
