@@ -65,14 +65,6 @@ auctex-autoloads.el:
 	rm -f $@
 	$(EMACS) $(AUTOLOAD) $(wildcard *.el)
 
-# auctex-autoloads.el:
-# 	$(EMACS) --eval \
-#           "(loaddefs-generate \".\" \"auctex-autoloads.el\" nil \"\
-# (add-to-list 'load-path\n\
-#              (directory-file-name\n\
-#               (file-name-directory load-file-name)))\
-# \")"
-
 %.elc: %.el
 	$(EMACS) -f batch-byte-compile $<
 
