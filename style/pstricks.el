@@ -1,6 +1,6 @@
 ;;; pstricks.el --- AUCTeX style for the `pstricks' package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2007-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2007-2024  Free Software Foundation, Inc.
 
 ;; Author: Holger Sparr <holger.sparr@gmx.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -652,9 +652,10 @@ package PNAME"
 ;;; Environments
 (defun LaTeX-pst-env-pspicture (env)
   "Create new pspicure environment."
-  (let ((opt (multi-prompt-key-value
-              (TeX-argument-prompt t "Options" nil)
-              '(("showgrid") ("shift"))))
+  (let ((opt (TeX-read-key-val t
+                               '(("showgrid" ("true" "false"))
+                                 ("shift"))
+                               "Options"))
         (p0 (LaTeX-pst-what "point" "Lower left (default 0,0)" "0,0"))
         (p1 (LaTeX-pst-what "point" "Upper right (default 1,1)" "1,1"))
         corn)

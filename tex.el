@@ -54,11 +54,13 @@
                   (bus service path interface method &rest args))
 (declare-function dbus-register-signal "ext:dbus"
                   (bus service path interface signal handler &rest args))
+(declare-function font-latex-setup "font-latex" nil)
 (declare-function LaTeX-environment-list "latex" nil)
 (declare-function LaTeX-bibliography-list "latex" nil)
 (declare-function LaTeX-completion-label-annotation-function "latex" (label))
 (declare-function LaTeX-completion-label-list "latex" nil)
 (declare-function LaTeX-section-name "latex" (level))
+(declare-function TeX-fold-mode "tex-fold" (&optional arg))
 (declare-function comint-exec "ext:comint"
                   (buffer name command startfile switches))
 (declare-function comint-mode "ext:comint" nil)
@@ -673,7 +675,7 @@ string."
     ;; case the file is in a different subdirectory
     ("%b" TeX-current-file-name-master-relative)
     ;; Okular forward PDF search requires absolute path.
-    ("%a" (lambda nil (prin1-to-string (expand-file-name (buffer-file-name)))))
+    ("%a" (lambda nil (prin1-to-string (expand-file-name (TeX-buffer-file-name)))))
     ;; the following is for preview-latex.
     ("%m" preview-create-subdirectory)
     ;; LaTeXMk support
@@ -801,12 +803,12 @@ emacs 24.1 and is then later run by emacs 24.5."
 (advice-add 'hack-one-local-variable :after #'TeX--call-minor-mode)
 (defun TeX--call-minor-mode (var val &rest _)
   "Call minor mode function if minor mode variable is found."
-    ;; Instead of checking for each mode explicitly `minor-mode-list'
-    ;; could be used.  But this may make the byte compiler pop up.
-    (when (memq var '(TeX-PDF-mode
-                      TeX-source-correlate-mode TeX-interactive-mode
-                      TeX-fold-mode LaTeX-math-mode))
-      (funcall var (if (symbol-value val) 1 0))))
+  ;; Instead of checking for each mode explicitly `minor-mode-list'
+  ;; could be used.  But this may make the byte compiler pop up.
+  (when (memq var '(TeX-PDF-mode
+                    TeX-source-correlate-mode TeX-interactive-mode
+                    TeX-fold-mode LaTeX-math-mode))
+    (funcall var (if (symbol-value val) 1 0))))
 
 (defvar TeX-overlay-priority-step 16
   "Numerical difference of priorities between nested overlays.
@@ -1251,7 +1253,7 @@ viewer."
            (format "/org/%s/%s/Window/0" de app)
            (format "org.%s.%s.Window" de app)
            "SyncView"
-           (buffer-file-name)
+           (TeX-buffer-file-name)
            (list :struct :int32 (1+ (TeX-current-offset))
                  ;; FIXME: Using `current-column' here is dubious.
                  ;; Most of CJK letters count as occupying 2 columns,
@@ -1820,7 +1822,7 @@ Else, return nil."
       (when (re-search-forward "!offset(\\([---0-9]+\\))" nil t)
         (let ((offset (string-to-number (match-string-no-properties 1))))
           (when TeX-region-orig-buffer
-            (list (expand-file-name (buffer-file-name TeX-region-orig-buffer))
+            (list (expand-file-name (TeX-buffer-file-name TeX-region-orig-buffer))
                   (+ line offset) col)))))))
 
 (defcustom TeX-raise-frame-function #'raise-frame
@@ -2040,11 +2042,11 @@ enabled and the `synctex' binary is available."
   "Return the page corresponding to the position in the current buffer.
 This method assumes that the document was compiled with SyncTeX
 enabled and the `synctex' binary is available."
-  (let* ((file (file-relative-name (buffer-file-name)
+  (let* ((file (file-relative-name (TeX-buffer-file-name)
                                    (file-name-directory
                                     (TeX-active-master))))
          (abs-file (concat (expand-file-name (or (file-name-directory (TeX-active-master))
-                                                 (file-name-directory (buffer-file-name))))
+                                                 (file-name-directory (TeX-buffer-file-name))))
                            "./" file)))
     ;; It's known that depending on synctex version one of
     ;; /absolute/path/./foo/bar.tex, foo/bar.tex, or ./foo/bar.tex (relative to
@@ -2379,7 +2381,7 @@ this variable to \"<none>\"."
              (TeX-add-local-master))
             ((or
               ;; Default `read-file-name' proposes and buffer visits a file.
-              (string= (expand-file-name name) (buffer-file-name))
+              (string= (expand-file-name name) (TeX-buffer-file-name))
               ;; Default of `read-file-name' and buffer does not visit a file.
               (string= name default-directory)
               ;; User typed <RET> in an empty minibuffer.
@@ -2406,80 +2408,84 @@ name of master file if it cannot be determined otherwise."
   (interactive)
   (if (eq extension t)
       (setq extension TeX-default-extension))
-  (let ((my-name (if (buffer-file-name)
-                     (TeX-strip-extension nil (list TeX-default-extension) t)
-                   "<none>")))
-    (save-excursion
-      (save-restriction
-        (widen)
-        (goto-char (point-min))
-        (cond
-         ((and TeX-transient-master
-               (or (not TeX-master) (eq TeX-master 'shared)))
-          (setq TeX-master TeX-transient-master))
-         ;; Special value 't means it is own master (a free file).
-         ((equal TeX-master my-name)
-          (setq TeX-master t))
+  (with-current-buffer
+    ;; In case this is an indirect buffer:
+      (or (buffer-base-buffer) (current-buffer))
+    (let ((my-name (if (TeX-buffer-file-name)
+                       (TeX-strip-extension nil (list TeX-default-extension) t)
+                     "<none>")))
+      (save-excursion
+        (save-restriction
+          (widen)
+          (goto-char (point-min))
+          (cond
+           ((and TeX-transient-master
+                 (or (not TeX-master) (eq TeX-master 'shared)))
+            (setq TeX-master TeX-transient-master))
 
-         ;; For files shared between many documents.
-         ((and (eq 'shared TeX-master) ask)
-          (setq TeX-master
-                (let* ((default (TeX-dwim-master))
-                       (name (read-file-name
-                              (format "Master file (default %s): "
-                                      (or default "this file"))
-                              nil default)))
-                  (cond ((string= name default)
-                         default)
-                        ((or
-                          ;; Default `read-file-name' proposes and
-                          ;; buffer visits a file.
-                          (string= (expand-file-name name)
-                                   (buffer-file-name))
-                          ;; Default of `read-file-name' and
-                          ;; buffer does not visit a file.
-                          (string= name default-directory)
-                          ;; User typed <RET> in an empty minibuffer.
-                          (string= name ""))
-                         t)
-                        (t
-                         (TeX-strip-extension
-                          name (list TeX-default-extension) 'path))))))
+           ;; Special value 't means it is own master (a free file).
+           ((equal TeX-master my-name)
+            (setq TeX-master t))
 
-         ;; We might already know the name.
-         ((or (eq TeX-master t) (stringp TeX-master)) TeX-master)
+           ;; For files shared between many documents.
+           ((and (eq 'shared TeX-master) ask)
+            (setq TeX-master
+                  (let* ((default (TeX-dwim-master))
+                         (name (read-file-name
+                                (format "Master file (default %s): "
+                                        (or default "this file"))
+                                nil default)))
+                    (cond ((string= name default)
+                           default)
+                          ((or
+                            ;; Default `read-file-name' proposes and
+                            ;; buffer visits a file.
+                            (string= (expand-file-name name)
+                                     (TeX-buffer-file-name))
+                            ;; Default of `read-file-name' and
+                            ;; buffer does not visit a file.
+                            (string= name default-directory)
+                            ;; User typed <RET> in an empty minibuffer.
+                            (string= name ""))
+                           t)
+                          (t
+                           (TeX-strip-extension
+                            name (list TeX-default-extension) 'path))))))
 
-         ;; Ask the user (but add it as a local variable).
-         (ask (TeX-master-file-ask)))))
+           ;; We might already know the name.
+           ((or (eq TeX-master t) (stringp TeX-master)))
 
-    (let ((name (if (stringp TeX-master)
-                    TeX-master
-                  my-name)))
+           ;; Ask the user (but add it as a local variable).
+           (ask (TeX-master-file-ask)))))
 
-      (if (TeX-match-extension name)
-          ;; If it already has an extension...
-          (if (equal extension TeX-default-extension)
-              ;; Use instead of the default extension
-              (setq extension nil)
-            ;; Otherwise drop it.
-            (setq name (TeX-strip-extension name))))
+      (let ((name (if (stringp TeX-master)
+                      TeX-master
+                    my-name)))
 
-      (let* ((reg (TeX--clean-extensions-regexp t))
-             (is-output-ext (and reg
-                                 (or (string-match-p reg (concat "." extension))
-                                     (string= "prv" extension))))
-             (output-dir (and is-output-ext
-                              (TeX--master-output-dir
-                               (file-name-directory name)
-                               nondirectory))))
-        (if output-dir
-            (setq name (concat output-dir (file-name-nondirectory name)))
-          ;; Remove directory if needed.
-          (if nondirectory
-              (setq name (file-name-nondirectory name)))))
-      (if extension
-          (concat name "." extension)
-        name))))
+        (if (TeX-match-extension name)
+            ;; If it already has an extension...
+            (if (equal extension TeX-default-extension)
+                ;; Use instead of the default extension
+                (setq extension nil)
+              ;; Otherwise drop it.
+              (setq name (TeX-strip-extension name))))
+
+        (let* ((reg (TeX--clean-extensions-regexp t))
+               (is-output-ext (and reg
+                                   (or (string-match-p reg (concat "." extension))
+                                       (string= "prv" extension))))
+               (output-dir (and is-output-ext
+                                (TeX--master-output-dir
+                                 (file-name-directory name)
+                                 nondirectory))))
+          (if output-dir
+              (setq name (concat output-dir (file-name-nondirectory name)))
+            ;; Remove directory if needed.
+            (if nondirectory
+                (setq name (file-name-nondirectory name)))))
+        (if extension
+            (concat name "." extension)
+          name)))))
 
 (defun TeX-master-directory ()
   "Directory of master file."
@@ -2488,17 +2494,15 @@ name of master file if it cannot be determined otherwise."
     (substitute-in-file-name
      (expand-file-name
       (let ((dir (file-name-directory (TeX-master-file))))
-        (if dir (directory-file-name dir) "."))
-      (and buffer-file-name
-           (file-name-directory buffer-file-name)))))))
+        (if dir (directory-file-name dir) ".")))))))
 
 (defun TeX-add-local-master ()
   "Add local variable for `TeX-master'.
 
 Get `major-mode' from master file and enable it."
-  (when (and (buffer-file-name)
+  (when (and (TeX-buffer-file-name)
              (string-match TeX-one-master
-                           (file-name-nondirectory (buffer-file-name)))
+                           (file-name-nondirectory (TeX-buffer-file-name)))
              (not buffer-read-only))
     (goto-char (point-max))
     (if (re-search-backward "^\\([^\n]+\\)Local Variables:"
@@ -2603,6 +2607,16 @@ ARGNAME is prepended to the quoted output directory.  If
     (if out-dir
         (concat argname "\"" out-dir "\"")
       "")))
+
+(defun TeX-master-output-file (extension)
+  "Return the output file with given EXTENSION.
+If `TeX-output-dir' is nil, then defer to `TeX-master-file'.  Otherwise,
+return the file of the same name, but in the build directory specified by
+`TeX-output-dir'."
+  (let ((master (TeX-master-file extension)))
+    (if-let ((output-dir (TeX--master-output-dir (TeX-master-directory) t)))
+        (concat output-dir (file-name-nondirectory master))
+      master)))
 
 (defcustom TeX-style-local "style"
   "Directory containing hand generated TeX information.
@@ -3087,9 +3101,9 @@ FORCE is not nil."
     (TeX-run-style-hooks (TeX-strip-extension nil nil t))
     ;; Run parent style hooks if it has a single parent that isn't itself.
     (if (or (not (memq TeX-master '(nil t)))
-            (and (buffer-file-name)
+            (and (TeX-buffer-file-name)
                  (string-match TeX-one-master
-                               (file-name-nondirectory (buffer-file-name)))))
+                               (file-name-nondirectory (TeX-buffer-file-name)))))
         (TeX-run-style-hooks (TeX-master-file)))
     (if (and TeX-parse-self
              (null (cdr-safe (assoc (TeX-strip-extension nil nil t)
@@ -3881,7 +3895,7 @@ Not intended for direct use for user."
   (add-hook 'find-file-hook
             (lambda ()
               ;; Check if we are looking at a new or shared file.
-              (when (or (not (file-exists-p (buffer-file-name)))
+              (when (or (not (file-exists-p (TeX-buffer-file-name)))
                         (eq TeX-master 'shared))
                 (TeX-master-file nil nil t))
               (TeX-update-style t)) nil t))
@@ -4637,7 +4651,7 @@ STRING defaults to the name of the current buffer.
 EXTENSIONS defaults to `TeX-file-extensions'."
 
   (if (null string)
-      (setq string (or (buffer-file-name) "<none>")))
+      (setq string (or (TeX-buffer-file-name) "<none>")))
 
   (if (null extensions)
       (setq extensions TeX-file-extensions))
@@ -4920,7 +4934,7 @@ to look backward for."
 (defun TeX-current-file-name-master-relative ()
   "Return current filename, relative to master directory."
   (file-relative-name
-   (buffer-file-name)
+   (TeX-buffer-file-name)
    (TeX-master-directory)))
 
 (defun TeX-near-bobp ()
@@ -6269,18 +6283,21 @@ this list.")
 Save buffer first including style information.
 With optional argument ARG, also reload the style hooks."
   (interactive "*P")
-  (if arg
-      (dolist (var TeX-normal-mode-reset-list)
-        (set var nil)))
-  (let ((gc-cons-percentage 0.5))
-    (let ((TeX-auto-save t))
-      (if (buffer-modified-p)
-          (save-buffer)
-        (TeX-auto-write)))
-    (normal-mode)
-    ;; See also addition to `find-file-hook' in `TeX-mode'.
-    (when (eq TeX-master 'shared) (TeX-master-file nil nil t))
-    (TeX-update-style t)))
+  (with-current-buffer
+  ;; In case this is an indirect buffer:
+      (or (buffer-base-buffer) (current-buffer))
+    (if arg
+        (dolist (var TeX-normal-mode-reset-list)
+          (set var nil)))
+    (let ((gc-cons-percentage 0.5))
+      (let ((TeX-auto-save t))
+        (if (buffer-modified-p)
+            (save-buffer)
+          (TeX-auto-write)))
+      (normal-mode)
+      ;; See also addition to `find-file-hook' in `TeX-mode'.
+      (when (eq TeX-master 'shared) (TeX-master-file nil nil t))
+      (TeX-update-style t))))
 
 (defgroup TeX-quote nil
   "Quoting in AUCTeX."
@@ -6730,7 +6747,7 @@ NAME may be a package, a command, or a document."
         (buffers (buffer-list)))
     (while buffers
       (let* ((buffer (car buffers))
-             (name (buffer-file-name buffer)))
+             (name (TeX-buffer-file-name buffer)))
         (setq buffers (cdr buffers))
         (when (and name (string-match regexp name))
           (save-excursion (switch-to-buffer buffer) (ispell-buffer))
@@ -7096,7 +7113,7 @@ pinned region will get unpinned and vice versa."
                   TeX-region-extra)))
     (TeX-region-create (TeX-region-file TeX-default-extension)
                        (buffer-substring-no-properties begin end)
-                       (file-name-nondirectory (buffer-file-name))
+                       (file-name-nondirectory (TeX-buffer-file-name))
                        (TeX-current-offset begin))))
 
 (defun TeX-command-region (&optional override-confirm)
@@ -7588,14 +7605,14 @@ ORIGINALS which are modified but not saved yet."
                 (setq existingoriginals (cons filepath existingoriginals)))))))
     (while buffers
       (let* ((buffer (car buffers))
-             (name (buffer-file-name buffer)))
+             (name (TeX-buffer-file-name buffer)))
         (setq buffers (cdr buffers))
         (if (and name (member name existingoriginals))
             (progn
               (and (buffer-modified-p buffer)
                    (or (not TeX-save-query)
                        (y-or-n-p (concat "Save file "
-                                         (buffer-file-name buffer)
+                                         (TeX-buffer-file-name  buffer)
                                          "? ")))
                    (with-current-buffer buffer (save-buffer)))))))
     (dolist (eo existingoriginals)
@@ -10429,6 +10446,12 @@ warnings and bad boxes"
                                 #'TeX-region-file
                               #'TeX-master-file))))
     (error "Unable to find what command to run")))
+
+(defun TeX-buffer-file-name (&optional BUFFER)
+  "Return name of file BUFFER is visiting, or nil if none.
+No argument or nil as argument means use the current buffer.
+If BUFFER is indirect, return the file that the base buffer is visiting."
+  (buffer-file-name (or (buffer-base-buffer BUFFER) BUFFER)))
 
 (provide 'tex)
 

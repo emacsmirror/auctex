@@ -1903,7 +1903,7 @@ If no master file, then return current default."
                     ;; rather than            \input file
                     (re-search-forward "^[ \t]*\\\\\\(include\\|input\\){"
                                        nil t))))
-           (buffer-file-name))
+           (TeX-buffer-file-name))
           (t
            nil))))
     (cond

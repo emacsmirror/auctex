@@ -1213,7 +1213,13 @@ is located."
 (defcustom preview-leave-open-previews-visible nil
   "Whether to leave previews visible when they are opened.
 If nil, then the TeX preview icon is used when the preview is opened.
-If non-nil, then the preview image is moved above the text."
+If non-nil, then the preview image remains visible.  In either case, the
+TeX code appears either below or to the right of the displayed graphic.
+
+If you enable this option, the preview image doesn't turn into
+construction sign temporarily when you edit the underlying LaTeX code
+and regenerate the preview; it is just replaced by updated image when
+ready.  This behavior suppresses flicker in the appearance."
   :group 'preview-appearance
   :type 'boolean)
 
@@ -3073,8 +3079,8 @@ pp")
        #'desktop-buffer-preview-misc-data)
   (add-hook 'pre-command-hook #'preview-mark-point nil t)
   (add-hook 'post-command-hook #'preview-move-point nil t)
-  (when buffer-file-name
-    (let* ((filename (expand-file-name buffer-file-name))
+  (when (TeX-buffer-file-name)
+    (let* ((filename (expand-file-name (TeX-buffer-file-name)))
            format-cons)
       (when (string-match (concat "\\." TeX-default-extension "\\'")
                           filename)
@@ -3334,6 +3340,7 @@ call, and in its CDR the final stuff for the placement hook."
     (let (TeX-error-file TeX-error-offset snippet box counters
           file line
           (lsnippet 0) lstart (lfile "") lline lbuffer lpoint
+          lpos
           lcounters
           string after-string
           offset
@@ -3604,6 +3611,12 @@ name(\\([^)]+\\))\\)\\|\
                               (car preview-current-region))
                            (goto-char (car preview-current-region)))
 
+                      ;; Make sure that we don't accidentally match
+                      ;; something earlier in the search that follows.
+                      (and (eq (current-buffer) lbuffer)
+                           (= lline line)
+                           (goto-char (max (point) (- (1+ lpos) (length string)))))
+
                       (cond
                        ((search-forward (concat string after-string)
                                         (line-end-position) t)
@@ -3639,6 +3652,7 @@ name(\\([^)]+\\))\\)\\|\
                            string
                            (line-end-position) t))))
                     (setq lline line
+                          lpos (point)
                           lbuffer (current-buffer))
                     (if box
                         (progn
@@ -4114,8 +4128,8 @@ The function bound to this variable will be called inside
                          (if preview-preprocess-function
                              (funcall preview-preprocess-function str)
                            str))
-                       (if buffer-file-name
-                           (file-name-nondirectory buffer-file-name)
+                       (if (TeX-buffer-file-name)
+                           (file-name-nondirectory (TeX-buffer-file-name))
                          "<none>")
                        (TeX-current-offset begin)))
   (setq TeX-current-process-region-p t)

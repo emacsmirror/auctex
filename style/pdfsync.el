@@ -37,7 +37,7 @@
   (let* ((line (line-number-at-pos))
          (master (TeX-active-master))
          (file (file-name-sans-extension
-                (file-relative-name (buffer-file-name)
+                (file-relative-name (TeX-buffer-file-name)
                                     (file-name-directory master))))
          (pdfsync-file (concat master ".pdfsync"))
          (buf-live-p (get-file-buffer pdfsync-file))

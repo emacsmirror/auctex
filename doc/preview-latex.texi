@@ -674,7 +674,12 @@ current point should be temporarily opened.  Default value is @code{nil}.
 
 @item preview-leave-open-previews-visible
 This boolean variable determines whether to leave preview images visible
-(above their generating TeX code) when they are opened.
+when they are opened.
+
+There is a side effect in enabling this option.  The preview image doesn't
+turn into construction sign temporarily when you edit the underlying
+@LaTeX{} code and regenerate the preview; it is just replaced by updated
+image when ready.  This behavior suppresses flicker in the appearance.
 
 @end vtable
 

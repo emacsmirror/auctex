@@ -12,6 +12,18 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} can be used with indirect buffers cloned from buffers visiting a
+file.  This feature allows having different perspectives of the same
+buffer (narrowing, folding, previewing, etc).  The indirect buffer has the
+same master file as its base buffer.
+
+In indirect buffer, @previewlatex{} works naturally for region preview
+such as @code{preview-region} (@kbd{C-c C-p C-r}), but document preview
+@code{preview-document} (@kbd{C-c C-p C-d}) puts preview images in the
+base buffer, not in the indirect buffer itself.  We expect this behavior
+doesn't matter because of the users' intent.
+
+@item
 @AUCTeX{} changes major mode names.  Its primary purpose is to avoid
 conflicts with Emacs built-in @TeX{} major modes.  It also improves
 consistency of the source code.

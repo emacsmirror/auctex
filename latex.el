@@ -39,12 +39,12 @@
     (require 'subr-x)))
 
 ;; Silence the compiler for functions:
-(declare-function outline-level "ext:outline"
-                  nil)
-(declare-function outline-mark-subtree "ext:outline"
-                  nil)
-(declare-function turn-off-filladapt-mode "ext:filladapt"
-                  nil)
+(declare-function multi-prompt "multi-prompt")
+(declare-function multi-prompt-key-value "multi-prompt")
+(declare-function LaTeX-install-toolbar "tex-bar" nil)
+(declare-function outline-level "ext:outline" nil)
+(declare-function outline-mark-subtree "ext:outline" nil)
+(declare-function turn-off-filladapt-mode "ext:filladapt" nil)
 
 ;; Silence the compiler for variables:
 (defvar outline-heading-alist)
@@ -2569,7 +2569,7 @@ string."
 Initial input is the name of the file being visited in the
 current buffer, with extension.  If OPTIONAL is non-nil, insert
 it as an optional argument.  Use PROMPT as the prompt string."
-  (let ((name (file-name-nondirectory buffer-file-name)))
+  (let ((name (file-name-nondirectory (TeX-buffer-file-name))))
     (TeX-argument-insert
      (TeX-read-string
       (TeX-argument-prompt optional
@@ -2590,7 +2590,7 @@ current buffer, without extension.  If OPTIONAL is non-nil,
 insert it as an optional argument.  Use PROMPT as the prompt
 string."
   (let ((name (file-name-sans-extension
-               (file-name-nondirectory buffer-file-name))))
+               (file-name-nondirectory (TeX-buffer-file-name)))))
     (TeX-argument-insert
      (TeX-read-string
       (TeX-argument-prompt optional

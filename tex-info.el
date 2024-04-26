@@ -700,7 +700,7 @@ value of `Texinfo-mode-hook'."
   (set (make-local-variable 'TeX-style-hook-dialect) :texinfo)
 
   (add-hook 'find-file-hook (lambda ()
-                              (unless (file-exists-p (buffer-file-name))
+                              (unless (file-exists-p (TeX-buffer-file-name))
                                 (TeX-master-file nil nil t)))
             nil t)
 
