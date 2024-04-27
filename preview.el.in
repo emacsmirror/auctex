@@ -4120,9 +4120,9 @@ stored in `preview-dumped-alist'."
   (preview-format-kill old-format)
   (setcdr old-format nil))
 
-(defvar preview-preprocess-function nil
-  "Function used to preprocess region before previewing.
-The function bound to this variable will be called inside
+(defvar preview-preprocess-functions nil
+  "List of functions used to preprocess region before previewing.
+The functions in this variable will each be called inside
 `preview-region' with one argument which is a string.")
 
 (defun preview-region (begin end)
@@ -4134,9 +4134,9 @@ The function bound to this variable will be called inside
                  TeX-region-extra)))
     (TeX-region-create (TeX-region-file TeX-default-extension)
                        (let ((str (buffer-substring-no-properties begin end)))
-                         (if preview-preprocess-function
-                             (funcall preview-preprocess-function str)
-                           str))
+                         (dolist (fun preview-preprocess-functions)
+                           (setq str (funcall fun str)))
+                         str)
                        (if (TeX-buffer-file-name)
                            (file-name-nondirectory (TeX-buffer-file-name))
                          "<none>")
