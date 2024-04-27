@@ -11,3 +11,9 @@
   (add-to-list 'load-path (expand-file-name "style" auctex-dir))
   (setq TeX-lisp-directory "<none>"
         TeX-auto-global "<none>"))
+
+;; Local Variables:
+;; no-byte-compile: t
+;; no-update-autoloads: t
+;; no-native-compile: t
+;; End:

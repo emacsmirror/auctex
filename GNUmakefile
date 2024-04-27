@@ -42,7 +42,7 @@ ALL_GENERATED_FILES=$(MAIN_GENERATED_FILES)	\
 # Generate & compile everything including the manuals below doc/.
 all: $(ALL_GENERATED_FILES) compile auctex-autoloads.el
 
-compile: $(patsubst %.el,%.elc,$(wildcard *.el style/*.el))
+compile: $(patsubst %.el,%.elc,$(wildcard *.el style/*.el)) tex-site.elc
 
 # If we were depending on emacs 29.1, we could simply use
 # loaddefs-generate.  If we were depending on 28.1, we could still use
