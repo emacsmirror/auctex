@@ -101,7 +101,8 @@ AUCTEXDATE:=$(shell (git log -n1 --pretty=tformat:"%ci" 2>/dev/null \
 THISVERSION:=$(shell git show HEAD -- auctex.el 2>/dev/null \
 	| sed -nre 's/[+];; Version: ([0-9]+.[0-9]+.[0-9]+)/\1/p')
 # Extract the last released version number from `auctex.el`.
-LASTVERSION:=$(shell sed -nre '/Version:/{s/;; Version: ([0-9]+.[0-9]+.[0-9]+)/\1/p;q}' auctex.el)
+LASTVERSION:=$(shell grep "^;; Version:" auctex.el \
+                     | sed -nre 's/;; Version: ([0-9]+.[0-9]+.[0-9]+)/\1/p;q')
 AUCTEXVERSION:=$(if $(THISVERSION),$(THISVERSION),$(LASTVERSION).$(AUCTEXDATE))
 
 tex-site.el: tex-site.el.in
