@@ -4150,8 +4150,8 @@ The functions in this variable will each be called inside
                          (dolist (fun preview-preprocess-functions)
                            (setq str (funcall fun str)))
                          str)
-                       (if (TeX-buffer-file-name)
-                           (file-name-nondirectory (TeX-buffer-file-name))
+                       (if buffer-file-name
+                           (file-name-nondirectory buffer-file-name)
                          "<none>")
                        (TeX-current-offset begin)))
   (setq TeX-current-process-region-p t)
