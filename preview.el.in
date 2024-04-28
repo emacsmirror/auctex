@@ -3902,6 +3902,12 @@ If FAST is set, do a fast conversion."
                     TeX-shell-command-option
                     command))))
 
+(defvar-local preview-abort-flag nil
+  "Cause ongoing preview generation to abort.
+If non-nil, then `preview-TeX-inline-sentinel' aborts and resets this
+variable to nil.  This is intended to give a way for external packages
+to abort preview generation, more reliably than via process signals.")
+
 (defun preview-TeX-inline-sentinel (process _name)
   "Sentinel function for preview.
 See `TeX-sentinel-function' and `set-process-sentinel'
@@ -3910,7 +3916,12 @@ for definition of PROCESS and NAME."
   (let ((status (process-status process)))
     (if (memq status '(signal exit))
         (delete-process process))
-    (when (eq status 'exit)
+    (cond
+     ((with-current-buffer TeX-command-buffer
+        (prog1
+            preview-abort-flag
+          (setq preview-abort-flag nil))))
+     ((eq status 'exit)
       (save-excursion
         (goto-char (point-max))
         (forward-line -1)
@@ -3921,7 +3932,7 @@ for definition of PROCESS and NAME."
       (condition-case err
           (preview-call-hook 'open)
         (error (preview-log-error err "LaTeX" process)))
-      (preview-reraise-error process))))
+      (preview-reraise-error process)))))
 
 (defcustom preview-format-extensions '(".fmt" ".efmt")
   "Possible extensions for format files.
