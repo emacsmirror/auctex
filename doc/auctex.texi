@@ -413,7 +413,7 @@ first dollar sign.
 
 @deffn Command TeX-insert-dollar @var{arg}
 @kindex $
-(@kbd{$}) Insert dollar sign.
+(@kbd{$}) Insert dollar sign (or another math delimiter).
 
 Show matching dollar sign if this dollar sign end the @TeX{} math mode.
 
@@ -436,14 +436,6 @@ blink when @code{blink-matching-paren} is non-@code{nil}.  If
 Besides @code{nil}, possible values for this variable are @code{("$"
 . "$")} for @TeX{} inline equations @samp{$...$}, and @code{("\(" . "\)")}
 for @LaTeX{} inline equations @samp{\(...\)}.
-
-If the variable is non-@code{nil} and point is inside math mode right
-between a couple of single dollars, pressing @kbd{$} will insert another
-pair of dollar signs and leave the point between them.  Thus, if
-@code{TeX-electric-math} is set to @code{("$" . "$")} you can easily
-obtain a @TeX{} display equation @samp{$$...$$} by pressing @kbd{$} twice
-in a row.  (Note that you should not use double dollar signs in @LaTeX{}
-because this practice can lead to wrong spacing in typeset documents.)
 
 In addition, when the variable is non-@code{nil} and there is an active
 region outside math mode, typing @kbd{$} will put around the active region
@@ -469,6 +461,9 @@ following to your init file
 
 Math mode which didn't start with dollar(s) shouldn't be closed with dollar.
 @defopt TeX-refuse-unmatched-dollar
+This option @emph{has no effect} when @code{TeX-electric-math} is
+non-@code{nil}.
+
 This option determines the behavior when the user types @kbd{$} at a
 position where @AUCTeX{} thinks that it is in math mode which didn't start
 with dollar(s).
@@ -5326,7 +5321,7 @@ Here is a simple example of a style file.
 
 (TeX-add-style-hook
  "book"
- (lambda () 
+ (lambda ()
    (LaTeX-largest-level-set "part"))
  TeX-dialect)
 @end lisp
@@ -6290,7 +6285,7 @@ buffer.  Note that you can make, say @samp{Makeinfo}, the default by
 adding this statement in your init file:
 
 @lisp
-(add-hook 'Texinfo-mode-hook 
+(add-hook 'Texinfo-mode-hook
           (lambda () (setq TeX-command-default "Makeinfo")))
 @end lisp
 

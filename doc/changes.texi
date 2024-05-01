@@ -214,6 +214,38 @@ ignores @option{--synctex} option if @option{--nonstop} is present.
 @end itemize
 
 @item
+@code{LaTeX-insert-left-brace}, @code{TeX-insert-dollar} and
+@code{TeX-insert-backslash} now have appropriate @code{delete-selection}
+properties, that differentiate between the ``electric'' and
+``just-insert-the-symbol'' behavior.  That should simplify cooperation
+with other electric modes.
+
+As a result of this adjustment, the behavior of @code{TeX-insert-dollar}
+is affected in some ways:
+@itemize @minus
+@item
+With raw prefix argument @kbd{C-u}, @kbd{$} (@code{TeX-insert-dollar}) now
+inserts four dollars as opposed to one.  This behavior is in-line with
+other symbols, in particular @kbd{"} (@code{TeX-insert-quote}) and @kbd{\}
+(@code{TeX-insert-backslash}).  If you need one literal @samp{$}, you can
+type @kbd{C-1 $} or @kbd{C-q $}.
+@item
+We no longer have explicit support of the special behavior that
+if @code{TeX-electric-math} is non-nil and point is inside math
+mode right between a couple of single dollars, pressing @kbd{$}
+will insert another pair of dollar signs and leave the point
+between them.
+
+It still works as before if @code{TeX-electric-math} is pair of dollars
+while it inserts @samp{\(} and @samp{\)} when @code{TeX-electric-math} is
+@code{("\(" . "\)")}.
+@item
+When @code{TeX-electric-math} is a pair of dollars and the point is in
+inline math (without active region, @kbd{$} inserts two dollars, not one
+dollar which just closes the math mode.
+@end itemize
+
+@item
 @AUCTeX{} now requires GNU Emacs 27.1 or higher.
 @end itemize
 
@@ -1621,7 +1653,7 @@ Verbatim commands like @samp{\verb|...|} will not be broken anymore
 during filling.
 
 @item
-You can customize the completion for graphic files with 
+You can customize the completion for graphic files with
 @code{LaTeX-includegraphics-read-file}.
 
 @item
