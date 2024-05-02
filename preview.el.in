@@ -1645,7 +1645,9 @@ Fallback to :inherit and \\='default implemented."
   '((key-binding [left])
     (key-binding [right])
     backward-char
-    forward-char)
+    forward-char
+    pop-to-mark-command
+    undo)
   "List of commands that may cause a preview to be revealed.
 This list is consulted by the default value of `preview-auto-reveal'."
   :type '(repeat (choice (function :tag "Function")

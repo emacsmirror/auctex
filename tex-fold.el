@@ -262,7 +262,9 @@ After that, changing the prefix key requires manipulating keymaps."
     (key-binding [right])
     backward-char
     forward-char
-    mouse-set-point)
+    mouse-set-point
+    pop-to-mark-command
+    undo)
   "List of commands that may cause a fold to be revealed.
 This list is consulted by the default value of `TeX-fold-auto-reveal'."
   :type '(repeat (choice (function :tag "Function")
