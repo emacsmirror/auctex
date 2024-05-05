@@ -7997,6 +7997,9 @@ requires special treatment."
   :group 'TeX-command
   :type 'boolean)
 
+(defvar TeX-suppress-compilation-message nil
+  "If non-nil, suppress \"display results of compilation\" message.")
+
 (defun TeX-run-command (name command file)
   "Create a process for NAME using COMMAND to process FILE.
 Return the new process."
@@ -8018,9 +8021,10 @@ Return the new process."
     (TeX-output-mode)
     (if TeX-show-compilation
         (display-buffer buffer)
-      (message "Type `%s' to display results of compilation."
-               (substitute-command-keys
-                "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
+      (unless TeX-suppress-compilation-message
+        (message "Type `%s' to display results of compilation."
+                 (substitute-command-keys
+                  "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]"))))
     (setq TeX-parse-function #'TeX-parse-command)
     (setq TeX-command-default default)
     (setq TeX-sentinel-function
