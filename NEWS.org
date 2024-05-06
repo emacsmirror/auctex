@@ -22,16 +22,21 @@
   hides all configured macros in the section containing point when
   ~TeX-fold-mode~ is active.  The unfold counterpart
   ~TeX-fold-clearout-section~ is bound to =C-c C-o s=.
-- Add new custom option ~TeX-fold-auto-reveal~ which contols how the
-  original source text is revealed when user clicks the folded portion
-  by mouse.
 - Add new custom option ~TeX-fold-region-functions~ which is a list of
   additional functions to call when folding a region.
+- Add new custom option ~TeX-fold-auto-reveal~ which controls how the
+  original source text is revealed when user clicks the folded portion
+  by mouse.
+- Add new custom options ~TeX-fold-auto-reveal-commands~ and
+  ~preview-auto-reveal-commands~ which are lists of commands revealing
+  folded or previewed buffer text.
 - Add new custom option ~preview-protect-point~ which determines whether
   previews generated on top of the current point should be temporarily
   opened (~nil~ by default).
 - Add new custom option ~preview-leave-open-previews-visible~ which
   determines if the preview code stays visible once opened.
+- Change the default value of ~TeX-one-master~ in order to recognize the
+  suffix =.ltx= as regular TeX files.
 - Support query and insert of ~mcite~ compatibility macro
   (=style/biblatex.el=).
 - Support the =\verbatiminput*= macro (=style/verbatim.el=).
