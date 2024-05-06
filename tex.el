@@ -4267,6 +4267,7 @@ If TEX is a directory, generate style files for all files in the directory."
         (TeX-unload-style style)
         (with-current-buffer (generate-new-buffer file)
           (erase-buffer)
+          (insert ";; -*- lexical-binding: t; -*-\n\n")
           (insert "(TeX-add-style-hook\n \""
                   style "\"\n (lambda ()")
           (unless (string= tex-cmd-opts "")
