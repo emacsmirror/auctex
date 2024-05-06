@@ -2335,7 +2335,7 @@ It is suggested that you use the File Variables (see the info node
               (member x (quote (t nil shared dwim))))))
 (make-variable-buffer-local 'TeX-master)
 
-(defcustom TeX-one-master "\\.\\(texi?\\|dtx\\)$"
+(defcustom TeX-one-master "\\.\\(texi?\\|[dl]tx\\)\\'"
   "Regular expression matching ordinary TeX files.
 
 You should set this variable to match the name of all files, where

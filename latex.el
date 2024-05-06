@@ -7160,7 +7160,7 @@ error message occurs when the \\\\ is used in a centering or flushing
 environment or else in the scope of a centering or flushing
 declaration.")
 
-    ("\\\\begin{[^ ]*} ended by \\\\end{[^ ]*}." .
+    ("\\\\begin{[^ ]*} \\(?:on input line [0-9]+ \\)?ended by \\\\end{[^ ]*}." .
      "LaTeX has found an \\end command that doesn't match the corresponding
 \\begin command. You probably misspelled the environment name in the
 \\end command, have an extra \\begin, or else forgot an \\end.")

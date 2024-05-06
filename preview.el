@@ -1641,9 +1641,20 @@ numbers (can be float if available)."
 Fallback to :inherit and \\='default implemented."
   :group 'preview-appearance)
 
+(defcustom preview-auto-reveal-commands
+  '((key-binding [left])
+    (key-binding [right])
+    backward-char
+    forward-char
+    pop-to-mark-command
+    undo)
+  "List of commands that may cause a preview to be revealed.
+This list is consulted by the default value of `preview-auto-reveal'."
+  :type '(repeat (choice (function :tag "Function")
+                         (sexp :tag "Key binding"))))
+
 (defcustom preview-auto-reveal
-  '(eval (preview-arrived-via (key-binding [left]) (key-binding [right])
-                              #'backward-char #'forward-char))
+  '(eval (apply #'preview-arrived-via preview-auto-reveal-commands))
   "Cause previews to open automatically when entered.
 Possibilities are:
 t autoopens,
@@ -3893,6 +3904,12 @@ If FAST is set, do a fast conversion."
                     TeX-shell-command-option
                     command))))
 
+(defvar-local preview-abort-flag nil
+  "Cause ongoing preview generation to abort.
+If non-nil, then `preview-TeX-inline-sentinel' aborts and resets this
+variable to nil.  This is intended to give a way for external packages
+to abort preview generation, more reliably than via process signals.")
+
 (defun preview-TeX-inline-sentinel (process _name)
   "Sentinel function for preview.
 See `TeX-sentinel-function' and `set-process-sentinel'
@@ -3901,7 +3918,12 @@ for definition of PROCESS and NAME."
   (let ((status (process-status process)))
     (if (memq status '(signal exit))
         (delete-process process))
-    (when (eq status 'exit)
+    (cond
+     ((with-current-buffer TeX-command-buffer
+        (prog1
+            preview-abort-flag
+          (setq preview-abort-flag nil))))
+     ((eq status 'exit)
       (save-excursion
         (goto-char (point-max))
         (forward-line -1)
@@ -3912,7 +3934,7 @@ for definition of PROCESS and NAME."
       (condition-case err
           (preview-call-hook 'open)
         (error (preview-log-error err "LaTeX" process)))
-      (preview-reraise-error process))))
+      (preview-reraise-error process)))))
 
 (defcustom preview-format-extensions '(".fmt" ".efmt")
   "Possible extensions for format files.
@@ -4111,9 +4133,9 @@ stored in `preview-dumped-alist'."
   (preview-format-kill old-format)
   (setcdr old-format nil))
 
-(defvar preview-preprocess-function nil
-  "Function used to preprocess region before previewing.
-The function bound to this variable will be called inside
+(defvar preview-preprocess-functions nil
+  "List of functions used to preprocess region before previewing.
+The functions in this variable will each be called inside
 `preview-region' with one argument which is a string.")
 
 (defun preview-region (begin end)
@@ -4125,11 +4147,11 @@ The function bound to this variable will be called inside
                  TeX-region-extra)))
     (TeX-region-create (TeX-region-file TeX-default-extension)
                        (let ((str (buffer-substring-no-properties begin end)))
-                         (if preview-preprocess-function
-                             (funcall preview-preprocess-function str)
-                           str))
-                       (if (TeX-buffer-file-name)
-                           (file-name-nondirectory (TeX-buffer-file-name))
+                         (dolist (fun preview-preprocess-functions)
+                           (setq str (funcall fun str)))
+                         str)
+                       (if buffer-file-name
+                           (file-name-nondirectory buffer-file-name)
                          "<none>")
                        (TeX-current-offset begin)))
   (setq TeX-current-process-region-p t)

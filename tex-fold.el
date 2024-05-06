@@ -257,10 +257,21 @@ After that, changing the prefix key requires manipulating keymaps."
     (define-key map "i"    #'TeX-fold-clearout-item)
     map))
 
+(defcustom TeX-fold-auto-reveal-commands
+  '((key-binding [left])
+    (key-binding [right])
+    backward-char
+    forward-char
+    mouse-set-point
+    pop-to-mark-command
+    undo)
+  "List of commands that may cause a fold to be revealed.
+This list is consulted by the default value of `TeX-fold-auto-reveal'."
+  :type '(repeat (choice (function :tag "Function")
+                         (sexp :tag "Key binding"))))
+
 (defcustom TeX-fold-auto-reveal
-  '(eval (TeX-fold-arrived-via (key-binding [left]) (key-binding [right])
-                               #'backward-char #'forward-char
-                               #'mouse-set-point))
+  '(eval (apply #'TeX-fold-arrived-via TeX-fold-auto-reveal-commands))
   "Predicate to open a fold when entered.
 Possibilities are:
 t autoopens,

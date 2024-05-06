@@ -393,7 +393,9 @@ again once the cursor leaves them again (this is also done when doing
 incremental search, or query-replace operations), unless you changed
 anything in it.  In that case, you will have to regenerate the preview
 (via e.g., @kbd{C-c C-p C-p}).  Other options for
-@code{preview-auto-reveal} are available via @code{customize}.
+@code{preview-auto-reveal} are available via @code{customize}.  Note that
+the default behavior of @code{preview-auto-reveal} derives from the list
+@code{preview-auto-reveal-commands} which can be customized as well.
 
 @item Automatically cache preambles
 
