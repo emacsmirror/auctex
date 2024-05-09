@@ -53,9 +53,6 @@
 (require 'latex) ; for functions like `TeX-look-at' and `LaTeX-split-long-menu'
 (require 'plain-tex) ; for `plain-TeX-common-initialization'
 
-;; Silence the compiler:
-(defvar ConTeXt-extra-paragraph-commands)
-
 (defgroup ConTeXt-macro nil
   "Special support for ConTeXt macros in AUCTeX."
   :prefix "TeX-"
@@ -1121,18 +1118,59 @@ If OPTIONAL, only insert it if not empty, and then use square brackets."
 (defvar ConTeXt-item-list ()
   "List of macro's considered items.")
 
-(defun ConTeXt-paragraph-commands-regexp ()
-  "Return a regexp matching macros that should have their own line."
+(defvar ConTeXt-extra-paragraph-commands nil
+  "List of default ConTeXt macros that should begin their own line.
+Unlike `ConTeXt-paragraph-commands', each entry should be a regular
+expression without leading backslash.
+Updated in language-specific initialization.")
+
+(defcustom ConTeXt-paragraph-commands nil
+  "List of user ConTeXt macros that should begin their own line.
+The list should contain macro names without the leading backslash.
+
+If you change this variable, its value is reflected to only new buffers
+created afterwards; existing ConTeXt mode buffers aren't affected."
+  :group 'ConTeXt-macro
+  :type '(repeat (string)))
+
+(defun ConTeXt-paragraph-commands-regexp-make ()
+  "Return a regexp matching macros that should begin their own line."
   (concat
-   (regexp-quote TeX-esc) "\\("
+   (regexp-quote TeX-esc) "\\(?:"
    "[][]\\|"  ; display math delimitors (is this applicable to ConTeXt??)
    (ConTeXt-environment-start-name) "\\|"
    (ConTeXt-environment-stop-name) "\\|"
    (mapconcat #'car ConTeXt-numbered-section-list "\\b\\|") "\\b\\|"
    (mapconcat #'car ConTeXt-unnumbered-section-list "\\b\\|") "\\b\\|"
+   (mapconcat #'identity ConTeXt-paragraph-commands "\\b\\|") "\\b\\|"
    (mapconcat #'identity ConTeXt-extra-paragraph-commands "\\b\\|")
    "\\b\\|"
    (mapconcat #'identity ConTeXt-item-list "\\b\\|") "\\b\\)"))
+;; Backward compatibility.
+(defalias 'ConTeXt-paragraph-commands-regexp
+  #'ConTeXt-paragraph-commands-regexp-make)
+
+(defun ConTeXt-set-paragraph-start ()
+  "Set `paragraph-start'."
+  (setq paragraph-start
+        (concat
+         "[ \t]*\\(?:"
+         LaTeX-paragraph-commands-regexp "\\|"
+         "\\$\\$\\|" ; Plain TeX display math
+         "$\\)")))
+
+(defun ConTeXt-paragraph-commands-add-locally (commands)
+  "Make COMMANDS be recognized as paragraph commands.
+COMMANDS can be a single string or a list of strings which will be added
+to `ConTeXt-extra-paragraph-commands'.  Additionally
+`LaTeX-paragraph-commands-regexp' will be updated.
+This is mainly a convenience function which can be used in style files."
+  (unless (listp commands) (setq commands (list commands)))
+  (dolist (elt commands)
+    (add-to-list 'ConTeXt-extra-paragraph-commands elt))
+  (setq-local LaTeX-paragraph-commands-regexp
+              (ConTeXt-paragraph-commands-regexp-make))
+  (ConTeXt-set-paragraph-start))
 
 
 ;; Outline support
@@ -1908,16 +1946,11 @@ Run after mode hooks and file local variables application."
                    (mapconcat #'identity ConTeXt-item-list "\\|")
                    "\\)\\>")))
 
-  ;; Don't do locally-bound test for `LaTeX-paragraph-commands-regexp'
-  ;; and `paragraph-start'.  See comments in similar part in latex.el.
   (setq-local LaTeX-paragraph-commands-regexp
-              (ConTeXt-paragraph-commands-regexp))
-  (setq paragraph-start
-        (concat
-         "[ \t]*\\("
-         (ConTeXt-paragraph-commands-regexp) "\\|"
-         "\\$\\$\\|" ; Plain TeX display math
-         "$\\)")))
+              (ConTeXt-paragraph-commands-regexp-make))
+  ;; Don't do locally-bound test for `paragraph-start'.  See comments in
+  ;; similar part in latex.el.
+  (ConTeXt-set-paragraph-start))
 
 (defun context-guess-current-interface ()
   "Guess what ConTeXt interface the current buffer is using."
