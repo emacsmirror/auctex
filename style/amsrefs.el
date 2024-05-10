@@ -121,7 +121,8 @@
    ;; 3 The biblist and biblist* environments
    (LaTeX-add-environments
     '("bibdiv")
-    '("biblist" LaTeX-env-amsrefs-biblist))
+    '("biblist" LaTeX-env-amsrefs-biblist)
+    '("biblist*" LaTeX-env-amsrefs-biblist))
 
    (TeX-add-symbols
     ;; 5 More about the \bib command
