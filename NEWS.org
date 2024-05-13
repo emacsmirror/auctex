@@ -151,7 +151,7 @@
        #+end_src
   - New modes recognize directory local variables prepaired for the
     former mode name.  For example, directory local variables for
-    ~latex-mode~ are valid in ~LaTeX-mode~ as well.  So you don~t have
+    ~latex-mode~ are valid in ~LaTeX-mode~ as well.  So you don't have
     to rewrite every former mode name to the new one in
     =.dir-locals.el=.
   - Your abbrevs are preserved.  For example, ~latex-mode-abbrev-table~,
@@ -190,7 +190,7 @@
 
     However, ~Texinfo-mode~ is exceptional in the following two aspects:
     1. It doesn't inherit ~text-mode-syntax-table~ because it simply
-       uses built-in mode~s ~texinfo-mode-syntax-table~, which is
+       uses built-in mode's ~texinfo-mode-syntax-table~, which is
        independent of ~text-mode-syntax-table~.  This situation is the
        same with the former AUCTeX Texinfo mode.
     2. ~Texinfo-mode-map~ has ~TeX-mode-map~ as its direct parent.  This
