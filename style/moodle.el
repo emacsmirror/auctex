@@ -1,6 +1,6 @@
 ;;; moodle.el --- AUCTeX style for `moodle.sty' (v0.5)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -43,158 +43,161 @@
                   "font-latex"
                   (keywords class))
 
-(defvar LaTeX-moodle-key-val-options
-  '(("points")
-    ("default grade")
-    ("penalty")
-    ("fraction")
-    ("feedback"))
-  "Key=value options for moodle macros and environments.")
+(defvar LaTeX-moodle-answer-key-val-options
+  '(("fraction")
+    ("fractiontol")
+    ("feedback")))
 
-(defun LaTeX-moodle-question-env-with-args (env)
-  "Insert ENV provided by moodle.sty incl. arguments and first \\item."
-  (LaTeX-insert-environment
-   env
-   (let ((opts (TeX-read-key-val
-                t
-                (cond (;; 3.3.1 Multiple Choice
-                       (string= env "multi")
-                       (append '(("shuffle"   ("true" "false"))
-                                 ("numbering" ("alph" "Alph" "arabic"
-                                               "roman" "Roman" "none"))
-                                 ("single"    ("true" "false"))
-                                 ("multiple"  ("true" "false")))
-                               (when (string= "cloze" (LaTeX-current-environment))
-                                 '(("vertical" ("true" "false"))
-                                   ("horizonal" ("true" "false"))))
-                               LaTeX-moodle-key-val-options))
-                      ;; 3.3.3 Short Answer
-                      ((string= env "shortanswer")
-                       (append '(("case sensitive" ("true" "false"))
-                                 ("usecase"        ("true" "false")))
-                               (when (string= "cloze" (LaTeX-current-environment))
-                                 '(("vertical" ("true" "false"))
-                                   ("horizonal" ("true" "false"))))
-                               LaTeX-moodle-key-val-options))
-                      ;; 3.3.4 Essay Questions
-                      ((string= env "essay")
-                       (append '(("response required" ("true" "false"))
-                                 ("response format"   ("html" "file"
-                                                       "html+file"
-                                                       "text" "monospaced"))
-                                 ("response field lines")
-                                 ("attachments allowed"  ("0" "1" "2" "3"
-                                                          "unlimited"))
-                                 ("attachments required" ("0" "1" "2" "3"))
-                                 ("response template"))
-                               (when (string= "cloze" (LaTeX-current-environment))
-                                 '(("vertical" ("true" "false"))
-                                   ("horizonal" ("true" "false"))))
-                               LaTeX-moodle-key-val-options))
-                      ;; 3.4 Matching Questions
-                      ((string= env "matching")
-                       (append '(("shuffle"       ("true" "false"))
-                                 ("drag and drop" ("true" "false"))
-                                 ("dd"            ("true" "false")))
-                               LaTeX-moodle-key-val-options))
-                      (t (append
-                          (when (string= "cloze" (LaTeX-current-environment))
-                            '(("vertical" ("true" "false"))
-                              ("horizonal" ("true" "false"))))
-                          LaTeX-moodle-key-val-options)))))
-         (qname (unless (string= "cloze" (LaTeX-current-environment))
-                  (TeX-read-string (TeX-argument-prompt nil nil "Question name")))))
-     (concat
-      (when (and opts (not (string= opts "")))
-        (format "[%s]" opts))
-      (when (and qname (not (string= qname "")))
-        (format "{%s}" qname)))))
-  (if (TeX-active-mark)
-      (progn
-        (LaTeX-find-matching-begin)
-        (end-of-line 1))
-    (end-of-line 0))
-  (delete-char 1)
-  (when (looking-at (concat "^[ \t]+$\\|"
-                            "^[ \t]*" TeX-comment-start-regexp "+[ \t]*$"))
-    (delete-region (point) (line-end-position)))
-  (delete-horizontal-space)
-  ;; Deactivate the mark here in order to prevent `TeX-parse-macro'
-  ;; from swapping point and mark and the \item ending up right after
-  ;; \begin{...}.
-  (deactivate-mark)
-  ;; Query and insert the question text.
-  (let ((qtext (TeX-read-string (TeX-argument-prompt nil nil "Question Text"))))
-    (when (and qtext (not (string= qtext "")))
-      (newline)
-      (indent-according-to-mode)
-      (insert qtext)
-      (when auto-fill-function (LaTeX-fill-paragraph))))
-  (LaTeX-insert-item)
-  ;; The inserted \item may have outdented the first line to the
-  ;; right.  Fill it, if appropriate.
-  (when (and auto-fill-function
-             (not (looking-at "$"))
-             (not (assoc env LaTeX-indent-environment-list))
-             (> (- (line-end-position) (line-beginning-position))
-                (current-fill-column)))
-    (LaTeX-fill-paragraph nil)))
+(defvar LaTeX-moodle-key-val-options
+  (append '(("points")
+            ("default grade")
+            ("penalty")
+            ("tags"))
+          LaTeX-moodle-answer-key-val-options)
+  "Key=value options for moodle macros and environments.")
 
 (defun LaTeX-moodle-item-argument ()
   "Insert an \\item with optional argument in environments of moodle package."
   ;; Do not query for an optional argument here, this happens below:
   (let ((TeX-insert-macro-default-style 'mandatory-args-only))
     (TeX-insert-macro "item"))
-  ;; Add * to `LaTeX-moodle-key-val-options' in multi environment and
-  ;; query for the key=values:
-  (let ((opts
-         (TeX-read-key-val t (if (string= "multi" (LaTeX-current-environment))
-                                 (append '(("*")) LaTeX-moodle-key-val-options)
-                               LaTeX-moodle-key-val-options))))
-    ;; Insert key=values; if * is chosen, drop []:
-    (when (and opts (not (string= opts "")))
-      (delete-horizontal-space)
-      (if (string= opts "*")
-          (insert opts)
-        (insert LaTeX-optop opts LaTeX-optcl))))
-  (just-one-space)
+  ;; Now delete any horizonal spaces:
+  (delete-horizontal-space)
+  (let* ((currenv (LaTeX-current-environment))
+         (opts (unless (member currenv '("essay"))
+                 (TeX-read-key-val t
+                                   (if (member currenv '("numerical"))
+                                       (append '(("tolerance"))
+                                               LaTeX-moodle-answer-key-val-options)
+                                     LaTeX-moodle-answer-key-val-options))))
+         (starred (when (member currenv '("truefalse" "multi"))
+                    (let ((help-form "\
+* marks the correct answer and is appended to \\item[<opt arg>]"))
+                      (y-or-n-p "Mark item with *?")))))
+    ;; Insert key=values if available:
+    (unless (string-empty-p opts)
+      (insert LaTeX-optop opts LaTeX-optcl))
+    ;; Attach * to it:
+    (when starred (insert "*"))
+    ;; Now make sure one space is there and indent:
+    (just-one-space)
+    (indent-according-to-mode))
   ;; Bonus point: Insert the macro \answer in matching environment:
   (when (string= "matching" (LaTeX-current-environment))
     (save-excursion
       (insert TeX-esc "answer")
       (just-one-space))))
 
+(defun LaTeX-moodle-query-question-text (optional)
+  "Query for question text inside environments provided by moodle package.
+If OPTIONAL is non-nil, indicate that during query."
+  (let ((qtext (TeX-read-string
+                (TeX-argument-prompt optional nil "Question text"))))
+    (unless (string-empty-p qtext)
+      (save-excursion
+        (goto-char TeX-exit-mark)
+        (insert-before-markers qtext)
+        (when auto-fill-function
+          (LaTeX-fill-paragraph))
+        (insert-before-markers "\n")))))
+
 (TeX-add-style-hook
  "moodle"
  (lambda ()
 
    (LaTeX-add-environments
-    ;; 3.2 Quiz and Question Environments
-    '("quiz"
-      (lambda (environment)
-        (LaTeX-insert-environment
-         environment
-         (let ((opts (TeX-read-key-val t LaTeX-moodle-key-val-options))
-               (bank (TeX-read-string (TeX-argument-prompt nil nil "Question bank name"))))
-           (concat
-            (when (and opts (not (string= opts "")))
-              (format "[%s]" opts))
-            (format "{%s}" bank))))))
-    ;; 3.5 Cloze Questions
+    ;; 2.3 Quiz and Question Environments1
+    '("quiz" LaTeX-env-args
+      [TeX-arg-key-val LaTeX-moodle-key-val-options]
+      "Category name")
+
+    ;; 2.4.1 True/False
+    '("truefalse" LaTeX-env-item-args
+      [TeX-arg-key-val LaTeX-moodle-key-val-options nil nil ?\s]
+      "Question name"
+      LaTeX-moodle-query-question-text)
+
+    ;; 2.4.2 Multiple Choice
+    '("multi" LaTeX-env-item-args
+      [TeX-arg-key-val (lambda ()
+                         (append '(("shuffle" ("true" "false"))
+                                   ("numbering")
+                                   ("single" ("true" "false"))
+                                   ("sanction")
+                                   ("multiple")
+                                   ("allornothing"))
+                                 LaTeX-moodle-key-val-options))
+                       nil nil ?\s]
+      (TeX-arg-conditional (string= (LaTeX-current-environment 2) "quiz")
+          ("Question name")
+        ())
+      LaTeX-moodle-query-question-text)
+
+    ;; 2.4.3 Numerical
+    '("numerical" LaTeX-env-item-args
+      [TeX-arg-key-val (lambda ()
+                         (append '(("tolerance"))
+                                 LaTeX-moodle-key-val-options))
+                       nil nil ?\s]
+      (TeX-arg-conditional (string= (LaTeX-current-environment 2) "quiz")
+          ("Question name")
+        ())
+      LaTeX-moodle-query-question-text)
+
+    ;; 2.4.4 Short Answer
+    '("shortanswer" LaTeX-env-item-args
+      [TeX-arg-key-val (lambda ()
+                         (append '(("case sensitive" ("true" "false"))
+                                   ("usecase" ("true" "false")))
+                                 LaTeX-moodle-key-val-options))
+                       nil nil ?\s]
+      (TeX-arg-conditional (string= (LaTeX-current-environment 2) "quiz")
+          ("Question name")
+        ())
+      LaTeX-moodle-query-question-text)
+
+    ;; 2.4.5 Essay
+    '("essay" LaTeX-env-item-args
+      [TeX-arg-key-val (lambda ()
+                         (append '(("response required" ("true" "false"))
+                                   ("response format" ("html" "file"
+                                                       "html+file"
+                                                       "text" "monospaced"))
+                                   ("response field lines" ("5" "10" "15"
+                                                            "20" "25" "30"
+                                                            "35" "40"))
+                                   ("attachments allowed" ("0" "1" "2" "3"
+                                                           "unlimited"))
+                                   ("attachments required" ("0" "1"
+                                                            "2" "3"))
+                                   ("template"))
+                                 LaTeX-moodle-key-val-options))
+                       nil nil ?\s]
+      "Question name"
+      LaTeX-moodle-query-question-text)
+
+    ;; 2.4.6 Matching
+    '("matching" LaTeX-env-item-args
+      [TeX-arg-key-val (lambda ()
+                         (append '(("shuffle" ("true" "false"))
+                                   ("drag and drop" ("true" "false"))
+                                   ("dd"))
+                                 LaTeX-moodle-key-val-options))
+                       nil nil ?\s]
+      LaTeX-moodle-query-question-text)
+
+    ;; 2.4.7 Cloze Questions and Subquestions
     '("cloze" "Question bank name"))
 
-   ;; Make other environments available to AUCTeX:
-   (dolist (env '("multi" "numerical" "shortanswer" "essay" "matching"))
-     (LaTeX-add-environments `(,env LaTeX-moodle-question-env-with-args))
+   ;; Tell AUCTeX about special insertion of \item:
+   (dolist (env '("truefalse" "multi" "numerical"
+                  "shortanswer" "essay" "matching"))
      (add-to-list 'LaTeX-item-list `(,env . LaTeX-moodle-item-argument) t))
 
    (TeX-add-symbols
     '("moodleset"
-      (TeX-arg-eval
-       (lambda ()
-         (let ((opts (TeX-read-key-val nil
-                                       (append '(("ppi")) LaTeX-moodle-key-val-options))))
-           (format "%s" opts)))))
+      (TeX-arg-key-val (lambda ()
+                         (append '(("ppi")) LaTeX-moodle-key-val-options))))
 
     ;; 5 Graphics
     '("ghostscriptcommand" "File name")
@@ -216,7 +219,9 @@
  TeX-dialect)
 
 (defvar LaTeX-moodle-package-options
-  '("draft")
+  '("draft" "final" "handout" "samepage" "nostamp"
+    "section" "subsection" "section*" "subsection*"
+    "tikz" "svg" "LMS" "feedbackleft" "feedbackright")
   "Package options for the moodle package.")
 
 ;;; moodle.el ends here
