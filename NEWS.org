@@ -6,7 +6,7 @@
 # License: GNU General Public License 3
 # The format is based on [[https://keepachangelog.com/en/1.1.0/][Keep a Changelog]]
 
-* [Unreleased]
+* [14.0.5] - 2024-05-19
 
 ** Added
 
@@ -37,9 +37,12 @@
   determines if the preview code stays visible once opened.
 - Change the default value of ~TeX-one-master~ in order to recognize the
   suffix =.ltx= as regular TeX files.
+- Add new custom option ~ConTeXt-paragraph-commands~ containing a list
+  of macros which should begin their own line.
 - Support query and insert of ~mcite~ compatibility macro
   (=style/biblatex.el=).
 - Support the =\verbatiminput*= macro (=style/verbatim.el=).
+- Add new support file =style/amsrefs.el=.
 
 ** Fixed
 
