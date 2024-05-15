@@ -34,7 +34,8 @@
 (require 'custom)
 (require 'tex-site)
 (eval-when-compile
-  (require 'cl-lib))
+  (require 'cl-lib)
+  (require 'subr-x))
 (require 'texmathp)
 ;; seq.el is preloaded in Emacs 29, so the next form can be removed
 ;; once 29 is the minimum required Emacs version
@@ -4267,6 +4268,7 @@ If TEX is a directory, generate style files for all files in the directory."
         (TeX-unload-style style)
         (with-current-buffer (generate-new-buffer file)
           (erase-buffer)
+          (insert ";; -*- lexical-binding: t; -*-\n\n")
           (insert "(TeX-add-style-hook\n \""
                   style "\"\n (lambda ()")
           (unless (string= tex-cmd-opts "")
@@ -7996,6 +7998,9 @@ requires special treatment."
   :group 'TeX-command
   :type 'boolean)
 
+(defvar TeX-suppress-compilation-message nil
+  "If non-nil, suppress \"display results of compilation\" message.")
+
 (defun TeX-run-command (name command file)
   "Create a process for NAME using COMMAND to process FILE.
 Return the new process."
@@ -8017,9 +8022,10 @@ Return the new process."
     (TeX-output-mode)
     (if TeX-show-compilation
         (display-buffer buffer)
-      (message "Type `%s' to display results of compilation."
-               (substitute-command-keys
-                "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
+      (unless TeX-suppress-compilation-message
+        (message "Type `%s' to display results of compilation."
+                 (substitute-command-keys
+                  "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]"))))
     (setq TeX-parse-function #'TeX-parse-command)
     (setq TeX-command-default default)
     (setq TeX-sentinel-function

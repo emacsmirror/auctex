@@ -2714,7 +2714,7 @@ Initialized once at the first time you prompt for a LaTeX class.
 May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 
 ;; Add the variable to `TeX-normal-mode-reset-list':
-(add-to-list 'TeX-normal-mode-reset-list 'TeX-global-class-files)
+(add-to-list 'TeX-normal-mode-reset-list 'LaTeX-global-class-files)
 
 (defcustom TeX-arg-input-file-search t
   "If `TeX-arg-input-file' should search for files.
