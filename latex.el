@@ -8758,8 +8758,14 @@ function would return non-nil and `(match-string 1)' would return
 
   (when (string-equal LaTeX-version "2e")
     (LaTeX-add-environments
-     '("filecontents" LaTeX-env-contents)
-     '("filecontents*" LaTeX-env-contents))
+     '("filecontents" LaTeX-env-args
+       [TeX-arg-completing-read-multiple
+        ("overwrite" "force" "nosearch" "nowarn" "noheader")]
+       "File")
+     '("filecontents*" LaTeX-env-args
+       [TeX-arg-completing-read-multiple
+        ("overwrite" "force" "nosearch" "nowarn")]
+       "File"))
 
     (TeX-add-symbols
      '("enlargethispage"  (TeX-arg-length nil "1.0\\baselineskip"))
