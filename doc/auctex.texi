@@ -5839,9 +5839,6 @@ Insert the given environment with width and height specifications.
 @item LaTeX-env-bib
 Insert the given environment with a label for a bibitem.
 
-@item LaTeX-env-contents
-Insert the given environment with a filename as its argument.
-
 @item LaTeX-env-args
 Insert the given environment with arguments.  You can use this as a hook
 in case you want to specify multiple complex arguments just like in

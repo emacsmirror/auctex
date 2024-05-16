@@ -1451,25 +1451,6 @@ Just like array and tabular."
   (delete-horizontal-space)
   (LaTeX-insert-item))
 
-(defun LaTeX-env-contents (environment)
-  "Insert ENVIRONMENT with optional argument and filename for contents."
-  (let* ((opt '("overwrite" "force" "nosearch" "nowarn"))
-         (arg (mapconcat #'identity
-                         (TeX-completing-read-multiple
-                          (TeX-argument-prompt t nil "Options")
-                          (if (string= environment "filecontents*")
-                              opt
-                            (cons "noheader" opt)))
-                         ",")))
-    (LaTeX-insert-environment environment
-                              (concat
-                               (when (and arg (not (string= arg "")))
-                                 (concat LaTeX-optop arg LaTeX-optcl))
-                               TeX-grop
-                               (TeX-read-string "File: ")
-                               TeX-grcl)))
-  (delete-horizontal-space))
-
 (defun LaTeX-env-args (environment &rest args)
   "Insert ENVIRONMENT and arguments defined by ARGS."
   (LaTeX-insert-environment environment)
