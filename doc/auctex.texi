@@ -4447,9 +4447,10 @@ it is a good idea to append a @code{TeX-master} file variable entry
 automatically.  When @AUCTeX{} adds the name of the master file as a
 file variable, it does not need to ask next time you edit the file.
 
-If you dislike @AUCTeX{} automatically modifying your files, you can
-set this variable to @samp{"<none>"}.  By default, @AUCTeX{} will modify
-any file with an extension of @samp{.tex}, @samp{.texi} or @samp{.dtx}.
+If you dislike @AUCTeX{} automatically modifying your files, you can set
+this variable to @samp{"<none>"}.  By default, @AUCTeX{} will modify any
+file with an extension of @samp{.tex}, @samp{.ltx}, @samp{.texi} or
+@samp{.dtx}.
 @end defopt
 
 @deffn Command TeX-master-file-ask
