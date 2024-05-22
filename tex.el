@@ -1621,7 +1621,7 @@ where an entry with the same car exists in the user-defined part."
   (TeX-delete-dups-by-car (append TeX-engine-alist TeX-engine-alist-builtin)))
 
 (defun TeX-engine-in-engine-alist (engine)
-  "Return the `engine' entry in `TeX-engine-alist'.
+  "Return entry ENGINE in `TeX-engine-alist'.
 
 Throw an error if `engine' is not present in the alist."
   (or
@@ -1723,7 +1723,7 @@ as a string.")
   "Keep track if question about server start search was asked.")
 
 (defvar TeX-source-correlate-start-server-flag nil
-  "If non-nil, `TeX-source-correlate-start-server-maybe' will start a server.
+  "Non-nil means `TeX-source-correlate-start-server-maybe' will start a server.
 Code related to features requiring a server, for example, for inverse
 search, can set the variable.")
 
