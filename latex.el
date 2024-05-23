@@ -2491,7 +2491,7 @@ the list of defined counters."
   "Prompt for a LaTeX savebox.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string.  If definition is non-nil, the savebox is added to the
+string.  If DEFINITION is non-nil, the savebox is added to the
 list of defined saveboxes."
   (let ((savebox (completing-read (TeX-argument-prompt optional prompt
                                                        (concat "Savebox: "
