@@ -32,8 +32,8 @@
     while it inserts =\(= and =\)= when ~TeX-electric-math~ is
     =("\(" . "\)")=.
   - When ~TeX-electric-math~ is a pair of dollars and the point is in
-    inline math without active region, =$= inserts two dollars, not one
-    dollar which just closes the math mode.
+    inline math (without active region), =$= inserts two dollars, not
+    one dollar which just closes the math mode.
 
 * [14.0.5] - 2024-05-19
 
