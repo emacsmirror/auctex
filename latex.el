@@ -583,7 +583,7 @@ Styles such as tabularx may set it according to their needs.")
 
 (defun LaTeX-environment (arg)
   "Make LaTeX environment (\\begin{...}-\\end{...} pair).
-With optional ARG, modify current environment.
+With prefix ARG, modify current environment.
 
 It may be customized with the following variables:
 
@@ -652,7 +652,7 @@ It may be customized with the following variables:
 
 (defun LaTeX-close-environment (&optional reopen)
   "Create an \\end{...} to match the current environment.
-With prefix-argument, reopen environment afterwards."
+With prefix argument REOPEN, reopen environment afterwards."
   (interactive "*P")
   (if (> (point)
          (save-excursion
@@ -5266,6 +5266,9 @@ See `fill-move-to-break-point' for the meaning of LINEBEG."
 
 (defun LaTeX-fill-paragraph (&optional justify)
   "Like `fill-paragraph', but handle LaTeX comments.
+
+With prefix argument JUSTIFY, justify as well.
+
 If any of the current line is a comment, fill the comment or the
 paragraph of it that point is in.  Code comments, that is, comments
 with uncommented code preceding them in the same line, will not
@@ -5564,7 +5567,9 @@ environments."
     (TeX-activate-region)))
 
 (defun LaTeX-fill-environment (justify)
-  "Fill and indent current environment as LaTeX text."
+  "Fill and indent current environment as LaTeX text.
+
+With prefix argument JUSTIFY, justify as well."
   (interactive "*P")
   (save-excursion
     (LaTeX-mark-environment)
@@ -5573,7 +5578,9 @@ environments."
                        (concat " environment " (TeX-match-buffer 1)))))
 
 (defun LaTeX-fill-section (justify)
-  "Fill and indent current logical section as LaTeX text."
+  "Fill and indent current logical section as LaTeX text.
+
+With prefix argument JUSTIFY, justify as well."
   (interactive "*P")
   (save-excursion
     (LaTeX-mark-section)
@@ -5608,7 +5615,9 @@ value of NO-SUBSECTIONS."
   (TeX-activate-region))
 
 (defun LaTeX-fill-buffer (justify)
-  "Fill and indent current buffer as LaTeX text."
+  "Fill and indent current buffer as LaTeX text.
+
+With prefix argument JUSTIFY, justify as well."
   (interactive "*P")
   (save-excursion
     (LaTeX-fill-region
