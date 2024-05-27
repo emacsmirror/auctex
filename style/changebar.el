@@ -60,11 +60,26 @@
    ;; Options management:
    (when (LaTeX-provided-package-options-member "changebar" "color")
      (TeX-run-style-hooks "color")
-     (TeX-add-symbols '("cbcolor" TeX-arg-color)))
+     (TeX-add-symbols
+      '("cbcolor"
+        [TeX-arg-completing-read (LaTeX-color-available-models)
+                                 "Color model"]
+        (TeX-arg-conditional (LaTeX-color-used-model-requires-spec-p)
+            (TeX-arg-color)
+          ((TeX-arg-completing-read (LaTeX-color-available-colors)
+                                    "Color name"))))))
 
    (when (LaTeX-provided-package-options-member "changebar" "xcolor")
      (TeX-run-style-hooks "xcolor")
-     (TeX-add-symbols '("cbcolor" TeX-arg-xcolor)))
+     (TeX-add-symbols
+      '("cbcolor"
+        [TeX-arg-completing-read-multiple (LaTeX-xcolor-color-models)
+                                          "Color model"
+                                          nil nil "/" "/"]
+        (TeX-arg-conditional (LaTeX-xcolor-cmd-requires-spec-p 'col)
+            (TeX-arg-xcolor)
+          ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                    "Color name"))))))
 
    (when (or (LaTeX-provided-package-options-member "changebar" "xetex")
              (LaTeX-provided-package-options-member "changebar" "XeTeX"))
@@ -111,3 +126,5 @@
     "grey" "color" "xcolor")
   "Package options for the changebar package.
 This variable contains only the lowercase version of the options.")
+
+;;; changebar.el ends here

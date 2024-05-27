@@ -1,6 +1,6 @@
 ;;; colortbl.el --- AUCTeX style for `colortbl.sty' (v1.0a)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015, 2016, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -48,35 +48,102 @@
 
    ;; Load color.el only if xcolor.el is not already loaded.  This is
    ;; mainly for the option `table' from xcolor.sty which loads
-   ;; colortbl.sty, but we don't want to load color.el.
-   (unless (member "xcolor" (TeX-style-list))
-     (TeX-run-style-hooks "color"))
+   ;; colortbl.sty where we don't want to load color.el:
+   (if (member "xcolor" (TeX-style-list))
+       ;; xcolor.sty
+       (TeX-add-symbols
+        '("columncolor"
+          [TeX-arg-completing-read-multiple (LaTeX-xcolor-color-models)
+                                            "Color model"
+                                            nil nil "/" "/"]
+          (TeX-arg-conditional (LaTeX-xcolor-cmd-requires-spec-p 'col)
+              (TeX-arg-xcolor)
+            ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                      "Color name")))
+          [TeX-arg-length "Left overhang"] [TeX-arg-length "Right overhang"] )
 
-   (TeX-add-symbols
-    ;; `TeX-arg-color' is provided by color.el,
-    ;; `TeX-arg-xcolor' is provided by xcolor.el.
-    '("columncolor" (TeX-arg-conditional (member "xcolor" (TeX-style-list))
-                                         (TeX-arg-xcolor)
-                                         (TeX-arg-color))
-      [ TeX-arg-length "Left overhang" ] [ TeX-arg-length "Right overhang" ] )
+        '("rowcolor"
+          [TeX-arg-completing-read-multiple (LaTeX-xcolor-color-models)
+                                            "Color model"
+                                            nil nil "/" "/"]
+          (TeX-arg-conditional (LaTeX-xcolor-cmd-requires-spec-p 'col)
+              (TeX-arg-xcolor)
+            ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                      "Color name")))
+          [TeX-arg-length "Left overhang"] [TeX-arg-length "Right overhang"] )
 
-    '("rowcolor"    (TeX-arg-conditional (member "xcolor" (TeX-style-list))
-                                         (TeX-arg-xcolor)
-                                         (TeX-arg-color))
-      [ TeX-arg-length "Left overhang" ] [ TeX-arg-length "Right overhang" ] )
+        '("cellcolor"
+          [TeX-arg-completing-read-multiple (LaTeX-xcolor-color-models)
+                                            "Color model"
+                                            nil nil "/" "/"]
+          (TeX-arg-conditional (LaTeX-xcolor-cmd-requires-spec-p 'col)
+              (TeX-arg-xcolor)
+            ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                      "Color name")))
+          [TeX-arg-length "Left overhang"] [TeX-arg-length "Right overhang"] )
 
-    '("cellcolor"   (TeX-arg-conditional (member "xcolor" (TeX-style-list))
-                                         (TeX-arg-xcolor)
-                                         (TeX-arg-color))
-      [ TeX-arg-length "Left overhang" ] [ TeX-arg-length "Right overhang" ] )
+        '("arrayrulecolor"
+          [TeX-arg-completing-read-multiple (LaTeX-xcolor-color-models)
+                                            "Color model"
+                                            nil nil "/" "/"]
+          (TeX-arg-conditional (LaTeX-xcolor-cmd-requires-spec-p 'col)
+              (TeX-arg-xcolor)
+            ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                      "Color name"))))
 
-    '("arrayrulecolor" (TeX-arg-conditional (member "xcolor" (TeX-style-list))
-                                            (TeX-arg-xcolor)
-                                            (TeX-arg-color)))
+        '("doublerulesepcolor"
+          [TeX-arg-completing-read-multiple (LaTeX-xcolor-color-models)
+                                            "Color model"
+                                            nil nil "/" "/"]
+          (TeX-arg-conditional (LaTeX-xcolor-cmd-requires-spec-p 'col)
+              (TeX-arg-xcolor)
+            ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                      "Color name")))))
+     ;; color.sty
+     (TeX-run-style-hooks "color")
+     (TeX-add-symbols
+      '("columncolor"
+        [TeX-arg-completing-read (LaTeX-color-available-models)
+                                 "Color model"]
+        (TeX-arg-conditional (LaTeX-color-used-model-requires-spec-p)
+            (TeX-arg-color)
+          ((TeX-arg-completing-read (LaTeX-color-available-colors)
+                                    "Color name")))
+        [TeX-arg-length "Left overhang"] [TeX-arg-length "Right overhang"])
 
-    '("doublerulesepcolor" (TeX-arg-conditional (member "xcolor" (TeX-style-list))
-                                                (TeX-arg-xcolor)
-                                                (TeX-arg-color))))
+      '("rowcolor"
+        [TeX-arg-completing-read (LaTeX-color-available-models)
+                                 "Color model"]
+        (TeX-arg-conditional (LaTeX-color-used-model-requires-spec-p)
+            (TeX-arg-color)
+          ((TeX-arg-completing-read (LaTeX-color-available-colors)
+                                    "Color name")))
+        [TeX-arg-length "Left overhang"] [TeX-arg-length "Right overhang"])
+
+      '("cellcolor"
+        [TeX-arg-completing-read (LaTeX-color-available-models)
+                                 "Color model"]
+        (TeX-arg-conditional (LaTeX-color-used-model-requires-spec-p)
+            (TeX-arg-color)
+          ((TeX-arg-completing-read (LaTeX-color-available-colors)
+                                    "Color name")))
+        [TeX-arg-length "Left overhang"] [TeX-arg-length "Right overhang"] )
+
+      '("arrayrulecolor"
+        [TeX-arg-completing-read (LaTeX-color-available-models)
+                                 "Color model"]
+        (TeX-arg-conditional (LaTeX-color-used-model-requires-spec-p)
+            (TeX-arg-color)
+          ((TeX-arg-completing-read (LaTeX-color-available-colors)
+                                    "Color name"))))
+
+      '("doublerulesepcolor"
+        [TeX-arg-completing-read (LaTeX-color-available-models)
+                                 "Color model"]
+        (TeX-arg-conditional (LaTeX-color-used-model-requires-spec-p)
+            (TeX-arg-color)
+          ((TeX-arg-completing-read (LaTeX-color-available-colors)
+                                    "Color name"))))))
 
    (LaTeX-add-lengths "minrowclearance")
 
@@ -91,8 +158,8 @@
                               'function)))
  TeX-dialect)
 
-;; colortbl.sty has one option `debugshow'.  I ignore that since it
-;; would only take more time during insertation in a buffer and I
+;; colortbl.sty has one option `debugshow'.  We ignore that since it
+;; would only take more time during insertation in a buffer and we
 ;; presume that not many users use it anyway.
 (defvar LaTeX-colortbl-package-options nil
   "Package option for the colortbl package.")

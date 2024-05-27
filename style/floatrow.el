@@ -1,6 +1,6 @@
 ;;; floatrow.el --- AUCTeX style for `floatrow.sty' (v0.3b)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -62,11 +62,8 @@
 (eval-when-compile
   (require 'cl-lib))
 
-;; Needed for compiling `LaTeX-check-insert-macro-default-style':
-(require 'latex)
-
-;; Needed for auto-parsing:
 (require 'tex)
+(require 'latex)
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords

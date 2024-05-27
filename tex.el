@@ -1621,7 +1621,7 @@ where an entry with the same car exists in the user-defined part."
   (TeX-delete-dups-by-car (append TeX-engine-alist TeX-engine-alist-builtin)))
 
 (defun TeX-engine-in-engine-alist (engine)
-  "Return the `engine' entry in `TeX-engine-alist'.
+  "Return entry ENGINE in `TeX-engine-alist'.
 
 Throw an error if `engine' is not present in the alist."
   (or
@@ -1723,7 +1723,7 @@ as a string.")
   "Keep track if question about server start search was asked.")
 
 (defvar TeX-source-correlate-start-server-flag nil
-  "If non-nil, `TeX-source-correlate-start-server-maybe' will start a server.
+  "Non-nil means `TeX-source-correlate-start-server-maybe' will start a server.
 Code related to features requiring a server, for example, for inverse
 search, can set the variable.")
 
@@ -5091,6 +5091,48 @@ affected.  See `TeX-electric-macro' for detail."
                  (const reindent-then-newline-and-indent)
                  (sexp :tag "Other")))
 
+(defun TeX--put-electric-delete-selection (symbol electricp)
+  "Set appropriate `delete-selection' property for electric functions.
+
+When the function bound to SYMBOL has «electric» behaviour, as
+determined by predicate ELECTRICP, `delete-selection' is set to
+nil.  In the other case, `delete-selection' is delegated to that
+of the `self-insert-command'.
+
+Note, that it is assumed that SYMBOL uses `self-insert-command'
+to insert symbols on its non-electric path.
+
+The backstory.
+
+When a function bound to SYMBOL has optional «electric»
+behaviour, it might interfere with other «electric» modes,
+e.g. `electric-pair-mode', `smartparens-mode'; see bug#47936.
+
+As a way to «override» those modes, we use raw `insert' instead
+of `self-insert-command'.  That prevents those electric modes
+from running their hooks tied to `self-insert-command'.
+
+However, when /our/ electric behaviour is disabled (ELECTRICP
+returns nil), we want other electric modes to operate freely.
+That means, on the non-electric path, we should use
+`self-insert-command' instead of `insert'.
+
+Now, there arises an issue of `delete-selection'.  The electric
+path usually doesn't want to delete selection, it wants to
+operate some electricity on it; see bug#36385, bug#23177.  Now,
+we could think that `delete-selection' for the non-electric path
+should be t.  That would disable other electric modes from
+working, as they also need to operate on selection.  The decision
+is to inherit `delete-selection' from `self-insert-command',
+which queries hooks from other electric modes to determine
+whether deletion is necessary.
+
+This function implements the idea from the last paragraph."
+  (put symbol 'delete-selection
+       (lambda ()
+         (unless (funcall electricp)
+           (get #'self-insert-command 'delete-selection)))))
+
 (defun TeX-insert-backslash (arg)
   "Either insert typed key ARG times or call `TeX-electric-macro'.
 `TeX-electric-macro' will be called if `TeX-electric-escape' is non-nil."
@@ -5098,6 +5140,9 @@ affected.  See `TeX-electric-macro' for detail."
   (if TeX-electric-escape
       (TeX-electric-macro)
     (self-insert-command arg)))
+
+(TeX--put-electric-delete-selection
+ #'TeX-insert-backslash (lambda () TeX-electric-escape))
 
 (defun TeX-insert-sub-or-superscript (arg)
   "Insert typed key ARG times and possibly a pair of braces.
@@ -5112,6 +5157,8 @@ Brace insertion is only done if point is in a math construct and
 (defun TeX-newline ()
   "Call the function specified by the variable `TeX-newline-function'."
   (interactive) (call-interactively TeX-newline-function))
+
+(put #'TeX-newline 'delete-selection t)
 
 (progn
   (let ((map TeX-mode-map))
@@ -6107,17 +6154,13 @@ See `TeX-math-input-method-off-regexp'."
   :type 'boolean)
 
 (defcustom TeX-electric-math nil
-  "If non-nil, when outside math mode `TeX-insert-dollar' will
-insert symbols for opening and closing inline equation and put
-the point between them.  If there is an active region,
-`TeX-insert-dollar' will put around it symbols for opening and
-closing inline equation and keep the region active, with point
-after closing symbol.  If you press `$' again, you can toggle
+  "Math mode delimiters inserted by `TeX-insert-dollar'.
+If non-nil, `TeX-insert-dollar' will insert symbols for opening and
+closing inline equation and put the point between them.  If there is an
+active region, `TeX-insert-dollar' will put around it symbols for
+opening and closing inline equation and keep the region active, with
+point after closing symbol.  If you press `$' again, you can toggle
 between inline equation, display equation, and no equation.
-
-If non-nil and point is inside math mode right between a couple
-of single dollars, pressing `$' will insert another pair of
-dollar signs and leave the point between them.
 
 If nil, `TeX-insert-dollar' will simply insert \"$\" at point,
 this is the default.
@@ -6135,129 +6178,133 @@ point.  You can choose between \"$...$\" and \"\\(...\\)\"."
 
 (defcustom TeX-refuse-unmatched-dollar nil
   "When non-nil, don't insert unmatched dollar sign.
-That is, `TeX-insert-dollar' refuses to insert \"$\" when
-`texmathp' tells that the current position is in math mode which
-didn't start with dollar(s).
+That is, `TeX-insert-dollar' refuses to insert \"$\" when `texmathp'
+tells that the current position is in math mode which didn't start with
+dollar(s).  Doesn't have an effect when `TeX-electric-math' is non-nil.
 
-When nil, `TeX-insert-dollar' assumes the user knows that the
-current position is not in math mode actually and behaves in the
-same way as non-math mode."
+When nil, `TeX-insert-dollar' assumes the user knows that the current
+position is not in math mode actually and behaves in the same way as
+non-math mode."
   :group 'TeX-macro
   :type 'boolean)
 
-(defun TeX-insert-dollar (&optional arg)
-  "Insert dollar sign.
-
-If current math mode was not entered with a dollar, refuse to
-insert one when `TeX-refuse-unmatched-dollar' is non-nil.
-
-Show matching dollar sign if this dollar sign ends the TeX math
-mode and `blink-matching-paren' is non-nil.
-
-When outside math mode, the behavior is controlled by the variable
-`TeX-electric-math'.
-
-With raw \\[universal-argument] prefix, insert exactly one dollar sign.
-With optional ARG, insert that many dollar signs."
-  (interactive "*P")
+(defun TeX-insert-dollar-electric-region ()
+  "Perform electric math delimiter insertion on a region.
+See `TeX-electric-math'."
+  (when (> (point) (mark))
+    (exchange-point-and-mark))
   (cond
-   ((and arg (listp arg))
-    ;; C-u always inserts one
-    (insert "$"))
-   (arg
-    ;; Numerical arg inserts that many
-    (insert-char ?\$ (prefix-numeric-value arg)))
-   ((or (TeX-escaped-p) (TeX-verbatim-p))
-    ;; Point is escaped with `\' or is in a verbatim-like construct,
-    ;; so just insert one $.
-    (insert "$"))
-   ((texmathp)
-    ;; We are inside math mode
-    (cond
-     ((and TeX-electric-math
-           (eq (preceding-char) ?\$)
-           (eq (following-char) ?\$))
-      ;; Point is between "$$" and `TeX-electric-math' is non-nil -
-      ;; insert another pair of dollar signs and leave point between
-      ;; them.
-      (insert "$$")
-      (backward-char))
-     ((and (stringp (car texmathp-why))
-           (string-equal (substring (car texmathp-why) 0 1) "\$"))
-      ;; Math mode was turned on with $ or $$ - insert a single $.
-      (insert "$")
-      ;; Compatibility, `TeX-math-close-double-dollar' has been
-      ;; removed after AUCTeX 11.87.
-      (if (boundp 'TeX-math-close-double-dollar)
-          (message
-           (concat "`TeX-math-close-double-dollar' has been removed,"
-                   "\nplease use `TeX-electric-math' instead.")))
-      (when (and blink-matching-paren
-                 (or (string= (car texmathp-why) "$")
-                     (zerop (mod (save-excursion
-                                   (skip-chars-backward "$")) 2))))
-        (save-excursion
-          (goto-char (cdr texmathp-why))
-          (if (pos-visible-in-window-p)
-              (sit-for blink-matching-delay)
-            (message "Matches %s"
-                     (buffer-substring
-                      (point) (progn (end-of-line) (point))))))))
-
-     ;; Math mode was not entered with dollar according to `texmathp'.
-     (TeX-refuse-unmatched-dollar
-      ;; We trust `texmathp' and refuse to finish it with one.
-      (message "Math mode started with `%s' cannot be closed with dollar"
-               (car texmathp-why)))
-     (t
-      ;; We assume that `texmathp' was wrong and behave as if not in
-      ;; math mode. (bug#57626)
-      (TeX--insert-dollar-1))))
+   ;; Strip \[...\] or $$...$$
+   ((and (eq last-command #'TeX-insert-dollar)
+         (or (re-search-forward "\\=\\\\\\[\\([^z-a]*\\)\\\\\\]" (mark) t)
+             (re-search-forward "\\=\\$\\$\\([^z-a]*\\)\\$\\$" (mark) t)))
+    (replace-match "\\1" t)
+    (set-mark (match-beginning 0)))
+   ;; $...$ to $$...$$
+   ((and (eq last-command #'TeX-insert-dollar)
+         (re-search-forward "\\=\\$\\([^z-a]*\\)\\$" (mark) t))
+    (replace-match "$$\\1$$" t)
+    (set-mark (match-beginning 0)))
+   ;; \(...\) to \[...\]
+   ((and (eq last-command #'TeX-insert-dollar)
+         (re-search-forward "\\=\\\\(\\([^z-a]*\\)\\\\)" (mark) t))
+    (replace-match "\\\\[\\1\\\\]" t)
+    (set-mark (match-beginning 0)))
    (t
-    ;; Just somewhere in the text.
-    (TeX--insert-dollar-1))))
+    ;; We use `save-excursion' because point must be situated
+    ;; before opening symbol.
+    (save-excursion (insert (car TeX-electric-math)))
+    (exchange-point-and-mark)
+    (insert (cdr TeX-electric-math))))
+  (TeX-activate-region))
 
-(defun TeX--insert-dollar-1 ()
-  "Do the job of `TeX-insert-dollar' in non-math mode."
-  (cond
-   ((and TeX-electric-math (TeX-active-mark)
-         (/= (point) (mark)))
-    (if (> (point) (mark))
-        (exchange-point-and-mark))
-    (cond
-     ;; $...$ to $$...$$
-     ((and (eq last-command #'TeX-insert-dollar)
-           (re-search-forward "\\=\\$\\([^$][^z-a]*[^$]\\)\\$" (mark) t))
-      (replace-match "$$\\1$$" t)
-      (set-mark (match-beginning 0)))
-     ;; \(...\) to \[...\]
-     ((and (eq last-command #'TeX-insert-dollar)
-           (re-search-forward "\\=\\\\(\\([^z-a]*\\)\\\\)" (mark) t))
-      (replace-match "\\\\[\\1\\\\]" t)
-      (set-mark (match-beginning 0)))
-     ;; Strip \[...\] or $$...$$
-     ((and (eq last-command #'TeX-insert-dollar)
-           (or (re-search-forward "\\=\\\\\\[\\([^z-a]*\\)\\\\\\]" (mark) t)
-               (re-search-forward "\\=\\$\\$\\([^z-a]*\\)\\$\\$" (mark) t)))
-      (replace-match "\\1" t)
-      (set-mark (match-beginning 0)))
-     (t
-      ;; We use `save-excursion' because point must be situated
-      ;; before opening symbol.
-      (save-excursion (insert (car TeX-electric-math)))
-      (exchange-point-and-mark)
-      (insert (cdr TeX-electric-math))))
-    (TeX-activate-region))
-   (TeX-electric-math
+(defun TeX-insert-dollar-electric ()
+  "Perform electric math symbol insertion.
+See `TeX-electric-math'."
+  (if (and (TeX-active-mark) (/= (point) (mark)))
+      (TeX-insert-dollar-electric-region)
     (insert (car TeX-electric-math))
     (save-excursion (insert (cdr TeX-electric-math)))
-    (if blink-matching-paren
-        (save-excursion
-          (backward-char)
-          (sit-for blink-matching-delay))))
-   ;; In any other case just insert a single $.
-   ((insert "$")))
-  (TeX-math-input-method-off))
+    (TeX-math-input-method-off)))
+
+(defun TeX--blink-matching-dollar ()
+  "Blink the matching $, when appropriate.
+Assume that `texmathp' has been called."
+  (when (and blink-matching-paren
+             (or (string= (car texmathp-why) "$")
+                 (zerop (mod (save-excursion
+                               (skip-chars-backward "$")) 2))))
+    (save-excursion
+      (goto-char (cdr texmathp-why))
+      (if (pos-visible-in-window-p)
+          (sit-for blink-matching-delay)
+        (message "Matches %s"
+                 (buffer-substring
+                  (point) (line-end-position)))))))
+
+(defun TeX-insert-dollar-action (arg)
+  "Determine the action for `TeX-insert-dollar'.
+
+Returns one of the following possible symbols that determine the
+behavior of `TeX-insert-dollar':
+ `just-insert'
+     Just insert a literal $ ARG times.  For example, if you need
+     exactly one $, you can use `C-1 $'.
+ `electric'
+     Behave according to `TeX-electric-math'.
+ `begin-math'
+     Insert a $ that starts the math mode.
+ `end-math'
+     Insert a $ that ends the math mode.
+ `refuse'
+     Refuse to insert a $ (or do anything else)."
+  (cond
+   ((or arg (TeX-escaped-p) (TeX-verbatim-p))
+    'just-insert)
+   (TeX-electric-math
+    'electric)
+   ((not (texmathp))
+    'begin-math)
+   ((member (car texmathp-why) '("$" "$$"))
+    'end-math)
+   ;; Math mode was not entered with dollar according to `texmathp'.
+   (TeX-refuse-unmatched-dollar
+    'refuse)
+   ;; We assume that `texmathp' was wrong and behave as if not in
+   ;; math mode. (bug#57626)
+   ('begin-math)))
+
+(defun TeX-insert-dollar (arg)
+  "Insert dollar sign.
+
+See `TeX-insert-dollar-action' for more information on the
+behavior, as well as the role of ARG.
+
+Show matching dollar sign if this dollar sign ends the TeX math
+mode and `blink-matching-paren' is non-nil."
+  (interactive "*P")
+  (pcase (TeX-insert-dollar-action arg)
+    ('just-insert
+     (self-insert-command (prefix-numeric-value arg)))
+    ('begin-math
+     (self-insert-command (prefix-numeric-value arg))
+     (TeX-math-input-method-off))
+    ('end-math                        ; Assume texmathp's been called.
+     (self-insert-command (prefix-numeric-value arg))
+     (TeX--blink-matching-dollar))
+    ('refuse
+     (message "Math mode started with `%s' cannot be closed with dollar"
+              (car texmathp-why)))
+    ('electric
+     (TeX-insert-dollar-electric))
+    (action (error "Unknown `TeX-insert-dollar' action: `%s'" action))))
+
+(put #'TeX-insert-dollar 'delete-selection
+     (lambda ()
+       (pcase (TeX-insert-dollar-action current-prefix-arg)
+         ('refuse nil)
+         ('electric nil)
+         (_else (get #'self-insert-command 'delete-selection)))))
 
 (defcustom TeX-math-input-method-off-regexp
   (concat "^" (regexp-opt '("chinese" "japanese" "korean" "bulgarian" "russian") t))
@@ -6360,6 +6407,10 @@ the settings of style files.  Style files should therefore check
 if this symbol is present and not alter `TeX-quote-language' if
 it is.")
 
+;; TODO: rework according to the slogan from
+;; `TeX--put-electric-delete-selection'. That entails splitting off the
+;; «electric» part that tries to do smart things and the plain part that
+;; just inserts a quote.
 (defun TeX-insert-quote (force)
   "Insert the appropriate quotation marks for TeX.
 Inserts the value of `TeX-open-quote' (normally \\=`\\=`) or `TeX-close-quote'
@@ -6444,6 +6495,8 @@ With prefix argument FORCE, always inserts \" characters."
                        open-quote)
                       (t
                        close-quote)))))))
+
+(put 'TeX-insert-quote 'delete-selection t)
 
 (defun TeX-insert-punctuation ()
   "Insert point or comma, cleaning up preceding space."
@@ -6894,18 +6947,6 @@ The table inherits from USERTABLE if it is a valid abbrev table."
                        (cons elt (default-value 'desktop-locals-to-save)))))
      (add-hook 'desktop-after-read-hook (lambda ()
                                           (TeX-set-mode-name t)))))
-
-;; delsel.el, `delete-selection-mode'
-(put 'TeX-newline 'delete-selection t)
-(put 'TeX-insert-quote 'delete-selection t)
-(put 'TeX-insert-backslash 'delete-selection t)
-;; When `TeX-electric-math' is non-nil, `TeX-insert-dollar' interferes with
-;; `delete-selection-mode', but when it's nil users may want to be able to
-;; delete active region if `delete-selection-mode' is active, see bug#23177.  We
-;; can dynamically determine the behavior of `delete-selection' with
-;; `TeX-insert-dollar' based on the value of `TeX-electric-math'.
-(put 'TeX-insert-dollar 'delete-selection
-     (lambda () (null TeX-electric-math)))
 
 (defun TeX--list-of-string-p (lst)
   "Return non-nil if LST is a list of strings.

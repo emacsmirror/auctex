@@ -583,7 +583,7 @@ Styles such as tabularx may set it according to their needs.")
 
 (defun LaTeX-environment (arg)
   "Make LaTeX environment (\\begin{...}-\\end{...} pair).
-With optional ARG, modify current environment.
+With prefix ARG, modify current environment.
 
 It may be customized with the following variables:
 
@@ -652,7 +652,7 @@ It may be customized with the following variables:
 
 (defun LaTeX-close-environment (&optional reopen)
   "Create an \\end{...} to match the current environment.
-With prefix-argument, reopen environment afterwards."
+With prefix argument REOPEN, reopen environment afterwards."
   (interactive "*P")
   (if (> (point)
          (save-excursion
@@ -1450,25 +1450,6 @@ Just like array and tabular."
   (delete-char 1)
   (delete-horizontal-space)
   (LaTeX-insert-item))
-
-(defun LaTeX-env-contents (environment)
-  "Insert ENVIRONMENT with optional argument and filename for contents."
-  (let* ((opt '("overwrite" "force" "nosearch" "nowarn"))
-         (arg (mapconcat #'identity
-                         (TeX-completing-read-multiple
-                          (TeX-argument-prompt t nil "Options")
-                          (if (string= environment "filecontents*")
-                              opt
-                            (cons "noheader" opt)))
-                         ",")))
-    (LaTeX-insert-environment environment
-                              (concat
-                               (when (and arg (not (string= arg "")))
-                                 (concat LaTeX-optop arg LaTeX-optcl))
-                               TeX-grop
-                               (TeX-read-string "File: ")
-                               TeX-grcl)))
-  (delete-horizontal-space))
 
 (defun LaTeX-env-args (environment &rest args)
   "Insert ENVIRONMENT and arguments defined by ARGS."
@@ -2510,7 +2491,7 @@ the list of defined counters."
   "Prompt for a LaTeX savebox.
 If OPTIONAL is non-nil, insert the resulting value as an optional
 argument, otherwise as a mandatory one.  Use PROMPT as the prompt
-string.  If definition is non-nil, the savebox is added to the
+string.  If DEFINITION is non-nil, the savebox is added to the
 list of defined saveboxes."
   (let ((savebox (completing-read (TeX-argument-prompt optional prompt
                                                        (concat "Savebox: "
@@ -3304,80 +3285,65 @@ supply the corresponding macro such as \\right before the right brace macro."
         (LaTeX-insert-corresponding-right-macro-and-brace
          left-macro left-brace optional)))))
 
+(defun LaTeX-insert-left-brace-electric (brace)
+  "Insert typed left BRACE and a corresponding right brace.
+
+BRACE should be a character.  See `LaTeX-insert-left-brace' for
+allowed BRACE values."
+  (when (and (TeX-active-mark) (> (point) (mark)))
+    (exchange-point-and-mark))
+  (let ((lbrace (char-to-string brace)) lmacro skip-p)
+    ;; Use `insert' rather than `self-insert-command' so that
+    ;; unexpected side effects from `post-self-insert-hook',
+    ;; e.g. `electric-pair-mode', won't mess up the following
+    ;; outcomes. (bug#47936)
+    (insert brace)
+    (save-excursion
+      (backward-char)
+      ;; The brace "{" is exceptional in two aspects.
+      ;; 1. "\{" should be considered as a single brace
+      ;;    like "(" and "[".
+      ;; 2. "\left{" is nonsense while "\left\{" and
+      ;;    "\left(" are not.
+      (if (string= lbrace TeX-grop)
+          ;; If "{" follows "\", set lbrace to "\{".
+          (if (TeX-escaped-p)
+              (progn
+                (backward-char)
+                (setq lbrace (concat TeX-esc TeX-grop)))
+            ;; Otherwise, don't search for left macros.
+            (setq skip-p t)))
+      (unless skip-p
+        ;; Obtain the name of preceding left macro, if any,
+        ;; such as "left", "bigl" etc.
+        (setq lmacro (LaTeX--find-preceding-left-macro-name))))
+    (let ((TeX-arg-right-insert-p t)
+          ;; "{" and "}" are paired temporally so that typing
+          ;; a single "{" should insert a pair "{}".
+          (TeX-braces-association
+           (cons (cons TeX-grop TeX-grcl) TeX-braces-association)))
+      (save-excursion
+        (if (TeX-active-mark)
+            (goto-char (mark)))
+        (LaTeX-insert-corresponding-right-macro-and-brace
+         lmacro lbrace)))))
+
 (defun LaTeX-insert-left-brace (arg)
-  "Insert typed left brace ARG times and possibly a correspondig right brace.
+  "Insert typed left brace ARG times and possibly a corresponding right brace.
 Automatic right brace insertion is done only if no prefix ARG is given and
 `LaTeX-electric-left-right-brace' is non-nil.
 Normally bound to keys \(, { and [."
   (interactive "*P")
-  ;; If you change the condition for `auto-p', adjust the condition in
-  ;; the `delete-selection' property, just below this defun, accordingly.
-  (let ((auto-p (and LaTeX-electric-left-right-brace (not arg))))
-    (if (and auto-p
-             (TeX-active-mark)
-             (> (point) (mark)))
-        (exchange-point-and-mark))
-    (if auto-p
-        ;; Should supply corresponding right brace with possible
-        ;; \right-like macro.
-        (let ((lbrace (char-to-string last-command-event)) lmacro skip-p)
-          ;; Use `insert' rather than `self-insert-command' so that
-          ;; unexcpected side effects, e.g. `electric-pair-mode',
-          ;; won't mess up the following outcomes. (bug#47936)
-          (insert last-command-event)
-          (save-excursion
-            (backward-char)
-            ;; The brace "{" is exceptional in two aspects.
-            ;; 1. "\{" should be considered as a single brace
-            ;;    like "(" and "[".
-            ;; 2. "\left{" is nonsense while "\left\{" and
-            ;;    "\left(" are not.
-            (if (string= lbrace TeX-grop)
-                ;; If "{" follows "\", set lbrace to "\{".
-                (if (TeX-escaped-p)
-                    (progn
-                      (backward-char)
-                      (setq lbrace (concat TeX-esc TeX-grop)))
-                  ;; Otherwise, don't search for left macros.
-                  (setq skip-p t)))
-            (unless skip-p
-              ;; Obtain the name of preceding left macro, if any,
-              ;; such as "left", "bigl" etc.
-              (setq lmacro (LaTeX--find-preceding-left-macro-name))))
-          (let ((TeX-arg-right-insert-p t)
-                ;; "{" and "}" are paired temporally so that typing
-                ;; a single "{" should insert a pair "{}".
-                (TeX-braces-association
-                 (cons (cons TeX-grop TeX-grcl) TeX-braces-association)))
-            (save-excursion
-              (if (TeX-active-mark)
-                  (goto-char (mark)))
-              (LaTeX-insert-corresponding-right-macro-and-brace
-               lmacro lbrace))))
-      ;; Don't supply right brace and just act as ordinary
-      ;; `self-insert-command'.
-      (self-insert-command (prefix-numeric-value arg)))))
-;; Cater for `delete-selection-mode' (bug#36385)
-;; See the header comment of delsel.el for detail.
-(put #'LaTeX-insert-left-brace 'delete-selection
-     (lambda ()
-       ;; Consult `delete-selection' property when
-       ;; `LaTeX-insert-left-brace' works just the same as
-       ;; `self-insert-command'.
-       (and (or (not LaTeX-electric-left-right-brace)
-                current-prefix-arg)
-            (let ((f (get #'self-insert-command 'delete-selection)))
-              ;; If `delete-selection' property of
-              ;; `self-insert-command' is one of the predefined
-              ;; special symbols, just return itself.
-              (if (memq f '(yank supersede kill t nil))
-                  ;; FIXME: if this list of special symbols is
-                  ;; extended in future delsel.el, this discrimination
-                  ;; will become wrong.
-                  f
-                ;; Otherwise, call it as a function and return
-                ;; its value.
-                (funcall f))))))
+  (if (and LaTeX-electric-left-right-brace (not arg))
+      (LaTeX-insert-left-brace-electric last-command-event)
+    (self-insert-command (prefix-numeric-value arg))))
+
+;; Cater for `delete-selection-mode' (bug#36385). See the header
+;; comment of delsel.el for detail.  In short, whenever a function
+;; performs insertion, we ``inherit'' the `delete-selection' property.
+(TeX--put-electric-delete-selection
+ #'LaTeX-insert-left-brace
+ (lambda () (and LaTeX-electric-left-right-brace (not current-prefix-arg))))
 
 (defun LaTeX-insert-corresponding-right-macro-and-brace
     (lmacro lbrace &optional optional prompt)
@@ -5300,6 +5266,9 @@ See `fill-move-to-break-point' for the meaning of LINEBEG."
 
 (defun LaTeX-fill-paragraph (&optional justify)
   "Like `fill-paragraph', but handle LaTeX comments.
+
+With prefix argument JUSTIFY, justify as well.
+
 If any of the current line is a comment, fill the comment or the
 paragraph of it that point is in.  Code comments, that is, comments
 with uncommented code preceding them in the same line, will not
@@ -5598,7 +5567,9 @@ environments."
     (TeX-activate-region)))
 
 (defun LaTeX-fill-environment (justify)
-  "Fill and indent current environment as LaTeX text."
+  "Fill and indent current environment as LaTeX text.
+
+With prefix argument JUSTIFY, justify as well."
   (interactive "*P")
   (save-excursion
     (LaTeX-mark-environment)
@@ -5607,7 +5578,9 @@ environments."
                        (concat " environment " (TeX-match-buffer 1)))))
 
 (defun LaTeX-fill-section (justify)
-  "Fill and indent current logical section as LaTeX text."
+  "Fill and indent current logical section as LaTeX text.
+
+With prefix argument JUSTIFY, justify as well."
   (interactive "*P")
   (save-excursion
     (LaTeX-mark-section)
@@ -5642,7 +5615,9 @@ value of NO-SUBSECTIONS."
   (TeX-activate-region))
 
 (defun LaTeX-fill-buffer (justify)
-  "Fill and indent current buffer as LaTeX text."
+  "Fill and indent current buffer as LaTeX text.
+
+With prefix argument JUSTIFY, justify as well."
   (interactive "*P")
   (save-excursion
     (LaTeX-fill-region
@@ -8758,8 +8733,14 @@ function would return non-nil and `(match-string 1)' would return
 
   (when (string-equal LaTeX-version "2e")
     (LaTeX-add-environments
-     '("filecontents" LaTeX-env-contents)
-     '("filecontents*" LaTeX-env-contents))
+     '("filecontents" LaTeX-env-args
+       [TeX-arg-completing-read-multiple
+        ("overwrite" "force" "nosearch" "nowarn" "noheader")]
+       "File")
+     '("filecontents*" LaTeX-env-args
+       [TeX-arg-completing-read-multiple
+        ("overwrite" "force" "nosearch" "nowarn")]
+       "File"))
 
     (TeX-add-symbols
      '("enlargethispage"  (TeX-arg-length nil "1.0\\baselineskip"))
@@ -9376,12 +9357,11 @@ arguments POS and COL for efficiency."
 
 (defmacro LaTeX-check-insert-macro-default-style (&rest body)
   "Check for values of `TeX-insert-macro-default-style' and `current-prefix-arg'.
-This is a utility macro with code taken from
-`TeX-parse-arguments'.  It should be used inside more complex
-function within AUCTeX style files where optional and mandatory
-arguments are queried and inserted.  For examples, check the
-functions `TeX-arg-color' (style/color.el) or
-`LaTeX-arg-bicaption-bicaption' (style/bicaption.el)."
+This is a utility macro with code taken from `TeX-parse-arguments'.  It
+should be used inside more complex function within AUCTeX style files
+where optional and mandatory arguments are queried and inserted.  For
+example, check the function `LaTeX-arg-bicaption-bicaption'
+defined in style/bicaption.el."
   `(unless (if (eq TeX-insert-macro-default-style 'show-all-optional-args)
                (equal current-prefix-arg '(4))
              (or

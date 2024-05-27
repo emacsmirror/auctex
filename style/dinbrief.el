@@ -1,6 +1,6 @@
 ;;; dinbrief.el --- Special code for LaTeX-Style dinbrief.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1994-2023  Free Software Foundation, Inc.
+;; Copyright (C) 1994-2024  Free Software Foundation, Inc.
 
 ;; Author: Werner Fink <werner@suse.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -32,14 +32,26 @@
 (require 'tex)
 (require 'latex)
 
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+                  "font-latex"
+                  (keywords class))
+
+(defvar LaTeX-dinbrief-class-options
+  '("10pt" "11pt" "12pt" "norm" "a4paper" "a5paper" "b5paper"
+    "letterpaper" "legalpaper" "executivepaper" "twoside"
+    "addresshigh" "addressstd" "onecolumn" "twocolumn")
+  "Class options for the dinbrief class.")
+
 (TeX-add-style-hook
  "dinbrief"
  (lambda ()
-   (add-hook 'LaTeX-document-style-hook
-             #'LaTeX-dinbrief-style)
    (LaTeX-add-environments
     '("letter" LaTeX-dinbrief-env-recipient)
     "dinquote")
+   (add-hook 'LaTeX-document-style-hook
+             #'LaTeX-dinbrief-style)
+   (setq LaTeX-default-document-environment "letter")
    (TeX-add-symbols
     '("address" "Absender")
     '("postremark" "Postvermerk")
@@ -61,12 +73,28 @@
     '("backaddress" "Retouradresse")
     '("signature" "Unterschrift")
     '("opening" "Anrede")
-    '("closing" "Schluss")))
+    '("closing" "Schluss"))
+
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+              (eq TeX-install-font-lock 'font-latex-setup))
+     (font-latex-add-keywords '(("subject" "{")
+                                ("address" "{")
+                                ("signature" "{")
+                                ("opening" "{")
+                                ("closing" "{")
+                                ("location" "{")
+                                ("handling" "{")
+                                ("cc" "{")
+                                ("encl" "{")
+                                ("ps" "{"))
+                              'function)))
  TeX-dialect)
 
 (defmacro LaTeX-dinbrief-insert (&rest args)
   "Insert text ignoring active markers."
-  `(progn (if mark-active (deactivate-mark))
+  `(progn
+     (if (TeX-active-mark) (deactivate-mark))
      (insert ,@args)))
 
 (defun LaTeX-dinbrief-style ()
@@ -78,16 +106,13 @@
     (open-line 2)
     (indent-relative-first-indent-point)
     (LaTeX-dinbrief-insert TeX-esc "usepackage"
-                           LaTeX-optop "latin1,utf8" LaTeX-optcl
-                           TeX-grop "inputenc" TeX-grcl)
-    (newline-and-indent)
-    (LaTeX-dinbrief-insert TeX-esc "usepackage"
                            LaTeX-optop "T1" LaTeX-optcl
                            TeX-grop "fontenc" TeX-grcl)
-    (indent-relative-first-indent-point)
+    (newline-and-indent)
     (LaTeX-dinbrief-insert TeX-esc "usepackage"
-                           TeX-grop "ngerman" TeX-grcl))
-  (TeX-run-style-hooks "inputenc" "fontenc" "ngerman"))
+                           LaTeX-optop "ngerman" LaTeX-optcl
+                           TeX-grop "babel" TeX-grcl))
+  (TeX-run-style-hooks "fontenc" "babel"))
 
 (defun LaTeX-dinbrief-env-recipient (environment)
   "Insert ENVIRONMENT and prompt for recipient and address."
@@ -118,8 +143,10 @@
             (newline-and-indent)
             (if (not (zerop (length retouradr)))
                 (progn
-                  (if mark-active (deactivate-mark))
-                  (LaTeX-dinbrief-insert TeX-esc "backaddress" TeX-grop retouradr TeX-grcl)
+                  (if (TeX-active-mark) (deactivate-mark))
+                  (LaTeX-dinbrief-insert TeX-esc
+                                         "backaddress"
+                                         TeX-grop retouradr TeX-grcl)
                   (newline-and-indent)))))
       (LaTeX-dinbrief-insert TeX-esc "enabledraftstandard")
       (newline-and-indent)
@@ -205,8 +232,8 @@
   "Read and write the senders address."
   (interactive)
   (let ((name (TeX-read-string "Absender: " (user-full-name)))
-        (str  (TeX-read-string "Meine Strasse:  "))
-        (ort  (TeX-read-string "Mein Wohnort:  ")))
+        (str  (TeX-read-string "Meine Strasse: "))
+        (ort  (TeX-read-string "Mein Wohnort: ")))
     (if (not (zerop (length name)))
         (progn
           (goto-char (point-min)) ; insert before \end{document}
@@ -231,8 +258,8 @@
 (defun LaTeX-dinbrief-recipient ()
   "Read and return the recipient address."
   (interactive)
-  (let ((str  (TeX-read-string "Wohnhaft in Strasse:  "))
-        (ort  (TeX-read-string "Aus der Ortschaft:  ")))
+  (let ((str  (TeX-read-string "Wohnhaft in Strasse: "))
+        (ort  (TeX-read-string "Aus der Ortschaft: ")))
     (if (not (zerop (length str)))
         (if (not (zerop (length ort)))
             (concat str " " TeX-esc TeX-esc " " ort)
@@ -246,7 +273,7 @@
   (let ((ctime-string (current-time-string))
         (month-alist '(("Jan" . "Januar")
                        ("Feb" . "Februar")
-                       ("Mar" . "M\\\"arz")
+                       ("Mar" . "März")
                        ("Apr" . "April")
                        ("May" . "Mai")
                        ("Jun" . "Juni")
@@ -269,5 +296,9 @@
             (if (> 2 (length day))
                 (setq day (concat "0" day)))))
       (format "%s, den %s. %s %s" place day month year))))
+
+;; Local Variables:
+;; coding: utf-8-unix
+;; End:
 
 ;;; dinbrief.el ends here
