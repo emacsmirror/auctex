@@ -1473,12 +1473,21 @@ ignored during the search."
         ;; closing brace gets a comment end syntax.
         ;; (2022 Mar) The latter half of the above paragraph no longer
         ;; applies since we changed the way to fontify ^^A comment.
-        (parse-sexp-lookup-properties nil))
+        (parse-sexp-lookup-properties nil)
+        (syntax (TeX-search-syntax-table openchar closechar)))
     (or
      (condition-case nil
          (progn
-           (goto-char (with-syntax-table
-                          (TeX-search-syntax-table openchar closechar)
+           ;; It is possible to have an opt. arg like \foo[key={]}].
+           ;; Since braces are always balanced in opt. arguments, we
+           ;; change the syntax to "generic comment delimiter".  For the
+           ;; backslash, we switch to "/" in order to ignore things like
+           ;; \{ and \}:
+           (unless (and (= openchar ?\{) (= closechar ?\}))
+             (modify-syntax-entry ?\{ "|" syntax)
+             (modify-syntax-entry ?\} "|" syntax)
+             (modify-syntax-entry ?\\ "/" syntax))
+           (goto-char (with-syntax-table syntax
                         (scan-sexps (point) 1)))
            ;; No error code.  See if closechar is unquoted
            (save-excursion
