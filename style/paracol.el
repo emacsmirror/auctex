@@ -1,6 +1,6 @@
 ;;; paracol.el --- AUCTeX style for `paracol.sty' (v1.35)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -63,6 +63,21 @@ If OPTIONAL is non-nil, insert the result in square brackets."
       (save-excursion
         (backward-char 1)
         (TeX-argument-insert col optional)))))
+
+(defun LaTeX-paracol--used-model (&optional xcolor)
+  "Seach for \\backgroundcolor and return the optional used color model.
+If XCOLOR is non-nil, store the returned value in the variable
+`LaTeX-xcolor-used-type-model', otherwise in the variable
+`LaTeX-color-used-model'."
+  (save-excursion
+    (and (re-search-backward (concat (regexp-quote TeX-esc)
+                                     "backgroundcolor"
+                                     "\\(?:{[^}]*}\\)"
+                                     "\\(?:\\[\\([^]]+\\)\\]\\)?")
+                             (line-beginning-position) t)
+         (set (if xcolor 'LaTeX-xcolor-used-type-model 'LaTeX-color-used-model)
+              (match-string-no-properties 1))
+         (not (string= "named" (match-string-no-properties 1))))))
 
 (TeX-add-style-hook
  "paracol"
@@ -176,47 +191,20 @@ If OPTIONAL is non-nil, insert the result in square brackets."
     '("nofncounteradjustment" 0)
 
     ;; 7.7 Commands for Coloring Texts and Column-Separating Rules
-    ;; \columncolor[mode]{color}[col]
-    ;;
-    ;; This clashes if colortbl.el is loaded since it provides a
-    ;; command with the same name but different arguments.  We add
-    ;; the command only here but not for fontification
-    '("columncolor" (TeX-arg-conditional (member "xcolor" (TeX-style-list))
-                                         (TeX-arg-xcolor)
-                                         (TeX-arg-color))
-      [ "Column" ] )
-
     ;; \normalcolumncolor[col]
     '("normalcolumncolor" [ "Column" ] )
     '("coloredwordhyphenated" 0)
     '("nocoloredwordhyphenated" 0)
 
-    ;; \colseprulecolor[mode]{color}[col]
     ;; \normalcolseprulecolor[col]
-    '("colseprulecolor" (TeX-arg-conditional (member "xcolor" (TeX-style-list))
-                                             (TeX-arg-xcolor)
-                                             (TeX-arg-color))
-      [ "Column" ] )
     '("normalcolseprulecolor" [ "Column" ] )
 
     ;; 7.8 Commands for Background Painting
-    ;; \backgroundcolor{region}[mode]{color}
-    ;; \backgroundcolor{region(x0,y0)}[mode]{color}
-    ;; \backgroundcolor{region(x0,y0)(x1,y1)}[mode]{color}
-    '("backgroundcolor"
-      (TeX-arg-completing-read ("c" "g" "s" "f" "n" "p" "t" "b" "l" "r"
-                                "C" "G" "S" "F" "N" "P" "T" "B" "L" "R")
-                               "Region")
-      (TeX-arg-conditional (member "xcolor" (TeX-style-list))
-                           (TeX-arg-xcolor)
-                           (TeX-arg-color)))
-
     ;; \nobackgroundcolor{region}
     '("nobackgroundcolor"
       (TeX-arg-completing-read ("c" "g" "s" "f" "n" "p" "t" "b" "l" "r"
                                 "C" "G" "S" "F" "N" "P" "T" "B" "L" "R")
                                "Region"))
-
     ;; \resetbackgroundcolor
     '("resetbackgroundcolor" 0)
 
@@ -228,6 +216,90 @@ If OPTIONAL is non-nil, insert the result in square brackets."
 
     ;; 7.10 Page Flushing Commands
     '("flushpage" 0))
+
+   ;; xcolor.el
+   (when (member "xcolor" (TeX-style-list))
+     ;; 7.7 Commands for Coloring Texts and Column-Separating Rules
+     ;; \columncolor[model]{color}[col]
+     ;;
+     ;; This clashes if colortbl.el is loaded since it provides a
+     ;; command with the same name but different arguments.  We add
+     ;; the command only here but not for fontification
+     (TeX-add-symbols
+      '("columncolor"
+        [TeX-arg-completing-read-multiple (LaTeX-xcolor-color-models)
+                                          "Color model"
+                                          nil nil "/" "/"]
+        (TeX-arg-conditional (LaTeX-xcolor-cmd-requires-spec-p 'col)
+                             (TeX-arg-xcolor)
+                             ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                                       "Color name")))
+        [ "Column" ] )
+
+      ;; \colseprulecolor[model]{color}[col]
+      '("colseprulecolor"
+        [TeX-arg-completing-read-multiple (LaTeX-xcolor-color-models)
+                                          "Color model"
+                                          nil nil "/" "/"]
+        (TeX-arg-conditional (LaTeX-xcolor-cmd-requires-spec-p 'col)
+                             (TeX-arg-xcolor)
+                             ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                                       "Color name")))
+        [ "Column" ] )
+
+      ;; 7.8 Commands for Background Painting
+      ;; \backgroundcolor{region}[mode]{color}
+      ;; \backgroundcolor{region(x0,y0)}[mode]{color}
+      ;; \backgroundcolor{region(x0,y0)(x1,y1)}[mode]{color}
+      '("backgroundcolor"
+        (TeX-arg-completing-read ("c" "g" "s" "f" "n" "p" "t" "b" "l" "r"
+                                  "C" "G" "S" "F" "N" "P" "T" "B" "L" "R")
+                                 "Region")
+        [TeX-arg-completing-read-multiple (LaTeX-xcolor-color-models)
+                                          "Color model"
+                                          nil nil "/" "/"]
+        (TeX-arg-conditional (LaTeX-paracol--used-model t)
+                             (TeX-arg-xcolor)
+                             ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                                       "Color name"))))))
+
+   ;; color.el: Always prefer xcolor.sty over color.sty
+   (when (and (member "color" (TeX-style-list))
+              (not (member "xcolor" TeX-active-styles)))
+     (TeX-add-symbols
+      '("columncolor"
+        [TeX-arg-completing-read (LaTeX-color-available-models)
+                                 "Color model"]
+        (TeX-arg-conditional (LaTeX-color-used-model-requires-spec-p)
+                             (TeX-arg-color)
+                             ((TeX-arg-completing-read (LaTeX-color-available-colors)
+                                                       "Color name")))
+        [ "Column" ] )
+
+      ;; \colseprulecolor[mode]{color}[col]
+      '("colseprulecolor"
+        [TeX-arg-completing-read (LaTeX-color-available-models)
+                                 "Color model"]
+        (TeX-arg-conditional (LaTeX-color-used-model-requires-spec-p)
+                             (TeX-arg-color)
+                             ((TeX-arg-completing-read (LaTeX-color-available-colors)
+                                                       "Color name")))
+        [ "Column" ] )
+
+      ;; 7.8 Commands for Background Painting
+      ;; \backgroundcolor{region}[mode]{color}
+      ;; \backgroundcolor{region(x0,y0)}[mode]{color}
+      ;; \backgroundcolor{region(x0,y0)(x1,y1)}[mode]{color}
+      '("backgroundcolor"
+        (TeX-arg-completing-read ("c" "g" "s" "f" "n" "p" "t" "b" "l" "r"
+                                  "C" "G" "S" "F" "N" "P" "T" "B" "L" "R")
+                                 "Region")
+        [TeX-arg-completing-read (LaTeX-color-available-models)
+                                 "Color model"]
+        (TeX-arg-conditional (LaTeX-paracol--used-model)
+                             (TeX-arg-color)
+                             ((TeX-arg-completing-read (LaTeX-color-available-colors)
+                                                       "Color name"))))))
 
    ;; \belowfootnoteskip is a length:
    (LaTeX-add-lengths "belowfootnoteskip")
