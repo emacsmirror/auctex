@@ -8195,7 +8195,8 @@ This happens when \\left is inserted."
   ;; This entry is necessary for M-? to work.
   ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00002.html>
   ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00005.html>
-  (push '(LaTeX-mode "*.ltx" "*.sty" "*.cls" "*.clo" "*.bbl" "*.drv" "*.hva")
+  (push '(LaTeX-mode "*.[tT]e[xX]" "*.ltx" "*.sty" "*.cl[so]" "*.bbl"
+                     "*.drv" "*.hva")
         semantic-symref-filepattern-alist))
 
 (declare-function LaTeX-preview-setup "preview")

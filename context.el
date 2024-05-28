@@ -1861,6 +1861,13 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
 (TeX-abbrev-mode-setup ConTeXt-mode context-mode-abbrev-table)
 
+(defvar semantic-symref-filepattern-alist) ; Silence compiler
+(with-eval-after-load 'semantic/symref/grep
+  ;; This entry is necessary for M-? to work.
+  ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00002.html>
+  ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00005.html>
+  (push '(ConTeXt-mode "*.[tT]e[xX]") semantic-symref-filepattern-alist))
+
 (defun ConTeXt-mode-common-initialization ()
   "Initialization code that is common for all ConTeXt interfaces."
   (plain-TeX-common-initialization)
