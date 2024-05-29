@@ -2,7 +2,9 @@
 
 ;; Copyright (C) 2003-2024  Free Software Foundation, Inc.
 
-;; Maintainer: Berend de Boer <berend@pobox.com>
+;; Author: Patrick Gundlach <pg@levana.de>
+;;         Berend de Boer <berend@pobox.com>
+;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.

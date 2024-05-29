@@ -6,6 +6,7 @@
 ;;             Hidenobu Nabetani <nabe@debian.or.jp>
 ;; Maintainer: Masayuki Ataka <masayuki.ataka@gmail.com>
 ;;             Ikumi Keita <ikumikeita@jcom.home.ne.jp>
+;;             auctex-devel@gnu.org
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.

@@ -3,6 +3,7 @@
 ;; Copyright (C) 1994-1999, 2001, 2003-2005, 2014-2022 Free Software Foundation, Inc.
 
 ;; Author:    Peter S. Galbraith <psg@debian.org>
+;; Maintainer: auctex-devel@gnu.org
 ;; Created:   06 July 1994
 ;; Version:   3.28  (Feb 23 2005)
 ;; Keywords:  bibtex, cite, auctex, emacs

@@ -3,6 +3,7 @@
 ;; Copyright (C) 2003-2024 Free Software Foundation, Inc.
 
 ;; Author: David Kastrup <dak@gnu.org>
+;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, text, convenience
 
 ;; This file is free software; you can redistribute it and/or modify

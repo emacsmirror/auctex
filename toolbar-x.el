@@ -17,7 +17,8 @@
 ;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
 ;; MA 02110-1301 USA
 
-;;; Author: Miguel Vinicius Santini Frasson
+;; Author: Miguel Vinicius Santini Frasson <frasson@math.leidenuniv.nl>
+;; Maintainer: auctex-devel@gnu.org
 
 ;;; Commentary:
 ;; This program implements a common interface to display toolbar

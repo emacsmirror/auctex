@@ -18,6 +18,7 @@
 ;; MA 02110-1301 USA
 
 ;; Author: Miguel V. S. Frasson <frasson@math.leidenuniv.nl>
+;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tool-bar, tex, latex
 
 ;;; Commentary:
