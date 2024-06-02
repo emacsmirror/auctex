@@ -31,6 +31,15 @@
 
 ;;; Code:
 
+(require 'tex)
+(require 'latex)
+
+;; Silence the compiler:
+(declare-function font-latex-add-keywords
+                  "font-latex"
+                  (keywords class))
+
+
 (TeX-add-style-hook
  "standalone"
  (lambda ()
@@ -61,8 +70,8 @@
      (LaTeX-add-environments "standalone")
 
      ;; \standaloneenv is relevant in conjunction with option multi:
-     (when (or (LaTeX-provided-class-options "standalone" "multi")
-               (LaTeX-provided-class-options "standalone" "multi=true"))
+     (when (or (LaTeX-provided-class-options-member "standalone" "multi")
+               (LaTeX-provided-class-options-member "standalone" "multi=true"))
        (TeX-add-symbols
         '("standaloneenv"
           (TeX-arg-completing-read-multiple (LaTeX-environment-list)
@@ -74,14 +83,14 @@
                                   'function)))
 
      ;; standaloneframe env is relevant in conjunction with option beamer:
-     (when (or (LaTeX-provided-class-options "standalone" "beamer")
-               (LaTeX-provided-class-options "standalone" "beamer=true"))
+     (when (or (LaTeX-provided-class-options-member "standalone" "beamer")
+               (LaTeX-provided-class-options-member "standalone" "beamer=true"))
        (TeX-run-style-hooks "beamer")
        (LaTeX-add-environments '("standaloneframe")))
 
      ;; TikZ class option:
-     (when (or (LaTeX-provided-class-options "standalone" "tikz")
-               (LaTeX-provided-class-options "standalone" "tikz=true"))
+     (when (or (LaTeX-provided-class-options-member "standalone" "tikz")
+               (LaTeX-provided-class-options-member "standalone" "tikz=true"))
        (TeX-run-style-hooks "tikz")))
 
    ;; standalone.sty
