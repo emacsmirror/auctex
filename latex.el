@@ -2168,9 +2168,8 @@ TYPE is one of the symbols mac or env."
               (add-to-list 'TeX-auto-file elt t)
               ;; Append to `LaTeX-provided-package-options' the name of the
               ;; package and the options provided to it at load time.
-              (unless (equal options '(""))
-                (TeX-add-to-alist 'LaTeX-provided-package-options
-                                  (list (cons elt options)))))
+              (TeX-add-to-alist 'LaTeX-provided-package-options
+                                (list (cons elt options))))
           ;; And a special "art10" style file combining style and size.
           (add-to-list 'TeX-auto-file style t)
           (add-to-list 'TeX-auto-file
@@ -2201,9 +2200,8 @@ TYPE is one of the symbols mac or env."
                               (t
                                "10")))
                        t)
-          (unless (equal options '(""))
-            (TeX-add-to-alist 'LaTeX-provided-class-options
-                              (list (cons style options)))))
+          (TeX-add-to-alist 'LaTeX-provided-class-options
+                            (list (cons style options))))
 
         ;; The third argument if "class" indicates LaTeX2e features.
         (cond ((or (string-equal class "class")
