@@ -8,6 +8,11 @@
 
 * [Unreleased]
 
+** Added
+
+- Complete support for in-buffer completion of color support macros.
+- Add new support file =style/standalone.el=.
+
 ** Fixed
 
 - Add appropriate ~delete-selection~ properties for
