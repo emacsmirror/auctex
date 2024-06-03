@@ -39,6 +39,15 @@
                   "font-latex"
                   (keywords class))
 
+(defun LaTeX-standalone-auto-cleanup ()
+  "Parse the value of \"class\" key and run the appropriate style hook."
+  (let ((cls (TeX-member "\\`class="
+                         (cdr (assoc "standalone" LaTeX-provided-class-options))
+                         #'string-match)))
+    (when cls
+      (TeX-run-style-hooks (cadr (split-string cls "=" t))))))
+
+(add-hook 'TeX-auto-cleanup-hook #'LaTeX-standalone-auto-cleanup t)
 
 (TeX-add-style-hook
  "standalone"
@@ -59,12 +68,7 @@
    (when (assoc "standalone" LaTeX-provided-class-options)
      (TeX-add-symbols
       '("standaloneconfig"
-        (TeX-arg-key-val (lambda ()
-                           (append
-                            `(("class" ,LaTeX-global-class-files)
-                              ("multi" ,(append '("true" "false")
-                                                (mapcar #'car (LaTeX-environment-list)))))
-                            LaTeX-standalone-class-options-list))))
+        (TeX-arg-key-val (LaTeX-standalone-class-options-list)))
       '("standaloneignore" 0) )
 
      (LaTeX-add-environments "standalone")
@@ -121,7 +125,7 @@
  TeX-dialect)
 
 (defun LaTeX-standalone-class-options-list ()
-  "Class options for the standalone class."
+  "Return an alist of class options for the standalone class."
   `(("class" ,LaTeX-global-class-files)
     ("multi" ,(append '("true" "false")
                       (mapcar #'car (LaTeX-environment-list))))
