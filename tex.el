@@ -9125,7 +9125,7 @@ original file."
          (header-end TeX-header-end)
          (trailer-start TeX-trailer-start)
 
-         ;; We seach for header and trailer in the master file.
+         ;; We search for header and trailer in the master file.
          (orig-buffer (current-buffer))
          (master-name (TeX-master-file TeX-default-extension))
          (master-buffer (find-file-noselect master-name))
