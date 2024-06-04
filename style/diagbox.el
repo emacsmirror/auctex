@@ -1,4 +1,4 @@
-;;; geometry.el --- AUCTeX style for `diagbox.sty' (v2.3)  -*- lexical-binding: t; -*-
+;;; diagbox.el --- AUCTeX style for `diagbox.sty' (v2.3)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2024 Free Software Foundation, Inc.
 
@@ -60,9 +60,11 @@
 (defun LaTeX-diagbox-key-val-options ()
   "Return updated key=val options for the \\diagbox macro."
   (append
-   `(("linecolor" ,(cond ((fboundp 'LaTeX-xcolor-definecolor-list)
+   `(("linecolor" ,(cond ((and (fboundp 'LaTeX-xcolor-definecolor-list)
+                               (member "xcolor" (TeX-style-list)))
                           (mapcar #'car (LaTeX-xcolor-definecolor-list)))
-                         ((fboundp 'LaTeX-color-definecolor-list)
+                         ((and (fboundp 'LaTeX-color-definecolor-list)
+                               (member "color" TeX-active-styles))
                           (mapcar #'car (LaTeX-color-definecolor-list))))))
    LaTeX-diagbox-key-val-options))
 
