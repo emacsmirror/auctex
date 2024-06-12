@@ -6426,8 +6426,10 @@ Each entry should be a list with upto four elements, KEY, VALUE,
 MENU and CHARACTER, see `LaTeX-math-list' for details.")
 
 (defcustom LaTeX-math-menu-unicode
-  (or (string-match "\\<GTK\\>" (emacs-version))
-      (eq window-system 'w32))
+  (if (or (string-match "\\<GTK\\>" (emacs-version))
+          (memq system-type '(darwin windows-nt)))
+      t
+    nil)
   "Whether the LaTeX menu should try using Unicode for effect."
   :type 'boolean
   :group 'LaTeX-math)
