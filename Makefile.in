@@ -199,7 +199,7 @@ STYLESRC = style/prosper.el \
 	   style/physics.el   style/soul.el      style/algpseudocodex.el \
 	   style/wasysym.el   style/refcount.el  style/simpleicons.el \
 	   style/changebar.el style/amsrefs.el   style/standalone.el \
-	   style/diagbox.el
+	   style/diagbox.el   style/contract.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
