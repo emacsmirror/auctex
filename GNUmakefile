@@ -106,8 +106,8 @@ LASTVERSION:=$(shell grep "^;; Version:" auctex.el \
 AUCTEXVERSION:=$(if $(THISVERSION),$(THISVERSION),$(LASTVERSION).$(AUCTEXDATE))
 
 tex-site.el: tex-site.el.in
-	sed -e 's|@lisppackagelispdir@|(file-name-directory load-file-name)|'\
-	    -e 's|@lisppackagedatadir@|(file-name-directory load-file-name)|'\
+	sed -e 's|@lisppackagelispdir@|(directory-file-name (file-name-directory load-file-name))|'\
+	    -e 's|@lisppackagedatadir@|(directory-file-name (file-name-directory load-file-name))|'\
 	    -e 's|@lispautodir@|(if (file-writable-p "/usr/local/var/auctex") "/usr/local/var/auctex" "~/.emacs.d/auctex")|'\
 	    -e 's|@AUCTEXVERSION@|$(AUCTEXVERSION)|'\
 	    -e 's|@AUCTEXDATE@|$(AUCTEXDATE)|'\
