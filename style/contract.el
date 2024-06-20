@@ -94,7 +94,8 @@
                         ("ClauseFont")
                         ("SubClause")
                         ("Sentence")
-                        ("ClauseNumberFormat"))])
+                        ("ClauseNumberFormat"))]
+      2)
 
     ;; 7 Support for Different Languages
     "parname"
@@ -120,8 +121,9 @@
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("contractSetup" "{")
-                                ("ellipsispar"   "["))
+     (font-latex-add-keywords '(("contractSetup"             "{")
+                                ("ellipsispar"               "[")
+                                ("DeclareNewJuraEnvironment" "{[{{"))
                               'function)
      (font-latex-add-keywords '(("Clause" "["))
                               'sectioning-2)
