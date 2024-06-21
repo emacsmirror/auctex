@@ -1660,15 +1660,6 @@ For available TYPEs, see variable `TeX-engine'."
          (setq TeX-PDF-from-DVI nil))
         ((eq type 'omega) (TeX-PDF-mode 0))))
 
-(define-minor-mode TeX-Omega-mode
-  "Minor mode for using the Omega engine."
-  :init-value nil :lighter nil :keymap nil
-  :group 'TeX-command
-  (TeX-engine-set (if TeX-Omega-mode 'omega 'default)))
-(defalias 'tex-omega-mode #'TeX-Omega-mode)
-(make-obsolete 'TeX-Omega-mode #'TeX-engine-set "11.86")
-(make-obsolete-variable 'TeX-Omega-mode 'TeX-engine "11.86")
-
 ;;; Forward and inverse search
 
 (defcustom TeX-source-correlate-method
