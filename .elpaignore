@@ -2,6 +2,7 @@
 *.in
 *.m4
 *.spec
+.elpaignore
 ChangeLog.1
 README.GIT
 admin
