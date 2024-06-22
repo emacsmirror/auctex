@@ -44,6 +44,9 @@
 ** Removed
 
 - Delete function ~LaTeX-env-contents~.
+- Delete obsolete variables ~TeX-symbol-marker~,
+  ~TeX-symbol-marker-pos~, ~TeX-dollar-sign~, ~TeX-dollar-string~ and
+  ~TeX-dollar-regexp~.
 
 * [14.0.5] - 2024-05-19
 

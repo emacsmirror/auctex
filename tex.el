@@ -6123,21 +6123,6 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
 ;; Rewritten from scratch with use of `texmathp' by
 ;; Carsten Dominik <dominik@strw.leidenuniv.nl>
 
-;; The following variables are no longer used, but kept in case some
-;; foreign code uses any of them.
-(defvar TeX-symbol-marker nil)
-(defvar TeX-symbol-marker-pos 0)
-(defvar TeX-dollar-sign ?$)
-(defconst TeX-dollar-string (char-to-string TeX-dollar-sign))
-(defconst TeX-dollar-regexp
-  (concat "^" (regexp-quote TeX-dollar-string) "\\|[^" TeX-esc "]"
-          (regexp-quote TeX-dollar-string)))
-(make-obsolete-variable 'TeX-symbol-marker nil "AUCTeX 9.9d++")
-(make-obsolete-variable 'TeX-symbol-marker-pos nil "AUCTeX 9.9d++")
-(make-obsolete-variable 'TeX-dollar-sign nil "AUCTeX 9.9d++")
-(make-obsolete-variable 'TeX-dollar-string nil "AUCTeX 9.9d++")
-(make-obsolete-variable 'TeX-dollar-regexp nil "AUCTeX 9.9d++")
-
 (defcustom TeX-math-toggle-off-input-method t
   "If non-nil, auto turn off some input methods when entering math mode.
 See `TeX-math-input-method-off-regexp'."
