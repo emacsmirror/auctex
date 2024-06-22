@@ -789,12 +789,12 @@ of those previews is goofed up, you will not be able to regenerate them
 by clicking on them.  The default behaviour is thus somewhat undesirable.
 
 The solution (like with other preview problems) is to tell the @LaTeX{}
-@samp{preview} package how to tackle this problem (@pxref{The LaTeX
-style file}).  Simply, you don't need @code{\emph} do anything at all
-during previews! You only want the text math previewed, so the solution
-is to use @code{\PreviewMacro*\emph} in the preamble of your document
-which will make @LaTeX{} ignore @code{\emph} completely as long as it is
-not part of a larger preview (in which case it gets typeset as
+@samp{preview} package how to tackle this problem (@pxref{The LaTeX style
+file}).  Simply, you don't need @code{\emph} do anything at all during
+previews! You only want the text math previewed, so the solution is to use
+@code{\AtBeginDocument@{\PreviewMacro*\emph@}} in the preamble of your
+document which will make @LaTeX{} ignore @code{\emph} completely as long
+as it is not part of a larger preview (in which case it gets typeset as
 usual).  Its argument thus becomes ordinary text and gets treated like
 ordinary text.
 
