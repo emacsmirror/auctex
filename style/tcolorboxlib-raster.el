@@ -1,6 +1,6 @@
 ;;; tcolorboxlib-raster.el --- AUCTeX style for `raster' library from tcolorbox  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -138,11 +138,10 @@
 
    ;; Append tcbitem to `LaTeX-item-regexp':
    (unless (string-match "tcbitem" LaTeX-item-regexp)
-     (set (make-local-variable 'LaTeX-item-regexp)
-          (concat
-           LaTeX-item-regexp
-           "\\|"
-           "tcbitem\\b"))
+     (setq-local LaTeX-item-regexp
+                 (concat LaTeX-item-regexp
+                         "\\|"
+                         "tcbitem\\b"))
      (LaTeX-set-paragraph-start))
 
    ;; Fontification

@@ -1,6 +1,6 @@
 ;;; exam.el --- AUCTeX style for the (LaTeX) exam class  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2024 Free Software Foundation, Inc.
 
 ;; Author: Uwe Brauer <oub@mat.ucm.es>
 ;; Created: 2016-03-06
@@ -127,15 +127,14 @@ Arguments NAME and TYPE are the same as for the function
    ;; Append us only once:
    (unless (and (string-match "question" LaTeX-item-regexp)
                 (string-match "sub" LaTeX-item-regexp))
-     (set (make-local-variable 'LaTeX-item-regexp)
-          (concat
-           LaTeX-item-regexp
-           "\\|"
-           "choice\\b"
-           "\\|"
-           "\\(titled\\)?question\\b"
-           "\\|"
-           "\\(sub\\)*part\\b"))
+     (setq-local LaTeX-item-regexp
+                 (concat LaTeX-item-regexp
+                         "\\|"
+                         "choice\\b"
+                         "\\|"
+                         "\\(titled\\)?question\\b"
+                         "\\|"
+                         "\\(sub\\)*part\\b"))
      (LaTeX-set-paragraph-start))
 
    (TeX-add-symbols

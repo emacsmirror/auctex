@@ -1,6 +1,6 @@
 ;;; l3doc.el --- AUCTeX style for `l3doc.cls'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -209,9 +209,9 @@ For syntax environment from l3doc class."
    ;; document are indented.  Append them to a local version of
    ;; `LaTeX-document-regexp':
    (unless (string-match-p "\\<implementation\\>" LaTeX-document-regexp)
-     (set (make-local-variable 'LaTeX-document-regexp)
-          (concat LaTeX-document-regexp
-                  "\\|documentation\\|implementation")))
+     (setq-local LaTeX-document-regexp
+                 (concat LaTeX-document-regexp
+                         "\\|documentation\\|implementation")))
 
    ;; Append syntax to `LaTeX-item-list' with `LaTeX-item-l3doc-syntax'
    (add-to-list 'LaTeX-item-list '("syntax" . LaTeX-item-l3doc-syntax) t)

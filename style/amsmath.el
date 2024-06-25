@@ -1,7 +1,6 @@
 ;;; amsmath.el --- Style hook for the AMS-LaTeX amsmath package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2002, 2005-2007, 2012-2014, 2017-2020, 2022
-;;      Free Software Foundation, Inc.
+;; Copyright (C) 2002--2024 Free Software Foundation, Inc.
 ;; FIXME: What about the copyright for <= 2001?
 
 ;; Author: Carsten Dominik <dominik@strw.leidenuniv.nl>
@@ -153,13 +152,13 @@
                    ("flalign"    . LaTeX-amsmath-label)
                    ("gather"     . LaTeX-amsmath-label))))
 
-   (set (make-local-variable 'TeX-braces-association)
-        (append '(("\\lvert" . "\\rvert")
-                  ("\\lVert" . "\\rVert"))
-                TeX-braces-association))
-   (set (make-local-variable 'TeX-left-right-braces)
-        (append '(("\\lvert") ("\\rvert") ("\\lVert") ("\\rVert"))
-                TeX-left-right-braces))
+   (setq-local TeX-braces-association
+               (append '(("\\lvert" . "\\rvert")
+                         ("\\lVert" . "\\rVert"))
+                       TeX-braces-association))
+   (setq-local TeX-left-right-braces
+               (append '(("\\lvert") ("\\rvert") ("\\lVert") ("\\rVert"))
+                       TeX-left-right-braces))
 
    ;; amsmath includes amstext, amsbsy, & amsopn.
    ;; So we run their hooks, too.

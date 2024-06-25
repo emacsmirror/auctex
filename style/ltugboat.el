@@ -74,8 +74,8 @@
    (LaTeX-add-environments '("appendix"))
 
    (unless (string-match-p "appendix" LaTeX-document-regexp)
-     (set (make-local-variable 'LaTeX-document-regexp)
-          (concat LaTeX-document-regexp "\\|" "appendix")))
+     (setq-local LaTeX-document-regexp
+                 (concat LaTeX-document-regexp "\\|" "appendix")))
 
    (TeX-add-symbols
     ;; 7 Titles, addresses and so on

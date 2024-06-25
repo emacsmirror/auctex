@@ -1,6 +1,6 @@
 ;;; dcolumn.el --- AUCTeX style for `dcolumn.sty' (v1.06)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -38,8 +38,8 @@
  (lambda ()
 
    ;; `dcolumn.sty' adds one new column specification letter:
-   (set (make-local-variable 'LaTeX-array-column-letters)
-        (concat LaTeX-array-column-letters "D"))
+   (setq-local LaTeX-array-column-letters
+               (concat LaTeX-array-column-letters "D"))
 
    ;; Also run style hook for `array':
    (TeX-run-style-hooks "array"))
