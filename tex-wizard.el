@@ -100,7 +100,7 @@ It appears that RefTeX is not configured to cooperate with
 AUCTeX.  Please configure it using the menus, save for future
 sessions, then press the finish button.")
         (customize-variable-other-window 'reftex-plug-into-AUCTeX)
-        (set (make-local-variable 'custom-buffer-done-kill) t)
+        (setq-local custom-buffer-done-kill t)
         (add-hook 'kill-buffer-hook #'exit-recursive-edit nil t)
         (recursive-edit)
         (select-window wizwin)
