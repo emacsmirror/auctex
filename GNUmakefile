@@ -22,6 +22,7 @@ EMACS=$(EMACSBIN) --batch -q -no-site-file -no-init-file -l lpath.el
 MAKEINFO=makeinfo
 INSTALL_INFO=install-info
 PERL=perl
+PDFLATEX=pdfla$(TEX)
 
 MANUALS=auctex preview-latex
 INFO_FILES=$(MANUALS:=.info)
@@ -82,6 +83,10 @@ elpa: $(MAIN_GENERATED_FILES) ChangeLog
 clean:
 	rm -f $(ALL_GENERATED_FILES) \
 		$(wildcard *.elc style/*.elc) \
+		$(LATEX_FILES) \
+		$(wildcard latex/*.aux latex/*.drv latex/*.hd latex/*.log) \
+		$(wildcard latex/*.out latex/*.pdf latex/*.tar.gz) \
+		latex/preview-mk.ins latex/preview.ins \
 		auctex-autoloads.el \
 		$(DYNVARSFILES)
 
@@ -137,6 +142,30 @@ $(LATEX_FILES): latex/preview.dtx latex/bootstrap.ins
 	cd latex; $(TEX) '\nonstopmode \input bootstrap.ins'
 	cd latex; $(TEX) '\nonstopmode \input preview-mk.ins'
 
+# The next rules are copied&adapted from Makefile.in and
+# latex/Makefile.in.  `preview-ctan' is the rule needed for creating a
+# tarball for CTAN upload.
+preview.ins: latex/preview.dtx
+	cd latex && rm -f $@ && \
+	$(TEX) '\nonstopmode\def\jobname{.ins}\input docstrip ' \
+	'\generate{\file{preview.ins}{\from{preview.dtx}{installer}}}' \
+	'\endbatchfile'
+
+preview.pdf: latex/preview.dtx latex/preview.sty
+	cd latex && \
+	$(PDFLATEX) '\nonstopmode \input{preview.drv}' && \
+	$(PDFLATEX) '\nonstopmode \input{preview.drv}' && \
+	$(PDFLATEX) '\nonstopmode \input{preview.drv}'
+
+preview-ctan: $(LATEX_FILES) preview.ins preview.pdf
+	cd latex && \
+	mkdir -p preview && \
+	cp README preview.dtx preview.ins preview.pdf preview/ && \
+	tar -cz --owner=root --group=root -f preview.tar.gz preview/ && \
+	rm -rf preview/
+
+# Cross-file variable checking with lexical binding
+# https://www.gnu.org/software/emacs/manual/html_node/elisp/Converting-to-Lexical-Binding.html
 DYNVARSFILES = *.dynvars style/*.dynvars auctex-dynvars
 dynvars-check:
 	rm -f $(wildcard *.elc) $(wildcard style/*.elc) $(DYNVARSFILES)
