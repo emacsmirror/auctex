@@ -495,7 +495,7 @@ is assumed by default."
                           (cons (car x) (- (cadr x)))
                         (cons (car x) (cadr x))))
                     texinfo-section-list))))
-    (set (make-local-variable (car v) ) (cdr v)))
+    (set (make-local-variable (car v)) (cdr v)))
   (reftex-ensure-compiled-variables))
 
 ;;; Keymap:
@@ -648,26 +648,25 @@ value of `Texinfo-mode-hook'."
   ;;       "^@node [ \t]*[Tt]op\\|^@\\("
   ;;       texinfo-chapter-level-regexp
   ;;       "\\)"))
-  (set (make-local-variable 'require-final-newline) mode-require-final-newline)
-  (set (make-local-variable 'indent-tabs-mode) nil)
-  (set (make-local-variable 'paragraph-separate)
-       (concat "@[a-zA-Z]*[ \n]\\|" paragraph-separate))
-  (set (make-local-variable 'paragraph-start)
-       (concat "@[a-zA-Z]*[ \n]\\|" paragraph-start))
-  (set (make-local-variable 'fill-column) 72)
-  (set (make-local-variable 'comment-start) "@c ")
-  (set (make-local-variable 'comment-start-skip) "@c +\\|@comment +")
-  (set (make-local-variable 'comment-use-syntax) nil)
+  (setq-local require-final-newline mode-require-final-newline)
+  (setq-local indent-tabs-mode nil)
+  (setq-local paragraph-separate
+              (concat "@[a-zA-Z]*[ \n]\\|" paragraph-separate))
+  (setq-local paragraph-start
+              (concat "@[a-zA-Z]*[ \n]\\|" paragraph-start))
+  (setq-local fill-column 72)
+  (setq-local comment-start "@c ")
+  (setq-local comment-start-skip "@c +\\|@comment +")
+  (setq-local comment-use-syntax nil)
   (setq TeX-comment-start-regexp "@c\\(?:omment\\)?\\>")
-  (set (make-local-variable 'words-include-escapes) t)
-  (set (make-local-variable 'imenu-generic-expression)
-       texinfo-imenu-generic-expression)
+  (setq-local words-include-escapes t)
+  (setq-local imenu-generic-expression texinfo-imenu-generic-expression)
   (setq imenu-case-fold-search nil)
 
-  (set (make-local-variable 'font-lock-defaults)
-       '(texinfo-font-lock-keywords nil nil nil backward-paragraph))
-  (set (make-local-variable 'syntax-propertize-function)
-       texinfo-syntax-propertize-function)
+  (setq-local font-lock-defaults
+              '(texinfo-font-lock-keywords nil nil nil backward-paragraph))
+  (setq-local syntax-propertize-function
+              texinfo-syntax-propertize-function)
 
   (setq-local outline-heading-alist
               (mapcar (lambda (x) (cons (concat "@" (car x)) (cadr x)))
@@ -677,12 +676,12 @@ value of `Texinfo-mode-hook'."
         	      "\\>"))
 
   ;; Mostly AUCTeX stuff
-  (set (make-local-variable 'TeX-command-current) #'TeX-command-master)
+  (setq-local TeX-command-current #'TeX-command-master)
 
   (setq TeX-default-extension "texi")
-  (set (make-local-variable 'TeX-esc) "@")
+  (setq-local TeX-esc "@")
 
-  (set (make-local-variable 'TeX-auto-regexp-list) 'TeX-auto-empty-regexp-list)
+  (setq-local TeX-auto-regexp-list 'TeX-auto-empty-regexp-list)
 
   (setq TeX-command-default "TeX")
   (setq TeX-header-end (regexp-quote "%**end of header"))
@@ -694,10 +693,9 @@ value of `Texinfo-mode-hook'."
   ;;      (list (list "@\\([a-zA-Z]*\\)" 1 #'TeX-symbol-list-filtered nil)
   ;;            (list "" TeX-complete-word)))
 
-  (set (make-local-variable 'TeX-font-list) Texinfo-font-list)
-  (set (make-local-variable 'TeX-font-replace-function)
-       #'TeX-font-replace-macro)
-  (set (make-local-variable 'TeX-style-hook-dialect) :texinfo)
+  (setq-local TeX-font-list Texinfo-font-list)
+  (setq-local TeX-font-replace-function #'TeX-font-replace-macro)
+  (setq-local TeX-style-hook-dialect :texinfo)
 
   (add-hook 'find-file-hook (lambda ()
                               (unless (file-exists-p (TeX-buffer-file-name))
@@ -706,8 +704,8 @@ value of `Texinfo-mode-hook'."
 
   (when (and (boundp 'add-log-current-defun-function)
              (fboundp 'texinfo-current-defun-name))
-    (set (make-local-variable 'add-log-current-defun-function)
-         #'texinfo-current-defun-name))
+    (setq-local add-log-current-defun-function
+                #'texinfo-current-defun-name))
 
   (TeX-add-symbols
    '("acronym" "Acronym")
