@@ -1297,8 +1297,8 @@ The entries are added to `font-latex-syntax-alist' and eventually
 end up in `font-lock-defaults'.  Each entry in LIST should be a
 cons pair as expected by `font-lock-defaults'.  The function also
 triggers Font Lock to recognize the change."
-  (set (make-local-variable 'font-latex-syntax-alist)
-       (append font-latex-syntax-alist list))
+  (setq-local font-latex-syntax-alist
+              (append font-latex-syntax-alist list))
   ;; We modify the `font-lock-syntax-table' directly but also call
   ;; `font-latex-setup' in order to have `font-lock-defaults' be in sync.
   (font-latex-setup)
@@ -1321,7 +1321,7 @@ triggers Font Lock to recognize the change."
   (font-latex-set-syntactic-keywords)
 
   ;; Activate multi-line fontification facilities.
-  (set (make-local-variable 'font-lock-multiline) t)
+  (setq-local font-lock-multiline t)
 
   ;; The test for `major-mode' currently only works with docTeX mode
   ;; because `TeX-install-font-lock' is called explicitly in
