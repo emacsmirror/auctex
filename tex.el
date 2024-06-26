@@ -2858,7 +2858,7 @@ side effect for example on variable `TeX-font-list'.")
 
 (defun TeX-bibtex-set-BibTeX-dialect ()
   "Set `TeX-style-hook-dialect' to `:bibtex' locally to BibTeX buffers."
-  (set (make-local-variable 'TeX-style-hook-dialect) :bibtex))
+  (setq-local TeX-style-hook-dialect :bibtex))
 
 (defun TeX-load-style (style)
   "Search for and load each definition for STYLE in `TeX-style-path'."
@@ -3818,30 +3818,29 @@ Not intended for direct use for user."
   (setq indent-tabs-mode nil)
 
   ;; Ispell support
-  (set (make-local-variable 'ispell-parser) 'tex)
+  (setq-local ispell-parser 'tex)
 
   ;; Redefine some standard variables
   (make-local-variable 'paragraph-start)
   (make-local-variable 'paragraph-separate)
-  (set (make-local-variable 'comment-start) "%")
-  (set (make-local-variable 'comment-start-skip)
-       (concat
-        "\\(\\(^\\|[^\\\n]\\)\\("
-        (regexp-quote TeX-esc)
-        (regexp-quote TeX-esc)
-        "\\)*\\)\\(%+[ \t]*\\)"))
-  (set (make-local-variable 'comment-end-skip) "[ \t]*\\(\\s>\\|\n\\)")
-  (set (make-local-variable 'comment-use-syntax) t)
-  (set (make-local-variable 'comment-padding) " ")
+  (setq-local comment-start "%")
+  (setq-local comment-start-skip
+              (concat "\\(\\(^\\|[^\\\n]\\)\\("
+                      (regexp-quote TeX-esc)
+                      (regexp-quote TeX-esc)
+                      "\\)*\\)\\(%+[ \t]*\\)"))
+  (setq-local comment-end-skip "[ \t]*\\(\\s>\\|\n\\)")
+  (setq-local comment-use-syntax t)
+  (setq-local comment-padding " ")
   ;; Removed as commenting in (La)TeX is done with one `%' not two
   ;; (make-local-variable 'comment-add)
   ;; (setq comment-add 1) ;default to `%%' in comment-region
-  (set (make-local-variable 'comment-indent-function) #'TeX-comment-indent)
-  (set (make-local-variable 'comment-multi-line) nil)
+  (setq-local comment-indent-function #'TeX-comment-indent)
+  (setq-local comment-multi-line nil)
   (make-local-variable 'compile-command)
   (unless (boundp 'compile-command)
     (setq compile-command "make"))
-  (set (make-local-variable 'words-include-escapes) nil)
+  (setq-local words-include-escapes nil)
 
   ;; Make TAB stand out
   ;;  (make-local-variable 'buffer-display-table)
@@ -8031,9 +8030,9 @@ Return the new process."
     (set-buffer buffer)
     (buffer-disable-undo)
     (erase-buffer)
-    (set (make-local-variable 'line-number-display-limit) 0)
+    (setq-local line-number-display-limit 0)
     (setq TeX-output-extension nil)
-    (set (make-local-variable 'TeX-command-buffer) command-buff)
+    (setq-local TeX-command-buffer command-buff)
     (if dir (cd dir))
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
     (TeX-output-mode)
@@ -8310,7 +8309,7 @@ Error parsing on \\[next-error] should work with a bit of luck."
     (setq-default TeX-command-buffer command-buff)
     (with-output-to-temp-buffer buffer)
     (set-buffer buffer)
-    (set (make-local-variable 'TeX-command-buffer) command-buff)
+    (setq-local TeX-command-buffer command-buff)
     (setq buffer-read-only nil)
     (if dir (cd dir))
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
@@ -10453,8 +10452,7 @@ warnings and bad boxes"
   "Major mode for viewing TeX output.
 \\{TeX-output-mode-map} "
   :syntax-table nil :abbrev-table nil :interactive nil
-  (set (make-local-variable 'revert-buffer-function)
-       #'TeX-output-revert-buffer)
+  (setq-local revert-buffer-function #'TeX-output-revert-buffer)
   ;; special-mode makes it read-only which prevents input from TeX.
   (setq buffer-read-only nil))
 
