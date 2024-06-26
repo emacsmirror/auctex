@@ -172,7 +172,7 @@ Run after mode hooks and file local variables application."
 
 (defun plain-TeX-common-initialization ()
   "Common initialization for plain TeX like modes."
-  (set (make-local-variable 'TeX-style-hook-dialect) plain-TeX-dialect)
+  (setq-local TeX-style-hook-dialect plain-TeX-dialect)
   (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
   (setq paragraph-start
         (concat
