@@ -1299,7 +1299,7 @@ are functions to call on preview's clicks."
                "*Preview-Ghostscript-Error*")))
     (with-current-buffer buff
       (kill-all-local-variables)
-      (set (make-local-variable 'view-exit-action) #'kill-buffer)
+      (setq-local view-exit-action #'kill-buffer)
       (setq buffer-undo-list t)
       (erase-buffer)
       (insert string)
@@ -3087,8 +3087,7 @@ pp")
 
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."
-  (set (make-local-variable 'desktop-save-buffer)
-       #'desktop-buffer-preview-misc-data)
+  (setq-local desktop-save-buffer #'desktop-buffer-preview-misc-data)
   (add-hook 'pre-command-hook #'preview-mark-point nil t)
   (add-hook 'post-command-hook #'preview-move-point nil t)
   (when (TeX-buffer-file-name)
