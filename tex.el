@@ -8648,6 +8648,11 @@ Changebar info has changed." nil t)
          (message
           "%s" "You should run LaTeX again to get the change bars right")
          (setq TeX-command-next TeX-command-default))
+        ((re-search-forward "^LaTeX Warning: Endnotes may have changed. \
+Rerun to get them right" nil t)
+         (message
+          "%s" "You should run LaTeX again to get the endnotes right")
+         (setq TeX-command-next TeX-command-default))
         ((re-search-forward "^\\* xsim warning: \"rerun\"" nil t)
          (message
           "%s" "You should run LaTeX again to synchronize exercise properties")
