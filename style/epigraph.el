@@ -1,6 +1,6 @@
 ;;; epigraph.el --- AUCTeX style for `epigraph.sty' v1.5c  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2017, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2012--2024 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -74,11 +74,10 @@
 
    ;; Append qitem to `LaTeX-item-regexp':
    (unless (string-match "qitem" LaTeX-item-regexp)
-     (set (make-local-variable 'LaTeX-item-regexp)
-          (concat
-           LaTeX-item-regexp
-           "\\|"
-           "qitem\\b"))
+     (setq-local LaTeX-item-regexp
+                 (concat LaTeX-item-regexp
+                         "\\|"
+                         "qitem\\b"))
      (LaTeX-set-paragraph-start))
 
    ;; Fontification:

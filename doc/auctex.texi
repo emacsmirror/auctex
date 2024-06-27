@@ -2959,10 +2959,13 @@ behaviour however you need to set
 @code{right-edge} which will unprettify the symbol when point moves into
 or near it.
 
-To enable prettification in @AUCTeX{}, simply add
-@code{prettify-symbols-mode} to @code{TeX-mode-hook}.  If you enabled
-prettification globally with @code{global-prettify-symbols-mode}, then
-it's automatically enabled in @AUCTeX{}, too.
+To enable prettification in @AUCTeX{}, simply add this to your init file:
+@lisp
+(add-hook 'TeX-mode-hook #'prettify-symbols-mode)
+@end lisp
+If you enabled prettification globally with
+@code{(global-prettify-symbols-mode)}, then it's automatically enabled in
+@AUCTeX{}, too.
 
 You can also add custom symbol unicode-character pairs for
 prettification by adding to @code{tex--prettify-symbols-alist}.  Note

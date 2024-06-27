@@ -2881,6 +2881,7 @@ using MML mode."
       (preview-regenerate ov))))
 
 (defun preview-copy-region-as-mml (start end)
+  "Copy into kill ring an MML representation of region from START to END."
   (interactive "r")
   (when (catch 'badcolor
           (let (str lst dont-ask)
@@ -3048,7 +3049,7 @@ changes get properly reflected in the environment."
 ;;;###autoload
 (defun preview-install-styles (dir &optional force-overwrite
                                    force-save)
-  "Installs the TeX style files into a permanent location.
+  "Install the TeX style files into a permanent location DIR.
 This must be in the TeX search path.  If FORCE-OVERWRITE is greater
 than 1, files will get overwritten without query, if it is less
 than 1 or nil, the operation will fail.  The default of 1 for interactive
@@ -3077,7 +3078,7 @@ pp")
                                (> force-overwrite 1))
                               (t force-overwrite))))
   (if (cond ((eq force-save 1)
-             (y-or-n-p "Stop using non-installed styles permanently "))
+             (y-or-n-p "Stop using non-installed styles permanently? "))
             ((numberp force-save)
              (> force-save 1))
             (t force-save))

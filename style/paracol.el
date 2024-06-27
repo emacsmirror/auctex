@@ -65,7 +65,7 @@ If OPTIONAL is non-nil, insert the result in square brackets."
         (TeX-argument-insert col optional)))))
 
 (defun LaTeX-paracol--used-model (&optional xcolor)
-  "Seach for \\backgroundcolor and return the optional used color model.
+  "Search for \\backgroundcolor and return the optional used color model.
 If XCOLOR is non-nil, store the returned value in the variable
 `LaTeX-xcolor-used-type-model', otherwise in the variable
 `LaTeX-color-used-model'."

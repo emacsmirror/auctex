@@ -1,6 +1,6 @@
 ;;; tex-live.el --- AUCTeX style for `tex-live.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2020--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -138,8 +138,8 @@
     '("lrBox"))
 
    ;; `tex-live.sty' adds one new column specification letter P:
-   (set (make-local-variable 'LaTeX-array-column-letters)
-        (concat LaTeX-array-column-letters "P"))
+   (setq-local LaTeX-array-column-letters
+               (concat LaTeX-array-column-letters "P"))
 
    ;; Custom env's where \item takes an opt. argument:
    (let ((envs '("ttdescription" "cmddescription")))

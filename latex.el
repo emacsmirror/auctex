@@ -2168,9 +2168,8 @@ TYPE is one of the symbols mac or env."
               (add-to-list 'TeX-auto-file elt t)
               ;; Append to `LaTeX-provided-package-options' the name of the
               ;; package and the options provided to it at load time.
-              (unless (equal options '(""))
-                (TeX-add-to-alist 'LaTeX-provided-package-options
-                                  (list (cons elt options)))))
+              (TeX-add-to-alist 'LaTeX-provided-package-options
+                                (list (cons elt options))))
           ;; And a special "art10" style file combining style and size.
           (add-to-list 'TeX-auto-file style t)
           (add-to-list 'TeX-auto-file
@@ -2201,9 +2200,8 @@ TYPE is one of the symbols mac or env."
                               (t
                                "10")))
                        t)
-          (unless (equal options '(""))
-            (TeX-add-to-alist 'LaTeX-provided-class-options
-                              (list (cons style options)))))
+          (TeX-add-to-alist 'LaTeX-provided-class-options
+                            (list (cons style options))))
 
         ;; The third argument if "class" indicates LaTeX2e features.
         (cond ((or (string-equal class "class")
@@ -2326,10 +2324,10 @@ It will setup BibTeX to store keys in an auto file."
   ;; add it before we enter BibTeX mode the first time.
   (add-hook 'write-contents-functions #'TeX-safe-auto-write nil t)
   (TeX-bibtex-set-BibTeX-dialect)
-  (set (make-local-variable 'TeX-auto-untabify) nil)
-  (set (make-local-variable 'TeX-auto-parse-length) 999999)
-  (set (make-local-variable 'TeX-auto-regexp-list) BibTeX-auto-regexp-list)
-  (set (make-local-variable 'TeX-master) t))
+  (setq-local TeX-auto-untabify nil)
+  (setq-local TeX-auto-parse-length 999999)
+  (setq-local TeX-auto-regexp-list BibTeX-auto-regexp-list)
+  (setq-local TeX-master t))
 
 ;;; Macro Argument Hooks
 
@@ -6428,8 +6426,10 @@ Each entry should be a list with upto four elements, KEY, VALUE,
 MENU and CHARACTER, see `LaTeX-math-list' for details.")
 
 (defcustom LaTeX-math-menu-unicode
-  (or (string-match "\\<GTK\\>" (emacs-version))
-      (eq window-system 'w32))
+  (if (or (string-match "\\<GTK\\>" (emacs-version))
+          (memq system-type '(darwin windows-nt)))
+      t
+    nil)
   "Whether the LaTeX menu should try using Unicode for effect."
   :type 'boolean
   :group 'LaTeX-math)
@@ -8195,7 +8195,8 @@ This happens when \\left is inserted."
   ;; This entry is necessary for M-? to work.
   ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00002.html>
   ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00005.html>
-  (push '(LaTeX-mode "*.ltx" "*.sty" "*.cls" "*.clo" "*.bbl" "*.drv" "*.hva")
+  (push '(LaTeX-mode "*.[tT]e[xX]" "*.ltx" "*.sty" "*.cl[so]" "*.bbl"
+                     "*.drv" "*.hva")
         semantic-symref-filepattern-alist))
 
 (declare-function LaTeX-preview-setup "preview")
@@ -8330,8 +8331,8 @@ Run after mode hooks and file local variables application."
   "Major mode in AUCTeX for editing .dtx files derived from `LaTeX-mode'.
 Runs `LaTeX-mode', sets a few variables and
 runs the hooks in `docTeX-mode-hook'."
-  (set (make-local-variable 'LaTeX-insert-into-comments) t)
-  (set (make-local-variable 'LaTeX-syntactic-comments) t)
+  (setq-local LaTeX-insert-into-comments t)
+  (setq-local LaTeX-syntactic-comments t)
   (setq TeX-default-extension docTeX-default-extension)
   ;; Make filling and indentation aware of DocStrip guards.
   (setq paragraph-start (concat paragraph-start "\\|%<")
@@ -8397,12 +8398,12 @@ function would return non-nil and `(match-string 1)' would return
 
 (defun LaTeX-common-initialization ()
   "Common initialization for LaTeX derived modes."
-  (set (make-local-variable 'indent-line-function) #'LaTeX-indent-line)
+  (setq-local indent-line-function #'LaTeX-indent-line)
 
   ;; Filling
-  (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
-  (set (make-local-variable 'fill-paragraph-function) #'LaTeX-fill-paragraph)
-  (set (make-local-variable 'adaptive-fill-mode) nil)
+  (setq-local paragraph-ignore-fill-prefix t)
+  (setq-local fill-paragraph-function #'LaTeX-fill-paragraph)
+  (setq-local adaptive-fill-mode nil)
   ;; Cater for \verb|...| (and similar) contructs which should not be
   ;; broken.
   (add-to-list (make-local-variable 'fill-nobreak-predicate)
@@ -8413,11 +8414,11 @@ function would return non-nil and `(match-string 1)' would return
 
   (setq TeX-header-end LaTeX-header-end
         TeX-trailer-start LaTeX-trailer-start)
-  (set (make-local-variable 'TeX-style-hook-dialect) TeX-dialect)
+  (setq-local TeX-style-hook-dialect TeX-dialect)
 
   (require 'outline)
-  (set (make-local-variable 'outline-level) #'LaTeX-outline-level)
-  (set (make-local-variable 'outline-regexp) (LaTeX-outline-regexp t))
+  (setq-local outline-level #'LaTeX-outline-level)
+  (setq-local outline-regexp (LaTeX-outline-regexp t))
   (when (boundp 'outline-heading-alist)
     (setq outline-heading-alist
           (mapcar (lambda (x)
@@ -8442,8 +8443,7 @@ function would return non-nil and `(match-string 1)' would return
   (setq TeX-verbatim-p-function #'LaTeX-verbatim-p)
   (setq TeX-search-forward-comment-start-function
         #'LaTeX-search-forward-comment-start)
-  (set (make-local-variable 'TeX-search-files-type-alist)
-       LaTeX-search-files-type-alist)
+  (setq-local TeX-search-files-type-alist LaTeX-search-files-type-alist)
 
   (setq-local beginning-of-defun-function #'LaTeX-find-matching-begin)
   (setq-local end-of-defun-function       #'LaTeX-find-matching-end)
@@ -8456,11 +8456,11 @@ function would return non-nil and `(match-string 1)' would return
   (add-hook 'completion-at-point-functions
             #'LaTeX--arguments-completion-at-point 5 t)
 
-  (set (make-local-variable 'LaTeX-item-list) '(("description" . LaTeX-item-argument)
-                                                ("thebibliography" . LaTeX-item-bib)
-                                                ("array" . LaTeX-item-array)
-                                                ("tabular" . LaTeX-item-array)
-                                                ("tabular*" . LaTeX-item-tabular*)))
+  (setq-local LaTeX-item-list '(("description" . LaTeX-item-argument)
+                                ("thebibliography" . LaTeX-item-bib)
+                                ("array" . LaTeX-item-array)
+                                ("tabular" . LaTeX-item-array)
+                                ("tabular*" . LaTeX-item-tabular*)))
 
   (LaTeX-add-environments
    '("document" LaTeX-env-document)
@@ -9165,12 +9165,11 @@ function would return non-nil and `(match-string 1)' would return
   ;; functions will make sure that the default will get used unless the
   ;; user overrode it.
 
-  (set (make-local-variable 'imenu-create-index-function)
-       #'LaTeX-imenu-create-index-function)
+  (setq-local imenu-create-index-function
+              #'LaTeX-imenu-create-index-function)
 
   ;; Initialization of `add-log-current-defun-function':
-  (set (make-local-variable 'add-log-current-defun-function)
-       #'TeX-current-defun-name)
+  (setq-local add-log-current-defun-function #'TeX-current-defun-name)
 
   ;; Set LaTeX-specific help messages for error so that it's available
   ;; in `TeX-help-error'.

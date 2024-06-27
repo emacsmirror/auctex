@@ -1,6 +1,6 @@
 ;;; beamer.el --- AUCTeX style for the latex-beamer class  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2023  Free Software Foundation, Inc.
+;; Copyright (C) 2003-2024  Free Software Foundation, Inc.
 
 ;; Author: Thomas Baumann <thomas.baumann@ch.tum.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -500,8 +500,7 @@ also be a string.  Then the length of the string is used."
 (defun LaTeX-beamer-themes-list ()
   "Return a list of beamer themes for completion."
   (cond ((eq LaTeX-beamer-themes 'local)
-         (set (make-local-variable 'LaTeX-beamer-themes)
-              (LaTeX-beamer-search-themes)))
+         (setq-local LaTeX-beamer-themes (LaTeX-beamer-search-themes)))
         ((functionp LaTeX-beamer-themes)
          (funcall LaTeX-beamer-themes))
         ((listp LaTeX-beamer-themes)
@@ -513,8 +512,8 @@ also be a string.  Then the length of the string is used."
 (defun LaTeX-beamer-inner-themes-list ()
   "Return a list of beamer inner themes for completion."
   (cond ((eq LaTeX-beamer-inner-themes 'local)
-         (set (make-local-variable 'LaTeX-beamer-inner-themes)
-              (LaTeX-beamer-search-themes "^beamerinnertheme")))
+         (setq-local LaTeX-beamer-inner-themes
+                     (LaTeX-beamer-search-themes "^beamerinnertheme")))
         ((functionp LaTeX-beamer-inner-themes)
          (funcall LaTeX-beamer-inner-themes))
         ((listp LaTeX-beamer-inner-themes)
@@ -526,8 +525,8 @@ also be a string.  Then the length of the string is used."
 (defun LaTeX-beamer-outer-themes-list ()
   "Return a list of beamer outer themes for completion."
   (cond ((eq LaTeX-beamer-outer-themes 'local)
-         (set (make-local-variable 'LaTeX-beamer-outer-themes)
-              (LaTeX-beamer-search-themes "^beameroutertheme")))
+         (setq-local LaTeX-beamer-outer-themes
+                     (LaTeX-beamer-search-themes "^beameroutertheme")))
         ((functionp LaTeX-beamer-outer-themes)
          (funcall LaTeX-beamer-outer-themes))
         ((listp LaTeX-beamer-outer-themes)
@@ -539,8 +538,8 @@ also be a string.  Then the length of the string is used."
 (defun LaTeX-beamer-color-themes-list ()
   "Return a list of beamer color themes for completion."
   (cond ((eq LaTeX-beamer-color-themes 'local)
-         (set (make-local-variable 'LaTeX-beamer-color-themes)
-              (LaTeX-beamer-search-themes "^beamercolortheme")))
+         (setq-local LaTeX-beamer-color-themes
+                     (LaTeX-beamer-search-themes "^beamercolortheme")))
         ((functionp LaTeX-beamer-color-themes)
          (funcall LaTeX-beamer-color-themes))
         ((listp LaTeX-beamer-color-themes)
@@ -552,8 +551,8 @@ also be a string.  Then the length of the string is used."
 (defun LaTeX-beamer-font-themes-list ()
   "Return a list of beamer font themes for completion."
   (cond ((eq LaTeX-beamer-font-themes 'local)
-         (set (make-local-variable 'LaTeX-beamer-font-themes)
-              (LaTeX-beamer-search-themes "^beamerfonttheme")))
+         (setq-local LaTeX-beamer-font-themes
+                     (LaTeX-beamer-search-themes "^beamerfonttheme")))
         ((functionp LaTeX-beamer-font-themes)
          (funcall LaTeX-beamer-font-themes))
         ((listp LaTeX-beamer-font-themes)

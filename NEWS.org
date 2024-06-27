@@ -8,6 +8,12 @@
 
 * [Unreleased]
 
+** Added
+
+- Complete support for in-buffer completion of color support macros.
+- Add new support files =style/contract.el=, =style/diagbox.el= and
+  =style/standalone.el=.
+
 ** Fixed
 
 - Add appropriate ~delete-selection~ properties for
@@ -39,6 +45,10 @@
 ** Removed
 
 - Delete function ~LaTeX-env-contents~.
+- Delete obsolete variables ~TeX-symbol-marker~,
+  ~TeX-symbol-marker-pos~, ~TeX-dollar-sign~, ~TeX-dollar-string~ and
+  ~TeX-dollar-regexp~.
+- Delete obsolete minor-mode ~TeX-Omega-mode~.
 
 * [14.0.5] - 2024-05-19
 

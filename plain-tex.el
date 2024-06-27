@@ -118,6 +118,14 @@ plain-TeX file, or any mode derived thereof.  See variable
 
 (TeX-abbrev-mode-setup plain-TeX-mode plain-tex-mode-abbrev-table)
 
+(defvar semantic-symref-filepattern-alist) ; Silence compiler
+(with-eval-after-load 'semantic/symref/grep
+  ;; This entry is necessary for M-? to work.
+  ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00002.html>
+  ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00005.html>
+  (push '(plain-TeX-mode "*.[tT]e[xX]" "*.ins")
+        semantic-symref-filepattern-alist))
+
 ;; Delete alias predefined in tex-mode.el so that AUCTeX autoload
 ;; takes precedence.
 ;;;###autoload (if (eq (symbol-function 'plain-TeX-mode) 'plain-tex-mode)
@@ -164,7 +172,7 @@ Run after mode hooks and file local variables application."
 
 (defun plain-TeX-common-initialization ()
   "Common initialization for plain TeX like modes."
-  (set (make-local-variable 'TeX-style-hook-dialect) plain-TeX-dialect)
+  (setq-local TeX-style-hook-dialect plain-TeX-dialect)
   (setq TeX-sentinel-default-function #'TeX-TeX-sentinel)
   (setq paragraph-start
         (concat
@@ -317,6 +325,12 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
   "A hook run in AmSTeX mode buffers."
   :type 'hook
   :group 'TeX-misc)
+
+(with-eval-after-load 'semantic/symref/grep
+  ;; This entry is necessary for M-? to work.
+  ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00002.html>
+  ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00005.html>
+  (push '(AmSTeX-mode "*.[tT]e[xX]") semantic-symref-filepattern-alist))
 
 ;;;###autoload
 (define-derived-mode AmSTeX-mode plain-TeX-mode "AmS-TeX"

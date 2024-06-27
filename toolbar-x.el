@@ -17,7 +17,8 @@
 ;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
 ;; MA 02110-1301 USA
 
-;;; Author: Miguel Vinicius Santini Frasson
+;; Author: Miguel Vinicius Santini Frasson <frasson@math.leidenuniv.nl>
+;; Maintainer: auctex-devel@gnu.org
 
 ;;; Commentary:
 ;; This program implements a common interface to display toolbar
@@ -1432,8 +1433,7 @@ line of buttons.  The only property supported for this button is
     (if global-flag
         (setq-default toolbarx-internal-button-switches
                       switches)
-      (set (make-local-variable 'toolbarx-internal-button-switches)
-           switches)
+      (setq-local toolbarx-internal-button-switches switches)
       (make-local-variable 'tool-bar-map)))
   (toolbarx-refresh global-flag))
 

@@ -1,6 +1,6 @@
 ;;; siunitx.el --- AUCTeX style for `siunitx.sty' version 3.3.36.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2023  Free Software Foundation, Inc.
+;; Copyright (C) 2012-2024  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -468,8 +468,8 @@ string."
    ;; FIXME: 'siunitx.sty' adds only one new column specification
    ;; letter 'S' in v3 and 's' is removed.  We keep 's' for older
    ;; documents and remove it sometimes later.
-   (set (make-local-variable 'LaTeX-array-column-letters)
-        (concat LaTeX-array-column-letters "S" "s"))
+   (setq-local LaTeX-array-column-letters
+               (concat LaTeX-array-column-letters "S" "s"))
 
    (TeX-run-style-hooks "l3keys2e"
                         "array"

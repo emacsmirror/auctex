@@ -1,6 +1,6 @@
 ;;; plext.el --- AUCTeX style for the plext package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2020, 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2024 Free Software Foundation, Inc.
 
 ;; Author: Ikumi Keita <ikumi@ikumi.que.jp>
 ;; Maintainer: auctex-devel@gnu.org
@@ -45,11 +45,12 @@
     '("tabular"  LaTeX-plext-env-array)
     '("tabular*" LaTeX-plext-env-array))
 
-   (set (make-local-variable 'LaTeX-array-skipping-regexp)
-        (concat "\\(?:<[tyz]>\\)?[ \t]*" (regexp-opt '("[t]" "[b]" ""))))
-   (set (make-local-variable 'LaTeX-tabular*-skipping-regexp)
-        (concat "\\(?:<[tyz]>\\)?[ \t]*{[^}]*}[ \t]*"
-                (regexp-opt '("[t]" "[b]" "")))))
+   (setq-local LaTeX-array-skipping-regexp
+               (concat "\\(?:<[tyz]>\\)?[ \t]*"
+                       (regexp-opt '("[t]" "[b]" ""))))
+   (setq-local LaTeX-tabular*-skipping-regexp
+               (concat "\\(?:<[tyz]>\\)?[ \t]*{[^}]*}[ \t]*"
+                       (regexp-opt '("[t]" "[b]" "")))))
  TeX-dialect)
 
 (defun LaTeX-plext-env-array (env)

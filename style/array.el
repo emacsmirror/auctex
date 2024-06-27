@@ -1,6 +1,6 @@
 ;;; array.el --- AUCTeX style for `array.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2022  Free Software Foundation, Inc.
+;; Copyright (C) 2013-2024  Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -57,10 +57,10 @@ package.")
 
 (defun LaTeX-array-update-column-letters ()
   "Update and uniquify the local value of `LaTeX-array-column-letters'."
-  (set (make-local-variable 'LaTeX-array-column-letters)
-       (let* ((newtypes (mapconcat #'car (LaTeX-array-newcolumntype-list) ""))
-              (alltypes (concat LaTeX-array-column-letters newtypes)))
-         (seq-concatenate 'string (seq-uniq alltypes #'=)))))
+  (setq-local LaTeX-array-column-letters
+              (let* ((newtypes (mapconcat #'car (LaTeX-array-newcolumntype-list) ""))
+                     (alltypes (concat LaTeX-array-column-letters newtypes)))
+                (seq-concatenate 'string (seq-uniq alltypes #'=)))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-array-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-array-auto-cleanup t)
@@ -90,8 +90,8 @@ package.")
    (LaTeX-add-lengths "extratabsurround" "extrarowheight")
 
    ;; `array.sty' adds some new column specification letters.
-   (set (make-local-variable 'LaTeX-array-column-letters)
-        (concat LaTeX-array-column-letters "m" "b" "w" "W"))
+   (setq-local LaTeX-array-column-letters
+               (concat LaTeX-array-column-letters "m" "b" "w" "W"))
 
    ;; Fontification
    (when (and (featurep 'font-latex)

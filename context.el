@@ -2,7 +2,9 @@
 
 ;; Copyright (C) 2003-2024  Free Software Foundation, Inc.
 
-;; Maintainer: Berend de Boer <berend@pobox.com>
+;; Author: Patrick Gundlach <pg@levana.de>
+;;         Berend de Boer <berend@pobox.com>
+;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -1861,11 +1863,18 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
 (TeX-abbrev-mode-setup ConTeXt-mode context-mode-abbrev-table)
 
+(defvar semantic-symref-filepattern-alist) ; Silence compiler
+(with-eval-after-load 'semantic/symref/grep
+  ;; This entry is necessary for M-? to work.
+  ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00002.html>
+  ;; <URL:https://lists.gnu.org/r/auctex-devel/2023-09/msg00005.html>
+  (push '(ConTeXt-mode "*.[tT]e[xX]") semantic-symref-filepattern-alist))
+
 (defun ConTeXt-mode-common-initialization ()
   "Initialization code that is common for all ConTeXt interfaces."
   (plain-TeX-common-initialization)
 
-  (set (make-local-variable 'TeX-style-hook-dialect) ConTeXt-dialect)
+  (setq-local TeX-style-hook-dialect ConTeXt-dialect)
 
   (require (intern (concat "context-" ConTeXt-current-interface)))
   (dolist (symbol ConTeXt-language-variable-list)
@@ -1882,17 +1891,17 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
       (setq ConTeXt-largest-level 2))
 
   ;; Indenting
-  (set (make-local-variable 'indent-line-function) #'ConTeXt-indent-line)
-  (set (make-local-variable 'fill-indent-according-to-mode) t)
+  (setq-local indent-line-function #'ConTeXt-indent-line)
+  (setq-local fill-indent-according-to-mode t)
 
   ;; Paragraph formatting
-  (set (make-local-variable 'LaTeX-syntactic-comments) nil)
+  (setq-local LaTeX-syntactic-comments nil)
   ;; Moved after `run-mode-hooks'. (bug#65750)
   ;; (set (make-local-variable 'LaTeX-paragraph-commands-regexp)
   ;;      (ConTeXt-paragraph-commands-regexp))
-  (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
-  (set (make-local-variable 'fill-paragraph-function) #'LaTeX-fill-paragraph)
-  (set (make-local-variable 'adaptive-fill-mode) nil)
+  (setq-local paragraph-ignore-fill-prefix t)
+  (setq-local fill-paragraph-function #'LaTeX-fill-paragraph)
+  (setq-local adaptive-fill-mode nil)
   ;; Moved after `run-mode-hooks'. (bug#65750)
   ;; (setq paragraph-start
   ;;       (concat
@@ -1917,18 +1926,18 @@ that is, you do _not_ have to cater for this yourself by adding \\\\\\=' or $."
 
   ;; Outline support
   (require 'outline)
-  (set (make-local-variable 'outline-level) #'ConTeXt-outline-level)
-  (set (make-local-variable 'outline-regexp) (ConTeXt-outline-regexp t))
+  (setq-local outline-level #'ConTeXt-outline-level)
+  (setq-local outline-regexp (ConTeXt-outline-regexp t))
   (make-local-variable 'outline-heading-end-regexp)
   (setq TeX-header-end (ConTeXt-header-end)
         TeX-trailer-start (ConTeXt-trailer-start))
 
   ;; font switch support
-  (set (make-local-variable 'TeX-font-list) ConTeXt-font-list)
+  (setq-local TeX-font-list ConTeXt-font-list)
 
   ;; imenu support
-  (set (make-local-variable 'imenu-create-index-function)
-       #'ConTeXt-imenu-create-index-function)
+  (setq-local imenu-create-index-function
+              #'ConTeXt-imenu-create-index-function)
 
   (setq TeX-command-default "ConTeXt")
   (setq TeX-sentinel-default-function #'TeX-ConTeXt-sentinel))

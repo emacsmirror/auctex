@@ -1,6 +1,6 @@
 ;;; appendix.el --- AUCTeX style for `appendix.sty' (v1.2c)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2020--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -68,8 +68,9 @@
 
    ;; Don't indent the content inside \(sub\)?appendices environments:
    (unless (string-match "appendices" LaTeX-document-regexp)
-     (set (make-local-variable 'LaTeX-document-regexp)
-          (concat LaTeX-document-regexp "\\|\\(?:sub\\)?appendices"))))
+     (setq-local LaTeX-document-regexp
+                 (concat LaTeX-document-regexp
+                         "\\|\\(?:sub\\)?appendices"))))
  TeX-dialect)
 
 (defvar LaTeX-appendix-package-options '("toc" "page" "title"

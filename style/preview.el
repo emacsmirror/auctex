@@ -1,6 +1,6 @@
 ;;; preview.el --- AUCTeX style for `preview.sty' (v2010/02/14)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -64,23 +64,23 @@ OPTIONAL is ignored."
 
    (TeX-add-symbols
     '("PreviewMacro" (TeX-arg-conditional (y-or-n-p "With optional arguments? ")
-                                          ( [ t ] [ nil ] )
-                                          ())
+                         ( [ t ] [ nil ] )
+                       ())
       TeX-arg-macro)
 
     '("PreviewMacro*" (TeX-arg-conditional (y-or-n-p "With optional arguments? ")
-                                           ( [ t ] [ nil ] )
-                                           ())
+                          ( [ t ] [ nil ] )
+                        ())
       TeX-arg-macro)
 
     '("PreviewEnvironment" (TeX-arg-conditional (y-or-n-p "With optional arguments? ")
-                                                ( [ t ] [ nil ] )
-                                                ())
+                               ( [ t ] [ nil ] )
+                             ())
       TeX-arg-environment)
 
     '("PreviewEnvironment*" (TeX-arg-conditional (y-or-n-p "With optional arguments? ")
-                                                 ( [ t ] [ nil ] )
-                                                 ())
+                                ( [ t ] [ nil ] )
+                              ())
       TeX-arg-environment)
 
     '("PreviewSnarfEnvironment" TeX-arg-environment)
@@ -93,7 +93,7 @@ OPTIONAL is ignored."
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("PreviewMacro"            "*[[{")
+     (font-latex-add-keywords '(("PreviewMacro"            "*[[|{\\")
                                 ("PreviewEnvironment"      "*[[{")
                                 ("PreviewSnarfEnvironment" "[{"))
                               'function)))

@@ -246,6 +246,12 @@ dollar which just closes the math mode.
 @end itemize
 
 @item
+The following obsolete variables, used for old @key{$} key management,
+were at last removed: @code{TeX-symbol-marker},
+@code{TeX-symbol-marker-pos}, @code{TeX-dollar-sign},
+@code{TeX-dollar-string} and @code{TeX-dollar-regexp}.
+
+@item
 @AUCTeX{} now requires GNU Emacs 27.1 or higher.
 @end itemize
 

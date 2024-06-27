@@ -1,6 +1,7 @@
 ;;; This file is only used for installing AUCTeX.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013-2021  Free Software Foundation, Inc.
+;; Maintainer: auctex-devel@gnu.org
 
 ;;; It is not a part of AUCTeX itself.
 

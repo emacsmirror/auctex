@@ -3,6 +3,7 @@
 ;; Copyright (C) 2003-2024 Free Software Foundation, Inc.
 
 ;; Author: David Kastrup <dak@gnu.org>
+;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, text, convenience
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -99,7 +100,7 @@ It appears that RefTeX is not configured to cooperate with
 AUCTeX.  Please configure it using the menus, save for future
 sessions, then press the finish button.")
         (customize-variable-other-window 'reftex-plug-into-AUCTeX)
-        (set (make-local-variable 'custom-buffer-done-kill) t)
+        (setq-local custom-buffer-done-kill t)
         (add-hook 'kill-buffer-hook #'exit-recursive-edit nil t)
         (recursive-edit)
         (select-window wizwin)

@@ -1,6 +1,6 @@
 ;;; hyperref.el --- AUCTeX style for `hyperref.sty' v6.83m  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2008, 2013-2022 Free Software Foundation, Inc.
+;; Copyright (C) 2008-2024 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -234,10 +234,9 @@
     '("hyperbaseurl" t)
     '("hyperimage" "Image URL" "Text")
     '("hyperdef" "Category" "Name" "Text")
-    '("hyperref"
-      (TeX-arg-conditional (y-or-n-p "Insert a label and text? ")
-          ([TeX-arg-ref] "Text")
-        ("URL" "Category" "Name" "Text")))
+    '("hyperref" (TeX-arg-conditional (y-or-n-p "Insert a label and text? ")
+                     ([TeX-arg-ref] "Text")
+                   ("URL" "Category" "Name" "Text")))
     '("hyperlink" "Name" "Text")
     '("hypertarget" "Name" "Text")
     '("phantomsection" 0)
@@ -287,8 +286,8 @@
    ;; whole document is indented.  Append it to a local version of
    ;; `LaTeX-document-regexp':
    (unless (string-match-p "Form" LaTeX-document-regexp)
-     (set (make-local-variable 'LaTeX-document-regexp)
-          (concat LaTeX-document-regexp "\\|" "Form")))
+     (setq-local LaTeX-document-regexp
+                 (concat LaTeX-document-regexp "\\|" "Form")))
 
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")

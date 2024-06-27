@@ -1,8 +1,9 @@
 ;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file. -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1994-1999, 2001, 2003-2005, 2014-2022 Free Software Foundation, Inc.
+;; Copyright (C) 1994-1999, 2001, 2003-2005, 2014-2024 Free Software Foundation, Inc.
 
 ;; Author:    Peter S. Galbraith <psg@debian.org>
+;; Maintainer: auctex-devel@gnu.org
 ;; Created:   06 July 1994
 ;; Version:   3.28  (Feb 23 2005)
 ;; Keywords:  bibtex, cite, auctex, emacs
@@ -724,17 +725,17 @@ When bib-cite mode is enabled, citations, labels and refs are highlighted
 when the mouse is over them.  Clicking on these highlights with [mouse-2]
 runs `bib-find', and [mouse-3] runs `bib-display'."
   (interactive "P")
-  (set (make-local-variable 'bib-cite-minor-mode)
-       (if arg
-           (> (prefix-numeric-value arg) 0)
-         (not bib-cite-minor-mode)))
+  (setq-local bib-cite-minor-mode
+              (if arg
+                  (> (prefix-numeric-value arg) 0)
+                (not bib-cite-minor-mode)))
   (cond
    (bib-cite-minor-mode                 ;Setup the minor-mode
     ;; Christoph Wedler's <wedler@fmi.uni-passau.de> suggestion for xemacs
     ;; Added for version 2.19
     (if (boundp 'tags-always-exact)
         (progn
-          (set (make-local-variable 'tags-always-exact) nil)))
+          (setq-local tags-always-exact nil)))
     ;; mouse overlay
     (if bib-highlight-mouse-t
         (progn
@@ -757,17 +758,19 @@ runs `bib-find', and [mouse-3] runs `bib-display'."
 ;; own.
 (defun bib-cite-setup-highlight-mouse-keymap ()
   "Set up the bib-cite text in the current buffer to be clickable."
-  (set (make-local-variable 'bib-highlight-mouse-keymap)
-       ;; First, copy the local keymap so we don't have `disappearing' menus
-       ;; when the mouse is moved over a \ref, \label or \cite command.
+  (setq-local bib-highlight-mouse-keymap
+              ;; First, copy the local keymap so we don't have
+              ;; `disappearing' menus when the mouse is moved over a
+              ;; \ref, \label or \cite command.
 
-       ;; FIXME: Check out (mouse-major-mode-menu) to see how it grabs the local
-       ;;        menus to display.  Maybe on `highlighted' commands we could
-       ;;        only display the bib-cite stuff (or a subset of it).
-       (let ((m (copy-keymap (current-local-map))))
-         (define-key m [down-mouse-3] #'bib-display-mouse)
-         (define-key m [mouse-2] #'bib-find-mouse)
-         m)))
+              ;; FIXME: Check out (mouse-major-mode-menu) to see how it
+              ;;        grabs the local menus to display.  Maybe on
+              ;;        `highlighted' commands we could only display the
+              ;;        bib-cite stuff (or a subset of it).
+              (let ((m (copy-keymap (current-local-map))))
+                (define-key m [down-mouse-3] #'bib-display-mouse)
+                (define-key m [mouse-2] #'bib-find-mouse)
+                m)))
 
 ;;;###autoload
 (defun turn-on-bib-cite ()
@@ -1159,7 +1162,7 @@ See variables `bib-etags-command' and `bib-etags-filename'."
     (or (equal the-tags-file  tags-file-name) ;make sure it's current
         (visit-tags-table the-tags-file))
 
-    ;(set (make-local-variable 'tags-file-name) the-tags-file))
+    ;; (set (make-local-variable 'tags-file-name) the-tags-file))
     ;; above should not be needed
 
     ;; Weird Bug:
@@ -1171,7 +1174,7 @@ See variables `bib-etags-command' and `bib-etags-filename'."
     ;; (Changed by Anders Stenman)
     (if (get-file-buffer the-tags-file)
         (with-current-buffer (get-file-buffer the-tags-file)
-          (set (make-local-variable 'tags-file-name) the-tags-file))))
+          (setq-local tags-file-name the-tags-file))))
 
 
   (if bib-document-TeX-files-warnings   ;free variable loose in emacs!

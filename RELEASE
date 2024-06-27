@@ -78,11 +78,8 @@ Future development and additional information
 
 AUCTeX is proceeding as a GNU project with the long-term intent of
 merging it into Emacs.  For that reason, all new contributors need to
-assign copyright to their contributions to the FSF (the usual
-procedure for Emacs contributors).  The same holds for past
-contributors.  The principal authors and maintainers have already done
-so, but it would require a diligent and diplomatic volunteer to find
-and ask the rest.
+assign copyright to their contributions to the FSF (the usual procedure
+for Emacs contributors).  The same holds for past contributors.
 
 Current AUCTeX managers are Arash Esbati, Mosè Giordano, and Tassilo
 Horn.  Everybody is welcome to contribute to the project by reporting

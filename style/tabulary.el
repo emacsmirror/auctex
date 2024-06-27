@@ -1,6 +1,6 @@
 ;;; tabulary.el --- AUCTeX style for the tabulary package.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2016, 2020, 2021 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2024 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -66,8 +66,8 @@
    (TeX-run-style-hooks "array")
 
    ;; `tabulary.sty' adds some new column specification letters.
-   (set (make-local-variable 'LaTeX-array-column-letters)
-        (concat LaTeX-array-column-letters "L" "C" "R" "J")))
+   (setq-local LaTeX-array-column-letters
+               (concat LaTeX-array-column-letters "L" "C" "R" "J")))
  TeX-dialect)
 
 ;;; tabulary.el ends here

@@ -1,18 +1,18 @@
 ;;; tex-font.el --- Font-Lock support stolen from Emacs 21.  -*- lexical-binding: t; -*-
 ;;
-;; Copyright (C) 1985-2021  Free Software Foundation, Inc.
+;; Copyright (C) 1985-2024  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, faces
 
-;; This file is part of AUC TeX.
+;; This file is part of AUCTeX.
 
-;; AUC TeX is free software; you can redistribute it and/or modify
+;; AUCTeX is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
 
-;; AUC TeX is distributed in the hope that it will be useful,
+;; AUCTeX is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
@@ -159,15 +159,14 @@
 ;;;###autoload
 (defun tex-font-setup ()
   "Setup font lock support for TeX."
-  (set (make-local-variable 'font-lock-defaults)
-       '((tex-font-lock-keywords
-          tex-font-lock-keywords-1 tex-font-lock-keywords-2)
-         nil nil ((?$ . "\"")) nil
-         ;; Who ever uses that anyway ???
-         (font-lock-mark-block-function . mark-paragraph)
-         (font-lock-syntactic-face-function
-          . tex-font-lock-syntactic-face-function)))
-  )
+  (setq-local font-lock-defaults
+              '((tex-font-lock-keywords
+                 tex-font-lock-keywords-1 tex-font-lock-keywords-2)
+                nil nil ((?$ . "\"")) nil
+                ;; Who ever uses that anyway ???
+                (font-lock-mark-block-function . mark-paragraph)
+                (font-lock-syntactic-face-function
+                 . tex-font-lock-syntactic-face-function))))
 
 (provide 'tex-font)
 
