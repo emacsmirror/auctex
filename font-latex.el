@@ -1310,10 +1310,16 @@ triggers Font Lock to recognize the change."
 
 (defun font-latex--make-syntax-propertize-function ()
   "Return a `syntax-propertize-function' for (La|Doc)TeX documents."
-  (let ((kws ;; (if (derived-mode-p 'docTeX-mode)
-             ;;     font-latex-doctex-syntactic-keywords
-               font-latex-syntactic-keywords)) ;; )
-    (syntax-propertize-via-font-lock kws)))
+  (let* ((kws ;; (if (derived-mode-p 'docTeX-mode)
+              ;;     font-latex-doctex-syntactic-keywords
+               font-latex-syntactic-keywords) ;; )
+         (func (syntax-propertize-via-font-lock kws)))
+    (lambda (start end)
+      ;; Initialize font lock variables even when font lock is disabled.
+      ;; This treatment is necessary because syntax propertize depends
+      ;; on font lock facility.  (bug#71164)
+      (or font-lock-set-defaults (font-lock-set-defaults))
+      (funcall func start end))))
 
 ;;;###autoload
 (defun font-latex-setup ()
