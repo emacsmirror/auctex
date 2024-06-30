@@ -452,11 +452,11 @@ and @samp{\(...\)} in @LaTeX{} files by pressing @kbd{$}, add the
 following to your init file
 @lisp
 (add-hook 'plain-TeX-mode-hook
-          (lambda () (set (make-local-variable 'TeX-electric-math)
-                          (cons "$" "$"))))
+          (lambda () (setq-local TeX-electric-math
+                                 (cons "$" "$"))))
 (add-hook 'LaTeX-mode-hook
-          (lambda () (set (make-local-variable 'TeX-electric-math)
-                          (cons "\\(" "\\)"))))
+          (lambda () (setq-local TeX-electric-math
+                                 (cons "\\(" "\\)"))))
 @end lisp
 
 Math mode which didn't start with dollar(s) shouldn't be closed with dollar.
