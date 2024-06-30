@@ -28,9 +28,8 @@
 
 ;; AUCTeX is a comprehensive customizable integrated environment for
 ;; writing input files for TeX, LaTeX, ConTeXt, Texinfo, and docTeX
-;; using Emacs.  One component of AUCTeX is preview-latex, a combination
-;; of folding and in-source previewing that provides true "What You See
-;; Is What You Get" experience in the sourcebuffer.
+;; using Emacs.  One component of AUCTeX is preview-latex which provides
+;; true "What You See Is What You Get" experience in the sourcebuffer.
 
 ;;; Code:
 
