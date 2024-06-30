@@ -8,6 +8,8 @@
 
 * [Unreleased]
 
+* [14.0.6] - 2024-06-30
+
 ** Added
 
 - Complete support for in-buffer completion of color support macros.
