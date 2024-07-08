@@ -1,6 +1,6 @@
 ;;; longtable.el --- AUCTeX style for `longtable.sty'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013--2022  Free Software Foundation, Inc.
+;; Copyright (C) 2013--2024  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -117,6 +117,12 @@ insert line break macro."
     ;; Caption commands
     '("caption*" 1))
 
+   ;; longtable.sty v4.21 provides the macro \LTcaptype (from
+   ;; ltcaption.sty) as well.  So check here if ltcaption.el is not
+   ;; loaded before adding the entry as well:
+   (unless (member "ltcaption" (TeX-style-list))
+     (TeX-add-symbols "LTcaptype"))
+
    ;; These parameters are set with \setlength
    (LaTeX-add-lengths
     "LTleft" "LTright" "LTpre" "LTpost" "LTcapwidth")
@@ -125,12 +131,13 @@ insert line break macro."
    (LaTeX-add-counters "LTchunksize")
 
    ;; Use the enhanced table formatting.  Append to
-   ;; `LaTeX-indent-environment-list' in order not to override custom settings.
+   ;; `LaTeX-indent-environment-list' in order not to override custom
+   ;; settings.
    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
                 '("longtable" LaTeX-indent-tabular) t)
 
-   ;; Append longtable to `LaTeX-label-alist', in order not to override possible
-   ;; custome values.
+   ;; Append longtable to `LaTeX-label-alist', in order not to override
+   ;; possible custome values.
    (add-to-list 'LaTeX-label-alist '("longtable" . LaTeX-table-label) t)
 
    ;; Append longtable to `LaTeX-item-list' with `LaTeX-item-longtable'
@@ -139,9 +146,9 @@ insert line break macro."
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     ;; Actually, `\caption*{}' macro takes only one mandatory
-     ;; argument, not an optional one, the following is a workaround
-     ;; to fontify correctly also the standard `\caption[]{}' macro.
+     ;; Actually, `\caption*{}' macro takes only one mandatory argument,
+     ;; not an optional one, the following is a workaround to fontify
+     ;; correctly also the standard `\caption[]{}' macro.
      (font-latex-add-keywords '(("caption" "*[{"))
                               'textual)))
  TeX-dialect)
