@@ -38,9 +38,6 @@ Once the installation is completed, you can skip the rest of this
 section and proceed to @ref{Quick Start}.
 @end ifclear
 
-The remainder of this section is about installing @AUCTeX{} from a
-release tarball or from a checkout of the @AUCTeX{} repository.
-
 Installing @AUCTeX{} should be simple: merely @command{./configure},
 @command{make}, and @code{make install} for a standard site-wide
 installation (most other installations can be done by specifying a
@@ -381,13 +378,21 @@ redirection.  But we recommend not to customize them directly because the
 customization code for @code{TeX-modes} takes care of some other
 compatibility issues.
 
-If you want to remove a preinstalled @AUCTeX{} completely before any of
-its modes have been used,
+When there is a site-wide installation of @AUCTeX{} and you don't want to
+use it, you can disable it by
+@lisp
+(push '(auctex nil) package-load-list)
+@end lisp
+@noindent
+in your early init file (@pxref{Early Init File,,,emacs}) for
+@acronym{ELPA} installation, or
 @lisp
 (unload-feature 'tex-site)
 @end lisp
 @noindent
-in your init file should accomplish that.
+in your (standard) init file for configure--make installation. (We
+recommend those treatments over setting @code{TeX-modes} to @code{nil},
+because they don't leave unused autoloads persisted.)
 
 @node Advice for package providers
 @section Providing @AUCTeX{} as a package
@@ -401,6 +406,7 @@ There are people that prefer the built-in Emacs modes for editing
 @TeX{} files, in particular plain @TeX{} users.  There are various
 ways to tell @AUCTeX{} even after auto-activation that it should
 not get used, and they are described in
+@c FIXME: It doesn't seem that these references discuss this topic.
 @ifset rawfile
 the @file{README} file.
 @end ifset
@@ -411,6 +417,12 @@ the @file{README} file.
 So if you have users that don't want to use the preinstalled @AUCTeX{},
 they can easily get rid of it.  Activating @AUCTeX{} by default is
 therefore a good choice.
+
+First of all, you can install @acronym{ELPA} @AUCTeX{} package under a
+directory listed in @code{package-directory-list} to have site-wide
+default.
+
+Next, we discuss configure--make installation.
 
 If the installation procedure did not achieve this already by placing
 @file{auctex.el} and @file{preview-latex.el} into a possibly existing
