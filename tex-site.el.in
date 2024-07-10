@@ -113,29 +113,51 @@ Arrange the redirection of the built-in TeX modes according to VALUE.
 - The built-in modes in VALUE are redirected to the corresponding
   AUCTeX major modes.
 - The built-in modes not in VALUE discard redirection, if any.
-If `major-mode-remap-alist' is available, use it for redirection.
-Otherwise, use advice facility."
+If either `major-mode-remap-defaults' or `major-mode-remap-alist' is
+available, use it for redirection in that order.  Otherwise, use advice
+facility."
   (custom-set-default var value)
   (let (elt dst)
     (dolist (entry TeX-mode-alist)
       (setq elt (car entry)
             dst (cdr entry))
       (if (memq elt value)
-          (if (boundp 'major-mode-remap-alist)
-              (or (eq (cdr-safe (assq elt major-mode-remap-alist)) dst)
-                  (push (cons elt dst) major-mode-remap-alist))
-            ;; COMPATIBILITY for Emacs<29
-            (advice-add elt :override dst
-                        ;; COMPATIBILITY for Emacs 28.[12]
-                        ;; Give it higher precedence than the :around
-                        ;; advice given to `tex-mode' in tex-mode.el.
-                        ;; <URL:https://lists.gnu.org/r/auctex-devel/2022-09/msg00050.html>
-                        '((depth . -10))))
-        (if (boundp 'major-mode-remap-alist)
-            (setq major-mode-remap-alist
-                  (delete entry major-mode-remap-alist))
-          ;; COMPATIBILITY for Emacs<29
-          (advice-remove elt dst))))))
+          (progn
+            (cond ((boundp 'major-mode-remap-defaults)
+                   ;; For Emacs 30 and later
+                   (add-to-list 'major-mode-remap-defaults (cons elt dst)))
+                  ((boundp 'major-mode-remap-alist)
+                   ;; COMPATIBILITY for Emacs 29
+                   (add-to-list 'major-mode-remap-alist (cons elt dst)))
+                  (t
+                   ;; COMPATIBILITY for Emacs<29
+                   (advice-add elt :override dst
+                               ;; COMPATIBILITY for Emacs 28
+                               ;; Give it higher precedence than the :around
+                               ;; advice given to `tex-mode' in tex-mode.el.
+                               ;; <URL:https://lists.gnu.org/r/auctex-devel/2022-09/msg00050.html>
+                               '((depth . -10)))))
+            ;; Keep compatibility.  (bug#71363)
+            (if (eq elt 'latex-mode)
+                (with-eval-after-load 'org-src
+                  (defvar org-src-lang-modes) ; Silence byte compiler.
+                  ;; Check the actual presence in the entry in case that
+                  ;; the user once choosed AUCTeX LaTeX mode and
+                  ;; abandoned it afterwards in the same emacs session.
+                  (when (memq 'latex-mode TeX-modes)
+                    (push '("latex" . LaTeX) org-src-lang-modes)
+                    (push '("beamer" . LaTeX) org-src-lang-modes)))))
+        (cond ((boundp 'major-mode-remap-defaults)
+               ;; For Emacs 30 and later
+               (setq major-mode-remap-defaults
+                     (delete entry major-mode-remap-defaults)))
+              ((boundp 'major-mode-remap-alist)
+               ;; COMPATIBILITY for Emacs 29
+               (setq major-mode-remap-alist
+                     (delete entry major-mode-remap-alist)))
+              (t
+               ;; COMPATIBILITY for Emacs<29
+               (advice-remove elt dst)))))))
 
 (defcustom TeX-modes
   (mapcar #'car TeX-mode-alist)
