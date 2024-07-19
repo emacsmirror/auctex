@@ -1,6 +1,6 @@
 ;;; listings.el --- AUCTeX style for `listings.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2005, 2009, 2013-2022 Free Software Foundation, Inc.
+;; Copyright (C) 2004-2024 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -322,7 +322,7 @@
              (LaTeX-add-environments
               `(,env
                 LaTeX-env-args
-                [TeX-arg-key-val (LaTeX-listings-key-val-options)]
+                [TeX-arg-key-val (LaTeX-listings-key-val-options) nil nil ?\s]
                 (LaTeX-env-label-as-keyval "caption")
                 ,(1- (string-to-number args)))))
             (;; mandatory argument(s) only
@@ -343,7 +343,7 @@
       (when (fboundp 'reftex-add-label-environments)
         (reftex-add-label-environments
          `((,env ?l "lst:" "~\\ref{%s}"
-                 LaTeX-listings-reftex-label-context-function
+                 LaTeX-keyval-caption-reftex-context-function
                  (regexp "[Ll]isting")))))
       (when (boundp 'reftex-label-regexps)
         (add-to-list (make-local-variable 'reftex-label-regexps)
@@ -366,39 +366,6 @@
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-listings-auto-prepare t)
 (add-hook 'TeX-auto-cleanup-hook #'LaTeX-listings-auto-cleanup t)
 (add-hook 'TeX-update-style-hook #'TeX-auto-parse t)
-
-(defun LaTeX-listings-reftex-label-context-function (env)
-  "Extract and return a context string for RefTeX.
-The context string is the value given to the caption key.  If no
-caption key is found, an error is issued."
-  (let* ((envstart (save-excursion
-                     (re-search-backward (concat "\\\\begin{" env "}")
-                                         nil t)))
-         (capt-key (save-excursion
-                     (re-search-backward "caption[ \t\n\r%]*=[ \t\n\r%]*"
-                                         envstart t)))
-         capt-start capt-end)
-    (if capt-key
-        (save-excursion
-          (goto-char capt-key)
-          (re-search-forward
-           "caption[ \t\n\r%]*=[ \t\n\r%]*" nil t)
-          (cond (;; Short caption inside [] is available, extract it only
-                 (looking-at-p (regexp-quote (concat TeX-grop LaTeX-optop)))
-                 (forward-char)
-                 (setq capt-start (1+ (point)))
-                 (setq capt-end (1- (progn (forward-sexp) (point)))))
-                ;; Extract the entire caption which is enclosed in braces
-                ((looking-at-p TeX-grop)
-                 (setq capt-start (1+ (point)))
-                 (setq capt-end (1- (progn (forward-sexp) (point)))))
-                ;; Extract everything to next comma ,
-                (t
-                 (setq capt-start (point))
-                 (setq capt-end (progn (skip-chars-forward "^,") (point)))))
-          ;; Return the extracted string
-          (buffer-substring-no-properties capt-start capt-end))
-      (error "No caption found"))))
 
 (TeX-add-style-hook
  "listings"
@@ -439,7 +406,7 @@ caption key is found, an error is issued."
    ;; New environments
    (LaTeX-add-environments
     '("lstlisting" LaTeX-env-args
-      [TeX-arg-key-val (LaTeX-listings-key-val-options)]
+      [TeX-arg-key-val (LaTeX-listings-key-val-options) nil nil ?\s]
       (LaTeX-env-label-as-keyval "caption")))
 
    ;; Append "lstlisting" to `LaTeX-label-alist':
@@ -458,7 +425,7 @@ caption key is found, an error is issued."
    (when (fboundp 'reftex-add-label-environments)
      (reftex-add-label-environments
       '(("lstlisting" ?l "lst:" "~\\ref{%s}"
-         LaTeX-listings-reftex-label-context-function
+         LaTeX-keyval-caption-reftex-context-function
          (regexp "[Ll]isting")))))
 
    ;; Fontification
