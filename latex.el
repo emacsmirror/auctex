@@ -4115,15 +4115,15 @@ consideration just as is in the non-commented source code."
   :type 'regexp)
 
 (defcustom LaTeX-indent-environment-list
-  '(("verbatim" current-indentation)
-    ("verbatim*" current-indentation)
-    ("filecontents" current-indentation)
+  '(("verbatim"      current-indentation)
+    ("verbatim*"     current-indentation)
+    ("filecontents"  current-indentation)
     ("filecontents*" current-indentation)
-    ("tabular" LaTeX-indent-tabular)
-    ("tabular*" LaTeX-indent-tabular)
-    ("array" LaTeX-indent-tabular)
-    ("eqnarray" LaTeX-indent-tabular)
-    ("eqnarray*" LaTeX-indent-tabular)
+    ("tabular"       LaTeX-indent-tabular)
+    ("tabular*"      LaTeX-indent-tabular)
+    ("array"         LaTeX-indent-tabular)
+    ("eqnarray"      LaTeX-indent-tabular)
+    ("eqnarray*"     LaTeX-indent-tabular)
     ;; envs of amsmath.sty
     ("align"       LaTeX-indent-tabular)
     ("align*"      LaTeX-indent-tabular)
@@ -4168,6 +4168,15 @@ consideration just as is in the non-commented source code."
     ("drcases"       LaTeX-indent-tabular)
     ("drcases*"      LaTeX-indent-tabular)
     ("cases*"        LaTeX-indent-tabular)
+    ;; envs of tabularray.sty
+    ("+array"   LaTeX-indent-tabular)
+    ("+matrix"  LaTeX-indent-tabular)
+    ("+bmatrix" LaTeX-indent-tabular)
+    ("+Bmatrix" LaTeX-indent-tabular)
+    ("+pmatrix" LaTeX-indent-tabular)
+    ("+vmatrix" LaTeX-indent-tabular)
+    ("+Vmatrix" LaTeX-indent-tabular)
+    ("+cases"   LaTeX-indent-tabular)
     ;; The following should have their own, smart indentation function.
     ;; Some other day.
     ("displaymath")
@@ -9411,6 +9420,39 @@ wrapped in \\(?:...\\)? then."
              "\\)}?"))
    ;; We are done.  Just search until the next closing bracket
    "[^]]*\\]"))
+
+(defun LaTeX-keyval-caption-reftex-context-function (env)
+  "Extract and return a key=val caption context string for RefTeX in ENV.
+ENV is the name of current environment passed to this function by
+RefTeX.  The context string is the value given to the caption key.  If
+no caption key is found, an error is issued.  See also the docstring of
+`reftex-label-alist' and its description for CONTEXT-METHOD."
+  (let* ((envstart (save-excursion
+                     (re-search-backward (concat "\\\\begin{" env "}")
+                                         nil t)))
+         (capt-key (save-excursion
+                     (re-search-backward "\\<caption[ \t\n\r%]*=[ \t\n\r%]*"
+                                         envstart t)))
+         capt-start capt-end)
+    (if capt-key
+        (save-excursion
+          (goto-char (match-end 0))
+          (cond ((looking-at-p (regexp-quote (concat TeX-grop LaTeX-optop)))
+                 ;; Short caption inside [] is available, extract it only
+                 (forward-char)
+                 (setq capt-start (1+ (point)))
+                 (setq capt-end (1- (progn (forward-sexp) (point)))))
+                ;; Extract the entire caption which is enclosed in braces
+                ((looking-at-p TeX-grop)
+                 (setq capt-start (1+ (point)))
+                 (setq capt-end (1- (progn (forward-sexp) (point)))))
+                ;; Extract everything to next comma ,
+                (t
+                 (setq capt-start (point))
+                 (setq capt-end (progn (skip-chars-forward "^,") (point)))))
+          ;; Return the extracted string
+          (buffer-substring-no-properties capt-start capt-end))
+      (error "No caption found"))))
 
 (defvar LaTeX-font-family '("normalfont" "rmfamily"
                             "sffamily"   "ttfamily")
