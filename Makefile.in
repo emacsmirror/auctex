@@ -200,7 +200,7 @@ STYLESRC = style/prosper.el \
 	   style/wasysym.el   style/refcount.el  style/simpleicons.el \
 	   style/changebar.el style/amsrefs.el   style/standalone.el \
 	   style/diagbox.el   style/contract.el  style/enotez.el \
-	   style/authblk.el   style/tabularray.el
+	   style/authblk.el   style/tabularray.el style/ninecolors.el
 
 STYLEELC = $(STYLESRC:.el=.elc)
 
