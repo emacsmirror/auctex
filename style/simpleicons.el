@@ -1,4 +1,4 @@
-;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v13.0.0)  -*- lexical-binding: t; -*-
+;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v13.1.0)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023--2024 Free Software Foundation, Inc.
 
@@ -26,8 +26,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `simpleicons.sty' (v13.0.0) from
-;; 2024/07/05.  `simpleicons.sty' is part of TeXLive.
+;; This file adds support for `simpleicons.sty' (v13.1.0) from
+;; 2024/07/12.  `simpleicons.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -2125,6 +2125,7 @@
     "playstation3"
     "playstation4"
     "playstation5"
+    "playstationportable"
     "playstationvita"
     "pleroma"
     "plesk"
@@ -2926,6 +2927,7 @@
     "unitedairlines"
     "unitednations"
     "unity"
+    "unjs"
     "unlicense"
     "unocss"
     "unpkg"
@@ -3051,6 +3053,7 @@
     "webex"
     "webflow"
     "webgl"
+    "webgpu"
     "weblate"
     "webmin"
     "webmoney"
