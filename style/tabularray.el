@@ -298,6 +298,10 @@ insert line break macro."
    (LaTeX-tabularray-NewTblrEnviron-cleanup)
    (LaTeX-tabularray-update-column-letters)
 
+   ;; Load ninecolors.el if xcolor.el is loaded:
+   (when (member "xcolor" (TeX-style-list))
+     (TeX-run-style-hooks "ninecolors"))
+
    (TeX-add-symbols
     ;; 2.6.2 Column Types
     '("NewColumnType"
