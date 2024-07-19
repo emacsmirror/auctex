@@ -230,11 +230,10 @@ other symbols, in particular @kbd{"} (@code{TeX-insert-quote}) and @kbd{\}
 (@code{TeX-insert-backslash}).  If you need one literal @samp{$}, you can
 type @kbd{C-1 $} or @kbd{C-q $}.
 @item
-We no longer have explicit support of the special behavior that
-if @code{TeX-electric-math} is non-nil and point is inside math
-mode right between a couple of single dollars, pressing @kbd{$}
-will insert another pair of dollar signs and leave the point
-between them.
+We no longer have explicit support of the special behavior that if
+@code{TeX-electric-math} is non-@code{nil} and point is inside math mode
+right between a couple of single dollars, pressing @kbd{$} will insert
+another pair of dollar signs and leave the point between them.
 
 It still works as before if @code{TeX-electric-math} is pair of dollars
 while it inserts @samp{\(} and @samp{\)} when @code{TeX-electric-math} is
@@ -732,7 +731,7 @@ documented in info files nor turned into a customize option with
 @item
 The window system focus is pulled back to Emacs when viewing with
 evince-compatible viewers if a new customize option
-@code{TeX-view-evince-keep-focus} is non-nil.
+@code{TeX-view-evince-keep-focus} is non-@code{nil}.
 
 @item
 The usual dose of bug fixes was administered.
@@ -1036,12 +1035,12 @@ only new expansion strings.
 
 @item
 Before running commands like @TeX{} and @LaTeX{}, now @AUCTeX{} performs
-some checks.  If @code{TeX-check-TeX} is non-nil, it will test whether a
-working @TeX{} distribution is actually present in the system and
-available to Emacs.  Instead, when @code{TeX-check-engine} is non-nil,
-before running @LaTeX{} commands @AUCTeX{} will check whether the
-correct engine has been set, based upon known restrictions posed by
-@LaTeX{} packages.
+some checks.  If @code{TeX-check-TeX} is non-@code{nil}, it will test
+whether a working @TeX{} distribution is actually present in the system
+and available to Emacs.  Instead, when @code{TeX-check-engine} is
+non-@code{nil}, before running @LaTeX{} commands @AUCTeX{} will check
+whether the correct engine has been set, based upon known restrictions
+posed by @LaTeX{} packages.
 
 @item
 Basic support to @ConTeXt{} Mark IV has been added.  Users can now
@@ -1063,9 +1062,9 @@ Numbers of bugs have been fixed, many minor features have been added.
 @code{TeX-PDF-mode} is now enabled by default.
 
 @item
-Now @code{TeX-previous-error} works with @TeX{} commands if the new
-option @code{TeX-parse-all-errors} is non-nil, which is the default.
-When this option is non-nil, an overview of errors and warnings reported
+Now @code{TeX-previous-error} works with @TeX{} commands if the new option
+@code{TeX-parse-all-errors} is non-@code{nil}, which is the default.  When
+this option is non-@code{nil}, an overview of errors and warnings reported
 by the @TeX{} compiler can be opened with @kbd{M-x TeX-error-overview
 @key{RET}}.
 @ifclear rawfile
@@ -1097,8 +1096,8 @@ Now you can insert @samp{$...$} or @samp{\(...\)} by typing a single
 @item
 @kbd{C-c @key{RET} documentclass @key{RET}} completes with all available
 @LaTeX{} classes, if the @code{TeX-arg-input-file-search} variable is
-non-nil.  Completion for class options of the standard @LaTeX{} classes
-is provided as well.
+non-@code{nil}.  Completion for class options of the standard @LaTeX{}
+classes is provided as well.
 
 @item
 New user options @code{LaTeX-default-author},
@@ -1420,7 +1419,7 @@ deprecated.
 @item
 @AUCTeX{} now can automatically insert a pair of braces after typing
 @key{_} or @key{^} in math constructs if the new variable
-@code{TeX-electric-sub-and-superscript} is set to a non-nil value.
+@code{TeX-electric-sub-and-superscript} is set to a non-@code{nil} value.
 
 @item
 Some language-specific support for French was added.  There now is

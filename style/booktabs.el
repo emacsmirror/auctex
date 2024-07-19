@@ -1,6 +1,6 @@
 ;;; booktabs.el -- AUCTeX style for booktabs.sty  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2003--2024 Free Software Foundation, Inc.
 
 ;; Author:   Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -51,11 +51,17 @@
     '("toprule" [ "Thickness" ])
     '("midrule" [ "Thickness" ])
     '("bottomrule" [ "Thickness" ])
-    ;; The `ignore' resets `TeX-last-optional-rejected' to nil so that the trim
-    ;; argument is prompted also when the thickness is skipped.
-    '("cmidrule" [ "Thickness" ] (ignore)
-      [TeX-arg-string "Trim" nil nil nil "(" ")"]
-      "Column(s)")
+    '("cmidrule"
+      (TeX-arg-conditional
+          (and (fboundp 'LaTeX-tabularray-NewTblrEnviron-list)
+               (member (LaTeX-current-environment)
+                       (mapcar #'car (LaTeX-tabularray-NewTblrEnviron-list))))
+          ([TeX-arg-key-val (("l") ("r") ("lr")) "Trim"] "Column(s)")
+        ;; The `ignore' resets `TeX-last-optional-rejected' to nil so
+        ;; that the trim argument is prompted also when the thickness is
+        ;; skipped.
+        (["Thickness"] (ignore) [TeX-arg-string "Trim" nil nil nil "(" ")"]
+         "Column(s)")))
     '("addlinespace" [ "Height" ])
     '("morecmidrules")
     '("specialrule" "Thickness" "Space above" "Space below"))

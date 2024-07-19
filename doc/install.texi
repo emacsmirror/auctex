@@ -371,13 +371,15 @@ list.  Type
 to manipulate the contents of @code{TeX-modes}.
 @end defopt
 
-Don't remove @code{tex-mode} from @code{TeX-modes} because it results in
-inconsistent behavior.
+Don't remove @code{tex-mode} from @code{TeX-modes} unless you set
+@code{TeX-modes} empty to disable @AUCTeX{} completely, otherwise it
+results in inconsistent behavior.
 
-On Emacs 29 and later, you can alter @code{major-mode-remap-alist} instead
-of @code{TeX-modes} as you like to arrange @AUCTeX{} redirections.  In
-fact, @code{TeX-modes} option does nothing other than setting up
-@code{major-mode-remap-alist} according its value on those Emacsens.
+On Emacs 29 and later, @AUCTeX{} uses either
+@code{major-mode-remap-defaults} or @code{major-mode-remap-alist} for
+redirection.  But we recommend not to customize them directly because the
+customization code for @code{TeX-modes} takes care of some other
+compatibility issues.
 
 If you want to remove a preinstalled @AUCTeX{} completely before any of
 its modes have been used,

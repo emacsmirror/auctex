@@ -1,6 +1,6 @@
 ;;; font-latex-test.el --- tests for font-latex  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020-2023  Free Software Foundation, Inc.
+;; Copyright (C) 2020-2024  Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
@@ -107,6 +107,10 @@ $a$")
           (font-latex-fontify-sectioning 'color))
       (insert "\
 \\documentclass[10pt]{article}
+
+\\setlength{\\parskip}{3cm}
+\\addtolength\\parskip\\foo
+
 \\begin{document}
 
 \\section{Macros}
@@ -185,6 +189,17 @@ x
       ;; Mandatory argument:
       (should (font-latex-faces-present-p 'font-lock-function-name-face))
       (end-of-line)
+
+      ;; Test for \setlength alternatives:
+      (re-search-forward "\\\\setlength{\\\\p")
+      (should (font-latex-faces-present-p 'font-lock-variable-name-face
+                                          (match-end 0)))
+      (re-search-forward "\\\\addtolength\\\\p")
+      (should (font-latex-faces-present-p 'font-lock-variable-name-face
+                                          (match-end 0)))
+      (re-search-forward "\\\\f")
+      (should (font-latex-faces-present-p 'font-lock-variable-name-face
+                                          (match-end 0)))
 
       ;; Test for \section macro itself:
       (re-search-forward "\\\\sec\\(?1:t\\)ion{")

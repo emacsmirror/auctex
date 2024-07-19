@@ -8,6 +8,11 @@
 
 * [Unreleased]
 
+** Added
+
+- Add new support files =style/authblk.el=, =style/ninecolors.el= and
+  =style/tabularray.el=.
+
 * [14.0.6] - 2024-06-30
 
 ** Added
@@ -32,7 +37,7 @@
     (~TeX-insert-backslash~).  If you need one literal =$=, you can type
     =C-1 $= or =C-q $=.
   - We no longer have explicit support of the special behavior that if
-    ~TeX-electric-math~ is non-nil and point is inside math mode right
+    ~TeX-electric-math~ is non-~nil~ and point is inside math mode right
     between a couple of single dollars, pressing =$= will insert another
     pair of dollar signs and leave the point between them.
 
