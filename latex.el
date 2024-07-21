@@ -4182,6 +4182,11 @@ consideration just as is in the non-commented source code."
     ("+vmatrix" LaTeX-indent-tabular)
     ("+Vmatrix" LaTeX-indent-tabular)
     ("+cases"   LaTeX-indent-tabular)
+    ;; envs of tabularray.sty
+    ("xtabular"    LaTeX-indent-tabular)
+    ("xtabular*"   LaTeX-indent-tabular)
+    ("mpxtabular"  LaTeX-indent-tabular)
+    ("mpxtabular*" LaTeX-indent-tabular)
     ;; The following should have their own, smart indentation function.
     ;; Some other day.
     ("displaymath")
