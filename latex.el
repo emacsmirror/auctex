@@ -4168,6 +4168,11 @@ consideration just as is in the non-commented source code."
     ("drcases"       LaTeX-indent-tabular)
     ("drcases*"      LaTeX-indent-tabular)
     ("cases*"        LaTeX-indent-tabular)
+    ;; envs of supertabular.sty
+    ("supertabular"    LaTeX-indent-tabular)
+    ("supertabular*"   LaTeX-indent-tabular)
+    ("mpsupertabular"  LaTeX-indent-tabular)
+    ("mpsupertabular*" LaTeX-indent-tabular)
     ;; envs of tabularray.sty
     ("+array"   LaTeX-indent-tabular)
     ("+matrix"  LaTeX-indent-tabular)
