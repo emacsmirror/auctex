@@ -90,11 +90,13 @@ clean:
 		auctex-autoloads.el \
 		$(DYNVARSFILES)
 
-# Copied&adapted from doc/Makefile.in.
+# Copied&adapted from doc/Makefile.in.  The 'echo ""' part fixes the
+# spacing above the insertion from preview-readme.texi.
 MAKEINFO_PLAIN=$(MAKEINFO) -D rawfile --no-headers
 README: doc/intro.texi doc/preview-readme.texi doc/macros.texi
 	(cd doc; $(MAKEINFO_PLAIN) intro.texi --output -) >$@
-	(cd doc; $(MAKEINFO_PLAIN) preview-readme.texi --output -) >> $@
+	(cd doc; echo "") >>$@
+	(cd doc; $(MAKEINFO_PLAIN) preview-readme.texi --output -) >>$@
 
 # Committer date of HEAD.
 AUCTEXDATE:=$(shell (git log -n1 --pretty=tformat:"%ci" 2>/dev/null \
