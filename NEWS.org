@@ -10,8 +10,8 @@
 
 ** Added
 
-- Add new support files =style/authblk.el=, =style/ninecolors.el= and
-  =style/tabularray.el=.
+- Add new support files =style/authblk.el=, =style/ninecolors.el=,
+  =style/supertabular.el=, =style/tabularray.el= and =style/xtab.el=.
 
 * [14.0.6] - 2024-06-30
 
