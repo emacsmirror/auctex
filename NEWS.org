@@ -13,6 +13,23 @@
 - Add new support files =style/authblk.el=, =style/ninecolors.el=,
   =style/supertabular.el=, =style/tabularray.el= and =style/xtab.el=.
 
+** Changed
+
+- AUCTeX 13.3 marks the last standalone tarball release.  From now on,
+  AUCTeX releases are made available through the
+  [[https://elpa.gnu.org/packages/auctex.html][Emacs Lisp Package
+  Archive (ELPA)]].  Distro packagers are encouraged to use the ELPA
+  packages as-is and install them under one of the new Emacs locations
+  for system-wide packages, see ~package-directory-list~.
+
+  At the same time, development is now done on the =main= branch and the
+  =master= branch has been deleted.  Its last state has been pushed as
+  =auctex-13= branch for archiving purposes but it won't get any updates
+  anymore.
+
+  For users who tracked the master branch: Do =git switch main= to
+  switch to the main branch where development takes place nowadays.
+
 * [14.0.6] - 2024-06-30
 
 ** Added
