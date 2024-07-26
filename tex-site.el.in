@@ -106,6 +106,9 @@ shared by all users of a site."
   ;; Tell emacs to continue standard unloading procedure.
   nil)
 
+;; Silence the compiler for the variable defined below:
+(defvar TeX-modes)
+
 (defun TeX-modes-set (var value &optional _ignored)
   "Set VAR (which should be `TeX-modes') to VALUE.
 
