@@ -6,6 +6,7 @@
 #   tex-site.el
 #   doc: preview-dtxdoc.texi
 #   doc: version.texi
+#   doc: tex-ref.pdf
 #   latex: prauctex.cfg
 #   latex: prauctex.def
 #   latex: prcounters.def
@@ -23,6 +24,7 @@ MAKEINFO=makeinfo
 INSTALL_INFO=install-info
 PERL=perl
 PDFLATEX=pdfla$(TEX)
+PDFTEX=pdf$(TEX)
 
 MANUALS=auctex preview-latex
 INFO_FILES=$(MANUALS:=.info)
@@ -34,6 +36,7 @@ MAIN_GENERATED_FILES=README 		\
 		tex-site.el		\
 		doc/version.texi	\
 		doc/preview-dtxdoc.texi	\
+		doc/tex-ref.pdf         \
 		$(LATEX_FILES)
 
 ALL_GENERATED_FILES=$(MAIN_GENERATED_FILES)	\
@@ -131,6 +134,10 @@ ChangeLog:
 # Copied&adapted from doc/Makefile.in.
 doc/preview-dtxdoc.texi: latex/preview.dtx doc/preview-dtxdoc.pl
 	$(PERL) doc/preview-dtxdoc.pl latex/preview.dtx $@
+
+# Copied&adapted from doc/Makefile.in.
+doc/tex-ref.pdf: doc/tex-ref.tex
+	cd doc && $(PDFTEX) tex-ref.tex && rm tex-ref.log
 
 # Copied&adapted from doc/Makefile.in.
 TEXI_SOURCES:=$(wildcard doc/*.texi) doc/version.texi doc/preview-dtxdoc.texi
