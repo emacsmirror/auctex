@@ -590,8 +590,6 @@
 
 (require 'tex)
 (require 'latex)
-(eval-when-compile
-  (require 'cl-lib))
 
 ;; Silence the compiler:
 (declare-function reftex-view-crossref "ext:reftex-dcr"

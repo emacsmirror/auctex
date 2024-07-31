@@ -37,9 +37,6 @@
 (require 'font-lock)
 (require 'tex)
 
-(eval-when-compile
-  (require 'cl-lib))
-
 (defgroup font-latex nil
   "Font-latex text highlighting package."
   :prefix "font-latex-"

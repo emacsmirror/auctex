@@ -33,9 +33,8 @@
 
 (require 'custom)
 (require 'tex-site)
-(eval-when-compile
-  (require 'cl-lib)
-  (require 'subr-x))
+(require 'cl-lib)
+(require 'subr-x)
 (require 'texmathp)
 ;; seq.el is preloaded in Emacs 29, so the next form can be removed
 ;; once 29 is the minimum required Emacs version

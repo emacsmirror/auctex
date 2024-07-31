@@ -58,10 +58,6 @@
 
 ;;; Code:
 
-;; Needed for compiling `cl-pushnew':
-(eval-when-compile
-  (require 'cl-lib))
-
 (require 'tex)
 (require 'latex)
 

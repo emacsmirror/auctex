@@ -43,9 +43,6 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'cl-lib))
-
 (require 'tex)
 (autoload 'LaTeX-forward-paragraph "latex")
 (autoload 'LaTeX-backward-paragraph "latex")

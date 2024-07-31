@@ -34,8 +34,7 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'cl-lib))
+(require 'cl-lib)
 (require 'flymake)
 
 (defvar-local LaTeX--flymake-proc nil)

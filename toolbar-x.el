@@ -94,8 +94,7 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'cl-lib))
+(require 'cl-lib)
 
 ;; Note that this just gives a useful default.  Icons are expected to
 ;; be in subdirectory "images" or "toolbar" relative to the load-path.

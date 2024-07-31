@@ -42,10 +42,6 @@
 
 ;;; Code:
 
-;; Needed for compiling `cl-pushnew':
-(eval-when-compile
-  (require 'cl-lib))
-
 ;; Needed for auto-parsing:
 (require 'tex)
 (require 'latex)

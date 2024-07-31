@@ -40,8 +40,6 @@
 
 (require 'tex)
 (require 'latex)
-(eval-when-compile
-  (require 'cl-lib))
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords

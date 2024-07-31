@@ -39,9 +39,6 @@
 
 (require 'tex)
 (require 'latex)
-;; Needed for compiling `cl-pushnew':
-(eval-when-compile
-  (require 'cl-lib))
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords

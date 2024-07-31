@@ -34,9 +34,6 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'cl-lib))
-
 ;; Needed for compiling `LaTeX-check-insert-macro-default-style':
 (require 'latex)
 
