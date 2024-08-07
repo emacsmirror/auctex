@@ -1,6 +1,6 @@
 ;;; expl3.el --- AUCTeX style for `expl3.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2024 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -50,7 +50,8 @@
  "expl3"
  (lambda ()
    (set-syntax-table LaTeX-expl3-syntax-table)
-   (when (and (eq TeX-install-font-lock 'font-latex-setup))
+   (when (and (featurep 'font-latex)
+              (eq TeX-install-font-lock 'font-latex-setup))
      ;; Fontify _ and : as part of macros.
      (add-to-list 'font-latex-match-simple-include-list "_" t)
      (add-to-list 'font-latex-match-simple-include-list ":" t))
