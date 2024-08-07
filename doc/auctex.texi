@@ -4062,7 +4062,7 @@ In this window you can visit the error on which point is by pressing
 @key{p} respectively.  A prefix argument to these keys specifies how
 many errors to move forward or backward.  You can visit an error also by
 clicking on its message.  Jump to error point in the source code with
-@key{j}, and use @key{l} see the error in the log buffer.  In addition,
+@key{j}, and use @key{l} to see the error in the log buffer.  In addition,
 you can toggle visibility of bad boxes, generic warnings, and ignored
 warnings with @key{b}, @key{w}, and @key{x}, respectively (see
 @ref{Ignoring warnings} for details).  Press @key{q} to quit the
