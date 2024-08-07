@@ -8502,9 +8502,12 @@ Return nil only if no errors were found."
                   (file-exists-p (TeX-match-buffer 1)))
               (throw 'found t))))
       (progn
-        (message "%s errors in `%s'. Use %s to display." name (buffer-name)
-                 (substitute-command-keys
-                  "\\<TeX-mode-map>\\[TeX-next-error]"))
+        (if TeX-error-overview-open-after-TeX-run
+            ;; Don't leave inconsistent message.
+            (message nil)
+          (message "%s errors in `%s'. Use %s to display." name (buffer-name)
+                   (substitute-command-keys
+                    "\\<TeX-mode-map>\\[TeX-next-error]")))
         (setq TeX-command-next TeX-command-default)
         ;; error reported to TeX-error-report-switches
         (setq TeX-error-report-switches
