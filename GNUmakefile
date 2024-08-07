@@ -27,7 +27,7 @@ PDFLATEX=pdfla$(TEX)
 PDFTEX=pdf$(TEX)
 
 MANUALS=auctex preview-latex
-INFO_FILES=$(MANUALS:=.info)
+INFO_FILES:=$(addprefix doc/, $(MANUALS:=.info))
 
 TEXMFGEN:=$(shell sed -n 's/^%<installer>.*file[{]\([^}.]*\.[sdc][tef][yfg]\)[}].*/\1/p' latex/preview.dtx)
 LATEX_FILES:=$(patsubst %, latex/%, $(shell echo $$(echo "$(TEXMFGEN)")))
@@ -40,7 +40,7 @@ MAIN_GENERATED_FILES=README 		\
 		$(LATEX_FILES)
 
 ALL_GENERATED_FILES=$(MAIN_GENERATED_FILES)	\
-		dir				\
+		doc/dir				\
 		$(INFO_FILES)
 
 # Generate & compile everything including the manuals below doc/.
@@ -86,7 +86,6 @@ elpa: $(MAIN_GENERATED_FILES) ChangeLog
 clean:
 	rm -f $(ALL_GENERATED_FILES) \
 		$(wildcard *.elc style/*.elc) \
-		$(LATEX_FILES) \
 		$(wildcard latex/*.aux latex/*.drv latex/*.hd latex/*.log) \
 		$(wildcard latex/*.out latex/*.pdf latex/*.tar.gz) \
 		latex/preview-mk.ins latex/preview.ins \
@@ -141,11 +140,11 @@ doc/tex-ref.pdf: doc/tex-ref.tex
 
 # Copied&adapted from doc/Makefile.in.
 TEXI_SOURCES:=$(wildcard doc/*.texi) doc/version.texi doc/preview-dtxdoc.texi
-$(INFO_FILES): %.info: $(TEXI_SOURCES)
+$(INFO_FILES): doc/%.info: $(TEXI_SOURCES)
 	cd doc; $(MAKEINFO) --no-split $*.texi
 
-dir: $(INFO_FILES)
-	for f in $(INFO_FILES); do $(INSTALL_INFO) --info-dir=doc doc/$$f; done
+doc/dir: $(INFO_FILES)
+	for f in $(INFO_FILES); do $(INSTALL_INFO) --info-dir=doc $$f; done
 
 $(LATEX_FILES): latex/preview.dtx latex/bootstrap.ins
 	cd latex; $(TEX) '\nonstopmode \input bootstrap.ins'

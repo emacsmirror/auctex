@@ -76,8 +76,7 @@ possible cause are duplicate Lisp files that might be detectable with
 @section Getting started
 
 Once activated, @previewlatex{} and its documentation will be accessible
-via its menus (note that @previewlatex{} requires @AUCTeX{} to be
-loaded).  When you have loaded a @LaTeX{} document (a
+via its menus.  When you have loaded a @LaTeX{} document (a
 sample document @file{circ.tex} is included in the distribution, but
 most documents including math and/or figures should do), you can use
 its menu or @kbd{C-c C-p C-d} (for @samp{Preview/Document}).
@@ -133,10 +132,8 @@ setting is @samp{dvipng} in case you have the @samp{dvipng}
 program installed.  In this case, @samp{dvipng} will be used for
 converting @acronym{DVI} files and Ghostscript (with a @samp{PNG}
 device) for converting @acronym{PDF} files.  @samp{dvipng} is much
-faster than the combination of Dvips and Ghostscript.  You can get
-downloads, access to its @acronym{CVS} archive and further information
-from its @uref{https://savannah.nongnu.org/projects/dvipng, project
-site}.
+faster than the combination of Dvips and Ghostscript.  @samp{dvipng} is
+included in standard @w{TeX Live} distribution.
 
 @node More documentation, Availability, Basic modes of operation, Introduction
 @section More documentation
@@ -191,10 +188,7 @@ will display it.
 
 The @previewlatex{} project is now part of @AUCTeX{} and accessible as
 part of the @uref{https://savannah.gnu.org/projects/auctex,@AUCTeX{}
-project page}.  You can get its files from the
-@uref{https://ftp.gnu.org/pub/gnu/auctex/,@AUCTeX{} download area}.  As of
-@w{@AUCTeX{} 11.81}, @previewlatex{} should already be integrated into
-@AUCTeX{}, so no separate download will be necessary.
+project page}.
 
 Anonymous Git is available at @uref{git://git.savannah.gnu.org/auctex.git}
 or @uref{https://git.savannah.gnu.org/git/auctex.git}.  You can also

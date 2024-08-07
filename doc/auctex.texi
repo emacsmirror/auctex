@@ -2339,12 +2339,12 @@ to remove highlighting of footnotes as references you can put the
 following stanza into your init file:
 
 @lisp
-(eval-after-load "font-latex"
-  '(setq-default
-    font-latex-match-reference-keywords-local
-    (remove (assoc-string "footnote"
-            font-latex-match-reference-keywords-local)
-                font-latex-match-reference-keywords-local)))
+(with-eval-after-load 'font-latex
+  (setq-default
+   font-latex-match-reference-keywords-local
+   (remove (assoc-string "footnote"
+                         font-latex-match-reference-keywords-local)
+           font-latex-match-reference-keywords-local)))
 @end lisp
 
 But note that this means fiddling with @fontlatex{}'s internals and is
@@ -2851,11 +2851,11 @@ original source text.
 @item
 @code{nil}: @AUCTeX{} never reveals.
 @item
-@var{SYMBOL}: The value of @var{SYMBOL} is used as a boolean flag.  If
-@var{SYMBOL} isn't bound as a variable, it is treated as @code{nil}.
+@var{symbol}: The value of @var{symbol} is used as a boolean flag.  If
+@var{symbol} isn't bound as a variable, it is treated as @code{nil}.
 @item
-Cons cell @code{(@var{FUNCTION} . @var{ARGUMENTS})}: @AUCTeX{} calls the
-@var{FUNCTION} with arbitrary number of @var{ARGUMENTS}.  The return value
+Cons cell @code{(@var{function} . @var{arguments})}: @AUCTeX{} calls the
+@var{function} with arbitrary number of @var{arguments}.  The return value
 is regarded as a boolean flag.
 @end itemize
 
@@ -3208,10 +3208,10 @@ example, if you wanted to add a command for running a program called
 following form.
 
 @lisp
-(eval-after-load "tex"
-  '(add-to-list 'TeX-command-list
-                '("Foo" "foo %s" TeX-run-command t t :help "Run foo")
-                t))
+(with-eval-after-load 'tex
+  (add-to-list 'TeX-command-list
+               '("Foo" "foo %s" TeX-run-command t t :help "Run foo")
+               t))
 @end lisp
 
 As mentioned before, @AUCTeX{} will try to guess what command you want
@@ -3316,12 +3316,12 @@ line:
 @lisp
 ("\\\\addcontentsline"         ispell-tex-arg-end 2)
 @end lisp
-@code{KEY} is the string @code{"\\\\addcontentsline"}, @code{FUNCTION}
-is @code{ispell-tex-arg-end} called with @code{ARGS}, here @code{2}.
+@var{key} is the string @code{"\\\\addcontentsline"}, @var{function}
+is @code{ispell-tex-arg-end} called with @var{args}, here @code{2}.
 @code{ispell-tex-arg-end} is a function provided by @file{ispell.el}
 which skips as many subsequent optional arguments in square brackets as
-it sees and then skips @code{ARGS} number of mandatory arguments in
-braces.  Omitting @code{ARGS} means skip @code{1} mandatory argument.
+it sees and then skips @var{args} number of mandatory arguments in
+braces.  Omitting @var{args} means skip @code{1} mandatory argument.
 In practice, when you have something like this in your document:
 @example
 \addcontentsline@{toc@}@{chapter@}@{Some text@}
@@ -3346,7 +3346,7 @@ Finally, the next line
 @end lisp
 ensures that the entire preamble of a document is discarded.  Second
 list works the same; it is more convenient for environments since
-@code{KEY} is wrapped inside @code{\begin@{@}}.
+@var{key} is wrapped inside @code{\begin@{@}}.
 
 @findex TeX-ispell-skip-setcar
 @findex TeX-ispell-skip-setcdr
@@ -3356,12 +3356,11 @@ list works the same; it is more convenient for environments since
 exactly as in @code{ispell-tex-skip-alists}.  Additions can be done via
 init file, e.g.:
 @lisp
-(eval-after-load "tex-ispell"
-  '(progn
-     (TeX-ispell-skip-setcar
-      '(("\\\\mymacro" ispell-tex-arg-end)))
-     (TeX-ispell-skip-setcdr
-      '(("myverbatim" . "\\\\end@{myverbatim@}")))))
+(with-eval-after-load 'tex-ispell
+  (TeX-ispell-skip-setcar
+   '(("\\\\mymacro" ispell-tex-arg-end)))
+  (TeX-ispell-skip-setcdr
+   '(("myverbatim" . "\\\\end@{myverbatim@}"))))
 @end lisp
 
 Another possibility is to use file local additions at the end of your
@@ -3850,9 +3849,9 @@ Actually, this keymap isn't implemented as minor mode map of
 @code{TeX-source-correlate-mode}, in order that its bindings don't affect
 buffers outside of @AUCTeX{}.} and @code{TeX-view-mouse} like this:
 @lisp
-(eval-after-load "tex"
-  '(define-key TeX-source-correlate-map [C-down-mouse-1]
-               #'TeX-view-mouse))
+(with-eval-after-load 'tex
+  (define-key TeX-source-correlate-map [C-down-mouse-1]
+              #'TeX-view-mouse))
 @end lisp
 This example binds @kbd{C-down-mouse-1}, which usually opens a concise
 menu to select buffer, to the command to do forward search.
@@ -4904,7 +4903,7 @@ string.  See the list of supported languages above.  The second item is
 the opening quotation mark.  The third item is the closing quotation mark.
 Opening and closing quotation marks can be specified directly as strings
 or as functions returning a string.  The fourth item is a boolean
-controlling quote insertion.  It should be non-@code{nil} if if the
+controlling quote insertion.  It should be non-@code{nil} if the
 special quotes should only be used after inserting a literal @samp{"}
 character first, i.e.@: on second key press.
 @end defopt

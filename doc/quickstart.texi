@@ -54,7 +54,7 @@ document structure.  You can do this by inserting
 @lisp
 (setq-default TeX-master nil)
 @end lisp
-
+@noindent
 into your init file.  Each time you open a new file, @AUCTeX{} will then
 ask you for a master file.
 
@@ -288,7 +288,7 @@ you type @kbd{C-C C-c}.  For details, see @ref{Processor Options}.
 
 When @AUCTeX{} runs a program, it creates an output buffer in which it
 displays the output of the command.  If there is a syntactical error in
-your file, @command{latex} will not complete successfully. @AUCTeX{}
+your file, @command{latex} will not complete successfully.  @AUCTeX{}
 will tell you that, and you can get to the place where the first error
 occured by pressing @kbd{C-c `} (the last character is a backtick).  The
 view will be split in two windows, the output will be displayed in the
@@ -296,7 +296,7 @@ lower buffer, and both buffers will be centered around the place where
 the error ocurred.  You can then try to fix it in the document buffer,
 and use the same keystrokes to get to the next error.  This procedure
 may be repeated until all errors have been dealt with.  By pressing
-@kbd{C-c C-w} (@code{TeX-toggle-debug-boxes}) you can toggle whether
+@kbd{C-c C-w} (@code{TeX-toggle-debug-bad-boxes}) you can toggle whether
 @AUCTeX{} should notify you of overfull and underfull boxes in addition
 to regular errors.
 

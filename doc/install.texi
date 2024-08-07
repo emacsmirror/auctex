@@ -637,7 +637,7 @@ should not be done anymore because the installation routine will
 overwrite those changes.
 
 You might check some options with a special significance.  They are
-accessible directly by typing @kbd{M-x customize-option @key{RET} <option>
+accessible directly by typing @kbd{M-x customize-option @key{RET} @var{option}
 @key{RET}}.
 
 @defopt TeX-macro-global
