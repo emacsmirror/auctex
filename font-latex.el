@@ -1149,7 +1149,7 @@ have changed."
       (((class color) (background light))
        (:foreground "DarkOliveGreen" ,@font))
       (((class color) (background dark))
-       (:foreground "OliveDrab" ,@font))
+       (:foreground "OliveDrab2" ,@font))
       (t (,@font))))
   "Face used to highlight text to be typeset in bold."
   :group 'font-latex-highlighting-faces)
@@ -1163,7 +1163,7 @@ have changed."
       (((class color) (background light))
        (:foreground "DarkOliveGreen" ,@font))
       (((class color) (background dark))
-       (:foreground "OliveDrab" ,@font))
+       (:foreground "OliveDrab2" ,@font))
       (t (,@font))))
   "Face used to highlight text to be typeset in italic."
   :group 'font-latex-highlighting-faces)
@@ -1177,7 +1177,7 @@ have changed."
       (((class color) (background light))
        (:foreground "DarkOliveGreen" ,@font))
       (((class color) (background dark))
-       (:foreground "OliveDrab" ,@font))
+       (:foreground "OliveDrab2" ,@font))
       (t (,@font))))
   "Face used to highlight text to be underlined."
   :group 'font-latex-highlighting-faces)
@@ -1215,7 +1215,7 @@ have changed."
       (((class grayscale) (background dark))
        (:foreground "LightGray" ,@font))
       (((class color) (background light))
-       (:foreground "RosyBrown"))
+       (:foreground "RosyBrown4"))
       (((class color) (background dark))
        (:foreground "LightSalmon"))
       (t (,@font))))
@@ -1263,13 +1263,13 @@ have changed."
 (defface font-latex-script-char-face
   (let ((font '(:inherit underline)))
     `((((class grayscale) (background light))
-       (:foreground "DarkGray" ,@font))
+       (:foreground "gray25" ,@font))
       (((class grayscale) (background dark))
        (:foreground "gray" ,@font))
       (((class color) (background light))
-       (:foreground "salmon"))
-      (((class color) (background dark))
        (:foreground "DarkRed"))
+      (((class color) (background dark))
+       (:foreground "salmon"))
       (t (,@font))))
   "Face used for the script chars ^ and _."
   :group 'font-latex-highlighting-faces)
