@@ -1,17 +1,7 @@
 @c This is part of the preview-latex manual.
 @c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2009
-@c               2017, 2021-2023 Free Software Foundation, Inc.
+@c               2017, 2021-2024 Free Software Foundation, Inc.
 @c See file preview-latex.texi for copying conditions.
-@ifset rawfile
-@include macros.texi
-
-@node Frequently Asked Questions, Introduction to FAQ, (dir), (dir)
-@top Frequently Asked Questions about @previewlatex{}
-
-@contents
-
-@end ifset
-
 @menu
 * Introduction to FAQ::         
 * Requirements::                
@@ -21,18 +11,8 @@
 * Other formats::               
 @end menu
 
-@comment we need at least one chapter, or the numbers disappear in the
-@comment plain version of the FAQ.
-
-@ifset rawfile
-@node Introduction to FAQ, Requirements, Frequently Asked Questions, Frequently Asked Questions
-@chapter Introduction
-@raisesections
-@end ifset
-@ifclear rawfile
 @node Introduction to FAQ, Requirements, Frequently Asked Questions, Frequently Asked Questions
 @section Introduction
-@end ifclear
 
 @subsection How can I contribute to the FAQ?
 

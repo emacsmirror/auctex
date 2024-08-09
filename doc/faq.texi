@@ -1,10 +1,6 @@
 @c This is part of the AUCTeX Manual.
 @c Copyright (C) 2004-2024 Free Software Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
-@ifset rawfile
-@include macros.texi
-@chapheading Frequently Asked Questions about @AUCTeX{}
-@end ifset
 
 @c We should switch to sectioning commands instead of items when this
 @c list grows.  Keep in mind to formulate short questions because
@@ -19,11 +15,9 @@ issue, then come back here and proceed.
 
 Well, you might have guessed it, the first place to look is in the
 available documentation packaged with @AUCTeX{}.  This could be the
-release notes (in the @file{RELEASE} file) or the news section of the
-manual in case you are experiencing problems after an upgrade, the
-@file{INSTALL} file in case you are having problems with the
-installation, the section about bugs in the manual in case you
-encountered a bug or the relevant sections in the manual for other
+@file{README} file or @file{NEWS.org} file in case you are experiencing
+problems after an upgrade, the section about bugs in the manual in case
+you encountered a bug or the relevant sections in the manual for other
 related problems.
 
 If this did not help, you can send a bug report to the @AUCTeX{} bug
@@ -48,29 +42,20 @@ in the bug report.
 Second, you can try to figure out if something in your personal or site
 configuration triggers the error by starting Emacs without such
 customizations.  You can do this by invoking Emacs with the following
-command line, depending on the installation scheme of @AUCTeX{} and your
-@acronym{OS}:
-@itemize
-@item
-If you installed @AUCTeX{} from @acronym{ELPA}, use @samp{emacs -q
--no-site-file --eval "(progn (setq package-load-list '((auctex t)))
-(package-initialize))"}.  The @option{--eval} option activates only
-@AUCTeX{} among all installed @acronym{ELPA} packages.
-@item
-If you installed @AUCTeX{} via traditional
-@command{configure}--@command{make} scheme, use @samp{emacs -q
--no-site-file -l auctex}.  The @option{-l} option loads @file{auctex.el}
-which you normally do in your init file.
-@item
-In both above cases, use @samp{runemacs} instead of @samp{emacs} on
-windows.
-@end itemize
+command line:
+@example
+emacs -q -no-site-file --eval "(progn (setq package-load-list '((auctex
+t))) (package-initialize))"
+@end example
+Use @samp{runemacs} instead of @samp{emacs} on @w{MS Windows}.
 
-After you
-have started Emacs like this, you can load the file triggering the
-error.  If everything is working now, you know that you have to search
-either in the site configuration file or your personal init file for
-statements related to the problem.
+The @option{--eval} option activates only @AUCTeX{} among all installed
+@acronym{ELPA} packages.
+
+After you have started Emacs like this, you can load the file triggering
+the error.  If everything is working now, you know that you have to
+search either in the site configuration file or your personal init file
+for statements related to the problem.
 
 @item
 @acronym{ELPA} upgrade fails.  What should I do?
@@ -130,19 +115,6 @@ What versions of Emacs are supported?
 are unsupported.
 
 @item
-What should I do when @command{./configure} does not find programs like @command{latex}?
-
-This is problem often encountered on Windows.  Make sure that the
-@env{PATH} environment variable includes the directories containing the
-relevant programs, as described in
-@ifset rawfile
-the file @file{INSTALL.windows}
-@end ifset
-@ifclear rawfile
-@ref{Installation under MS Windows,,,auctex,the @AUCTeX{} manual}.
-@end ifclear
-
-@item
 Why doesn't the completion, style file, or multifile stuff work?
 
 It must be enabled first, insert this in your init file:
@@ -155,9 +127,7 @@ It must be enabled first, insert this in your init file:
 
 Read also the chapters about parsing and multifile documents in the
 manual.
-@ifclear rawfile
 @xref{Parsing Files} and @ref{Multifile}.
-@end ifclear
 
 @item
 Why doesn't @code{TeX-save-document} work?

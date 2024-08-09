@@ -3,10 +3,6 @@
 @c Foundation, Inc.
 @c See file auctex.texi for copying conditions.
 @include macros.texi
-@ifset rawfile
-@chapheading Changes and New Features in @AUCTeX{}
-
-@end ifset
 
 @heading News in 14.1
 
@@ -1448,7 +1444,7 @@ More detailed information can be found in the installation instructions
 (file @file{INSTALL}).
 @end ifset
 @ifclear rawfile
-@xref{Loading the package}.
+@xref{Activating the package}.
 @end ifclear
 
 @item
@@ -1914,10 +1910,10 @@ it started.
 The build process was enhanced and is now based on @code{autoconf}
 making installing @AUCTeX{} a mostly automatic process.  See
 @ifset rawfile
-the files @file{INSTALL} and @file{INSTALL.windows}
+the files @file{INSTALL}@c and @file{INSTALL.windows}
 @end ifset
 @ifclear rawfile
-@ref{Installation} and @ref{Installation under MS Windows}
+@ref{Installation}@c and @ref{Installation under MS Windows}
 @end ifclear
 for details.
 @end itemize

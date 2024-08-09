@@ -4,7 +4,7 @@
 This is the README file for the AUCTeX distribution.
 
 @quotation
-Copyright (C) 2008, 2017, 2018 Free Software Foundation, Inc.
+Copyright (C) 2008, 2017, 2018, 2024 Free Software Foundation, Inc.
 
 Copying and distribution of this file, with or without modification, are
 permitted in any medium without royalty provided the copyright notice
@@ -56,8 +56,7 @@ More detailed information about the features and usage of @AUCTeX{} can
 be found in the
 @ifset rawfile
 @AUCTeX{} manual.  You can access it from within Emacs by typing
-@kbd{C-h i d m auctex @key{RET}}.  If you prefer the standalone info
-reader, issue the command @code{info auctex} in a terminal.
+@kbd{C-h i d m auctex @key{RET}}.
 @end ifset
 @ifclear rawfile
 remainder of this manual.
@@ -67,25 +66,20 @@ remainder of this manual.
 add new features for your own needs.  It is a GNU project and
 distributed under the `GNU General Public License Version 3'.
 
-The most recent version is always available at
-@url{https://ftp.gnu.org/pub/gnu/auctex/}.
+@AUCTeX{} is a package distributed at @acronym{ELPA}, Emacs Lisp Package
+Archive.  You can manage it in Emacs package manager.
+@ifclear rawfile
+(@pxref{Packages,,,emacs})
+@end ifclear
 
 WWW users may want to check out the @AUCTeX{} page at
-@url{https://www.gnu.org/software/auctex/}.
-
-For comprehensive information about how to install @AUCTeX{}
-@ifset rawfile
-read the file @file{INSTALL} or @file{INSTALL.windows}, respectively.
-@end ifset
-@ifclear rawfile
-@xref{Installation}, or @ref{Installation under MS Windows},
-respectively.
-@end ifclear
+@url{https://www.gnu.org/software/auctex/} and
+@url{https://elpa.gnu.org/packages/auctex.html}.
 
 If you are considering upgrading @AUCTeX{}, the recent changes are
 described in
 @ifset rawfile
-the @file{CHANGES} file.
+the @file{NEWS.org} file.
 @end ifset
 @ifclear rawfile
 @ref{Changes}.

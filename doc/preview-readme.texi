@@ -56,18 +56,10 @@ the background and providing fast interactive response.
 @node  Activating preview-latex, Getting started, What use is it?, Introduction
 @section Activating @previewlatex{}
 @cindex Activation
-After installation, the package may need to be activated (and remember
-to activate @AUCTeX{} too).  If @previewlatex{} is installed via the
-Emacs package manager (@acronym{ELPA}), activation should be automatic
-upon installation.
+Successful installation automatically activates the package at Emacs
+startup.
 
-The usual activation (if it is not done automatically) would be
-
-@example
-(load "preview-latex.el" nil t t)
-@end example
-
-If you still don't get a ``Preview'' menu in @LaTeX{} mode in spite
+If you don't get a ``Preview'' menu in @LaTeX{} mode in spite
 of @AUCTeX{} showing its ``Command'', your installation is broken.  One
 possible cause are duplicate Lisp files that might be detectable with
 @kbd{M-x list-load-path-shadows @key{RET}}.
@@ -219,8 +211,10 @@ list available to which you can subscribe by sending a mail with
 Offers to support further development will be appreciated.  If you want
 to show your appreciation with a donation to the main developer, you can
 do so via PayPal to @email{dak@@gnu.org}, and of course you can arrange
-for service contracts or for added functionality.  Take a look at the
-@file{TODO} list for suggestions in that area.
+for service contracts or for added functionality.
+@ifclear rawfile
+Take a look at the @ref{ToDo} list for suggestions in that area.
+@end ifclear
 
 @c Local Variables:
 @c mode: Texinfo
