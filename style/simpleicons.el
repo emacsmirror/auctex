@@ -1,4 +1,4 @@
-;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v13.1.0)  -*- lexical-binding: t; -*-
+;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v13.4.0)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023--2024 Free Software Foundation, Inc.
 
@@ -26,8 +26,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `simpleicons.sty' (v13.1.0) from
-;; 2024/07/12.  `simpleicons.sty' is part of TeXLive.
+;; This file adds support for `simpleicons.sty' (v13.4.0) from
+;; 2024/08/09.  `simpleicons.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -1117,6 +1117,7 @@
     "glitch"
     "globus"
     "glovo"
+    "gltf"
     "gmail"
     "gnome"
     "gnometerminal"
@@ -1623,12 +1624,14 @@
     "listmonk"
     "lit"
     "litecoin"
+    "literal"
     "litiengine"
     "livechat"
     "livejournal"
     "livewire"
     "llvm"
     "lmms"
+    "lobsters"
     "local"
     "lodash"
     "logitech"
@@ -1759,6 +1762,7 @@
     "milvus"
     "minds"
     "minetest"
+    "mingww64"
     "mini"
     "minio"
     "mintlify"
@@ -2008,6 +2012,7 @@
     "osmc"
     "osu"
     "otto"
+    "outline"
     "overcast"
     "overleaf"
     "ovh"
@@ -3172,6 +3177,7 @@
     "zenodo"
     "zensar"
     "zerodha"
+    "zerotier"
     "zerply"
     "zettlr"
     "zhihu"
