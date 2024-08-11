@@ -560,21 +560,43 @@ is assumed by default."
     "-"
     ("Insert Font"
      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
-     ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+     ["Strong"     (TeX-font nil ?s)    :keys "C-c C-f s"]
+     "-"
+     ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
-     ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+     "-"
+     ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
-     ["Sample"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
-     ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"])
+     ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+     "-"
+     ["Cite"       (TeX-font nil ?C)    :keys "C-c C-f C"]
+     ["Code"       (TeX-font nil ?c)    :keys "C-c C-f c"]
+     ["Define"     (TeX-font nil ?d)    :keys "C-c C-f d"]
+     ["File"       (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
+     ["Key"        (TeX-font nil ?k)    :keys "C-c C-f k"]
+     ["Keyboard"   (TeX-font nil ?\C-k) :keys "C-c C-f C-k"]
+     ["Sample"     (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+     ["Variable"   (TeX-font nil ?\C-v) :keys "C-c C-f C-v"])
     ("Replace Font"
-     ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
-     ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
-     ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
-     ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
-     ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
-     ["Sample"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
-     ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
-    ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
+     ["Emphasize"  (TeX-font t ?\C-e)   :keys "C-u C-c C-f C-e"]
+     ["Strong"     (TeX-font t ?s)      :keys "C-u C-c C-f s"]
+     "-"
+     ["Roman"      (TeX-font t ?\C-r)   :keys "C-u C-c C-f C-r"]
+     ["Typewriter" (TeX-font t ?\C-t)   :keys "C-u C-c C-f C-t"]
+     "-"
+     ["Bold"       (TeX-font t ?\C-b)   :keys "C-u C-c C-f C-b"]
+     ["Italic"     (TeX-font t ?\C-i)   :keys "C-u C-c C-f C-i"]
+     ["Small Caps" (TeX-font t ?\C-c)   :keys "C-u C-c C-f C-c"]
+     "-"
+     ["Cite"       (TeX-font t ?C)      :keys "C-u C-c C-f C"]
+     ["Code"       (TeX-font t ?c)      :keys "C-u C-c C-f c"]
+     ["Define"     (TeX-font t ?d)      :keys "C-u C-c C-f d"]
+     ["File"       (TeX-font t ?\C-f)   :keys "C-u C-c C-f C-f"]
+     ["Key"        (TeX-font t ?k)      :keys "C-u C-c C-f k"]
+     ["Keyboard"   (TeX-font t ?\C-k)   :keys "C-u C-c C-f C-k"]
+     ["Sample"     (TeX-font t ?\C-s)   :keys "C-u C-c C-f C-s"]
+     ["Variable"   (TeX-font t ?\C-v)   :keys "C-u C-c C-f C-v"])
+    ["Delete Font" (TeX-font t ?\C-d)   :keys "C-c C-f C-d"]
     "-"
     ["Create Master Menu" texinfo-master-menu
      :help "Make a master menu for the whole Texinfo file"]
@@ -599,22 +621,22 @@ is assumed by default."
     . ,TeX-common-menu-entries))
 
 (defvar Texinfo-font-list
-  '((?\C-b "@b{" "}")
-    (?\C-c "@sc{" "}")
-    (?\C-e "@emph{" "}")
-    (?\C-i "@i{" "}")
-    (?\C-r "@r{" "}")
-    (?\C-s "@samp{" "}")
-    (?\C-t "@t{" "}")
+  '((?\C-b "@b{"      "}")
+    (?\C-c "@sc{"     "}")
+    (?\C-e "@emph{"   "}")
+    (?\C-i "@i{"      "}")
+    (?\C-r "@r{"      "}")
+    (?\C-s "@samp{"   "}")
+    (?\C-t "@t{"      "}")
     (?s    "@strong{" "}")
-    (?\C-f "@file{" "}")
-    (?d "@dfn{" "}")
-    (?\C-v "@var{" "}")
-    (?k    "@key{" "}")
-    (?\C-k "@kbd{" "}")
-    (?c    "@code{" "}")
-    (?C    "@cite{" "}")
-    (?\C-d "" "" t))
+    (?\C-f "@file{"   "}")
+    (?d    "@dfn{"    "}")
+    (?\C-v "@var{"    "}")
+    (?k    "@key{"    "}")
+    (?\C-k "@kbd{"    "}")
+    (?c    "@code{"   "}")
+    (?C    "@cite{"   "}")
+    (?\C-d ""         "" t))
   "Font commands used in Texinfo mode.  See `TeX-font-list'.")
 
 ;;; Mode:
