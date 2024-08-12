@@ -49,25 +49,34 @@ all: $(ALL_GENERATED_FILES) compile auctex-autoloads.el
 compile: $(patsubst %.el,%.elc,$(wildcard *.el style/*.el)) tex-site.elc
 
 # If we were depending on emacs 29.1, we could simply use
-# loaddefs-generate.  If we were depending on 28.1, we could still use
-# update-directory-autoloads...
+# loaddefs-generate...
 AUTOLOAD=--eval '\
 (let* ((autoload-file (expand-file-name "$@")) \
-       (autoload-file-dir (file-name-directory autoload-file))) \
-  (if (fboundp `loaddefs-generate) \
+       (autoload-file-dir (file-name-directory autoload-file)) \
+       (addition-code "(add-to-list (quote load-path)\n\
+               (directory-file-name\n\
+                 (file-name-directory load-file-name)))")) \
+  (if (fboundp (quote loaddefs-generate)) \
       (loaddefs-generate autoload-file-dir autoload-file \
-                         (list "tex-wizard.el") \
-                         "(add-to-list `load-path\n\
-                                       (directory-file-name\n\
-                                         (file-name-directory load-file-name)))")\
-    (mapc (lambda (file) \
-            (update-file-autoloads file nil autoload-file)) \
-          command-line-args-left)) \
+                         (list "tex-wizard.el" "auctex.el" "lpath.el") \
+                         addition-code) \
+    (setq generated-autoload-file autoload-file) \
+    (update-directory-autoloads autoload-file-dir) \
+    (with-temp-file autoload-file \
+      (insert-file-contents autoload-file) \
+      (cond ((progn (goto-char (point-min)) \
+                    (re-search-forward "^;;; Code:" nil t)) \
+             (newline 2)) \
+            ((progn (goto-char (point-min)) \
+                    (re-search-forward "^$$")) \
+             (open-line 2)) \
+            (t (goto-char (point-max)))) \
+      (insert addition-code))) \
   (save-buffers-kill-emacs t))'
 
 auctex-autoloads.el:
 	rm -f $@
-	$(EMACS) $(AUTOLOAD) $(wildcard *.el)
+	$(EMACS) $(AUTOLOAD)
 
 %.elc: %.el
 	$(EMACS) -f batch-byte-compile $<
