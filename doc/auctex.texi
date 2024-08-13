@@ -6153,12 +6153,25 @@ The full license text can be read here:
 @node Changes
 @appendixsec Changes and New Features
 
-@lowersections
-@include changes.texi
-@raisesections
+Recent changes are listed
+@ifinfo
+in @file{NEWS.org} file available at your @acronym{ELPA} @AUCTeX{}
+contents directory, typically @file{~/.emacs.d/elpa/auctex-x.y.z/} where
+@samp{x.y.z} is the version number of the installed @AUCTeX{}.
+
+You can also see the same content
+@end ifinfo
+at @uref{https://elpa.gnu.org/packages/auctex.html, @acronym{ELPA}
+@AUCTeX{} page}.
 
 @subheading Older versions
-See the file @file{history.texi} for older changes.
+See the file @file{history.texi} for older changes.  It is available at
+@ifinfo
+@samp{doc} subdirectory of @acronym{ELPA} @AUCTeX{} contents directory.
+@end ifinfo
+@ifnotinfo
+@AUCTeX{} Git repository.
+@end ifnotinfo
 
 @node Development
 @appendixsec Future Development

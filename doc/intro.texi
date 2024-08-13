@@ -72,17 +72,17 @@ Archive.  You can manage it in Emacs package manager.
 (@pxref{Packages,,,emacs})
 @end ifclear
 
-WWW users may want to check out the @AUCTeX{} page at
+@acronym{WWW} users may want to check out the @AUCTeX{} page at
 @url{https://www.gnu.org/software/auctex/} and
 @url{https://elpa.gnu.org/packages/auctex.html}.
 
 If you are considering upgrading @AUCTeX{}, the recent changes are
-described in
-@ifset rawfile
-the @file{NEWS.org} file.
-@end ifset
+described on the latter of the above @acronym{WWW} sites.
 @ifclear rawfile
-@ref{Changes}.
+You can see the same change logs in @file{NEWS.org} file available at your
+@acronym{ELPA} @AUCTeX{} contents directory, typically
+@file{~/.emacs.d/elpa/auctex-x.y.z/} where @samp{x.y.z} is the version
+number of the installed @AUCTeX{}.
 @end ifclear
 
 If you want to discuss @AUCTeX{} with other users or its developers,
