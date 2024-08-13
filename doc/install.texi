@@ -216,7 +216,6 @@ accessible directly by typing @kbd{M-x customize-option @key{RET} @var{option}
 
 @defopt TeX-macro-global
 Directories containing the site's @TeX{} style files.
-@end defopt
 
 Normally, @AUCTeX{} will only allow you to complete macros and
 environments which are built-in, specified in @AUCTeX{} style files or
@@ -229,6 +228,11 @@ directories will be searched recursively, so there is no reason to list
 subdirectories explicitly.  Automatic configuration will already have
 set the variable for you if it could use the program @command{kpsewhich}.
 In this case you normally don't have to alter anything.
+
+Note that @code{TeX-auto-generate-global} is not so smart and it can
+introduce unexpected side effects as discussed in
+@uref{https://lists.gnu.org/r/auctex/2021-01/msg00037.html}.
+@end defopt
 
 @c Local Variables:
 @c mode: Texinfo
