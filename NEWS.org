@@ -10,8 +10,9 @@
 
 ** Added
 
-- Add new support files =style/authblk.el=, =style/ninecolors.el=,
-  =style/supertabular.el=, =style/tabularray.el= and =style/xtab.el=.
+- Add new support files =style/authblk.el=, =style/langscibook.cls=
+  =style/ninecolors.el=, =style/supertabular.el=, =style/tabularray.el=
+  and =style/xtab.el=.
 
 ** Changed
 
