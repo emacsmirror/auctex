@@ -63,7 +63,7 @@
   :load "tex" :load "latex" :load "tex-style")
 
 (defvar TeX-lisp-directory
-  @lisppackagelispdir@
+  (directory-file-name (file-name-directory load-file-name))
   "The directory where most of the AUCTeX lisp files are located.
 For the location of lisp files associated with
 styles, see the variables TeX-style-* (hand-generated lisp) and
@@ -72,11 +72,13 @@ TeX-auto-* (automatically generated lisp).")
 (add-to-list 'load-path TeX-lisp-directory)
 
 (defvar TeX-data-directory
-  @lisppackagedatadir@
+  (directory-file-name (file-name-directory load-file-name))
   "The directory where the AUCTeX non-Lisp data is located.")
 
 (defcustom TeX-auto-global
-  @lispautodir@
+  (if (file-writable-p "/usr/local/var/auctex/")
+      "/usr/local/var/auctex/"
+    (concat user-emacs-directory "auctex/"))
   "Directory containing automatically generated information.
 
 For storing automatic extracted information about the TeX macros
