@@ -11,7 +11,13 @@ Archive.  To install @AUCTeX{}, simply do @kbd{M-x list-packages
 hit @kbd{x} to execute the installation procedure.  That's all.
 
 Caution.  If you have installed former @AUCTeX{} as regular tarball
-release, uninstall it to avoid possible troubles.
+release, uninstall it and delete the initialization codes
+@lisp
+(load "auctex.el" nil t t)
+(load "preview-latex.el" nil t t)
+@end lisp
+@noindent
+in your init file.  Otherwise you'll get into troubles.
 
 @code{use-package} users can use this simple recipe in their
 @code{user-init-file} which essentially does the same as the manual
