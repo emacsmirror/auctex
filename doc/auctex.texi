@@ -7,6 +7,10 @@
 @c paragraphindent 2
 @comment %**end of header
 @include macros.texi
+@c To obtain pdf document, run "texi2pdf" directly on this file.
+@c Don't use "makeinfo --pdf" (equivalently, "texi2any --pdf") instead
+@c because that fails with false errors.  Validity checking by texi2any
+@c doesn't understand the TeX codes in this file and macros.texi.
 @copying
 This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
