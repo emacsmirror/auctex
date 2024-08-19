@@ -37,6 +37,7 @@ section and proceed to @ref{Quick Start}.
 * Prerequisites::
 * Activating the package::
 * Advice for package providers::
+* Using @AUCTeX{} from @acronym{ELPA}-devel::
 * Using @AUCTeX{} from local Git repo::
 * Customizing::
 @end menu
@@ -156,6 +157,32 @@ You can install @acronym{ELPA} @AUCTeX{} package under a
 directory listed in @code{package-directory-list} to have site-wide
 default.
 
+@node Using @AUCTeX{} from @acronym{ELPA}-devel
+@section Using @AUCTeX{} from @acronym{ELPA}-devel
+
+It is possible to use the latest development version of @AUCTeX{}
+conveniently as a package installed from @acronym{GNU}-devel
+@acronym{ELPA}.  This package tracks the latest change in @AUCTeX{} Git
+repository and is intended for brave users who want to test the
+distribution and report possible issues.  The following addition to
+@code{user-init-file} instructs Emacs to change the archive @AUCTeX{} is
+installed from:
+@lisp
+(add-to-list 'package-archives
+             '("elpa-devel" . "https://elpa.gnu.org/devel/") t)
+(setq package-archive-priority
+      '(("elpa" . 10)
+        ("elpa-devel" . 5)))
+(setq package-pinned-packages
+      '((auctex . "elpa-devel")))
+@end lisp
+
+@noindent
+In a nutshell, the code adds the new archive to the list of know archives
+under the name @samp{elpa-devel}, gives it a lower priority than the
+regular archive, and instructs Emacs to fetch only @AUCTeX{} from the new
+archive and don't bother with other packages installed.
+
 @node Using @AUCTeX{} from local Git repo
 @section Using @AUCTeX{} from local Git repo
 
@@ -181,7 +208,7 @@ in your init file:
 (load "~/development/auctex/auctex-autoloads.el" nil t t)
 (with-eval-after-load 'info
   (add-to-list 'Info-additional-directory-list
-               "~/development/auctex/doc/"))
+               "~/development/auctex/doc"))
 @end lisp
 @noindent
 and you're finished.
