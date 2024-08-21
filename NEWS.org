@@ -11,6 +11,7 @@
 ** Added
 
 - Add new support files =style/authblk.el=, =style/langscibook.cls=,
+  =style/lstautogobble.el=, =style/lstlinebgrd.el=,
   =style/ninecolors.el=, =style/supertabular.el=, =style/tabularray.el=
   and =style/xtab.el=.
 

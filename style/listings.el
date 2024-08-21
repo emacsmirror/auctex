@@ -263,8 +263,23 @@
                     "rulecolor"
                     "rulesepcolor"))
             result)
+       ;; Cater for a color key provided by the lstlinebgrd package:
+       (when (member "lstlinebgrd" TeX-active-styles)
+         (push "linebackgroundcolor" keys))
        (dolist (key keys result)
          (push (list key colors) result))))
+   ;; Cater for other keys provided by the lstlinebgrd package:
+   (when (member "lstlinebgrd" TeX-active-styles)
+     (let ((len (mapcar (lambda (x) (concat TeX-esc x))
+                        (mapcar #'car (LaTeX-length-list)))))
+       `(("linebackgroundsep" ,len)
+         ("linebackgroundwidth" ,len)
+         ("linebackgroundheight" ,len)
+         ("linebackgrounddepth" ,len)
+         ("linebackgroundcmd"))))
+   ;; Cater for the key provided by the lstautogobble package:
+   (when (member "lstautogobble" TeX-active-styles)
+     '(("autogobble" ("true" "false"))))
    ;; Cater for user defined styles:
    (when (LaTeX-listings-lstdefinestyle-list)
      `(("style" ,(mapcar #'car (LaTeX-listings-lstdefinestyle-list)))))
