@@ -1,6 +1,6 @@
 ;;; xr-hyper.el --- AUCTeX style for `xr-hyper.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2021--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `xr-hyper.sty' v7.00m form 2021-06-07.
+;; This file adds support for `xr-hyper.sty' v7.00m from 2021-06-07.
 ;; RefTeX has good support for referencing external \label's, so it
 ;; should be used.
 

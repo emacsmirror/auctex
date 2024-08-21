@@ -1,6 +1,6 @@
 ;;; xr.el --- AUCTeX style for `xr.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021 Free Software Foundation, Inc.
+;; Copyright (C) 2021--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `xr.sty' v5.06 form 2020-05-10.  RefTeX
+;; This file adds support for `xr.sty' v5.06 from 2020-05-10.  RefTeX
 ;; has good support for referencing external \label's, so it should be
 ;; used.
 

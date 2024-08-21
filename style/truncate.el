@@ -1,6 +1,6 @@
 ;;; truncate.el --- AUCTeX style for `truncate.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021 Free Software Foundation, Inc.
+;; Copyright (C) 2021--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `truncate.sty' v3.6 form 2001-08-20.
+;; This file adds support for `truncate.sty' v3.6 from 2001-08-20.
 
 ;;; Code:
 

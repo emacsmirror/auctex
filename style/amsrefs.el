@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `amsrefs.sty' form 2013-01-16.
+;; This file adds support for `amsrefs.sty' from 2013-01-16.
 
 ;;; Code:
 

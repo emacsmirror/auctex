@@ -1,6 +1,6 @@
 ;;; multibib.el --- AUCTeX style for `multibib.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `multibib.sty' v1.4 form 2008-12-10.
+;; This file adds support for `multibib.sty' v1.4 from 2008-12-10.
 
 ;; Note for RefTeX users: multibib package allows multiple macro calls
 ;; to load bibliography database files.  RefTeX bundled with Emacs

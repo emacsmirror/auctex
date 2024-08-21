@@ -1,6 +1,6 @@
 ;;; microtype.el --- AUCTeX style for `microtype.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `microtype.sty' v3.0e form 2022-06-20.
+;; This file adds support for `microtype.sty' v3.0e from 2022-06-20.
 
 ;;; Code:
 

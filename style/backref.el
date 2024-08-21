@@ -1,6 +1,6 @@
 ;;; backref.el --- AUCTeX style for `backref.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021 Free Software Foundation, Inc.
+;; Copyright (C) 2021--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `backref.sty' v1.41 form 2021-02-04.
+;; This file adds support for `backref.sty' v1.41 from 2021-02-04.
 
 ;;; Code:
 

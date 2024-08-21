@@ -1,6 +1,6 @@
 ;;; proc.el --- AUCTeX style for `proc.cls'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `proc.cls' v1.3m form 2021-12-09.
+;; This file adds support for `proc.cls' v1.3m from 2021-12-09.
 
 ;;; Code:
 

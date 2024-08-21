@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `cancel.sty' v2.2 form 2013-04-12.
+;; This file adds support for `cancel.sty' v2.2 from 2013-04-12.
 
 ;;; Code:
 
