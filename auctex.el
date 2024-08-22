@@ -33,20 +33,18 @@
 
 ;;; Code:
 
-;; This can be used for starting up AUCTeX.  The following somewhat
-;; strange trick causes tex-site.el to be loaded in a way that can be
-;; safely undone using (unload-feature 'tex-site).
+;; This can be used for starting up AUCTeX, e.g., when not installed
+;; from ELPA.  We have to set `no-byte-compile' to t otherwise the
+;; compiler will eval the form during the compilation where
+;; `load-file-name' is nil and things will go wrong.
 
-;; FIXME: I don't quite understand in which way this is better than less
-;; strange code such as
-;;     (require 'tex-site (expand-file-name "tex-site.el"
-;;                         (file-name-directory load-file-name))
-
-(autoload 'TeX-load-hack
-  (expand-file-name "tex-site.el"
-                    (file-name-directory load-file-name)))
-(TeX-load-hack)
-
+(require 'tex-site
+         (expand-file-name "tex-site.el"
+                           (file-name-directory load-file-name)))
 (provide 'auctex)
+
+;; Local Variables:
+;; no-byte-compile: t
+;; End:
 
 ;;; auctex.el ends here

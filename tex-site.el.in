@@ -94,8 +94,6 @@ shared by all users of a site."
     (doctex-mode . docTeX-mode))
   "Alist of built-in TeX modes and their counterparts in AUCTeX.")
 
-(defalias 'TeX-load-hack #'ignore)
-
 (defun tex-site-unload-function ()
   (TeX-modes-set 'TeX-modes nil)
 
