@@ -10,6 +10,10 @@
 
 ** Added
 
+- Respect the value of ~TeX-output-dir~ when processing files with
+  latexmk.  This means that the default value of ~TeX-command-list~ is
+  changed.
+
 - Add new support files =style/authblk.el=, =style/langscibook.cls=,
   =style/lstautogobble.el=, =style/lstlinebgrd.el=,
   =style/ninecolors.el=, =style/supertabular.el=, =style/tabularray.el=
