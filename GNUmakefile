@@ -97,6 +97,9 @@ clean:
 		$(wildcard *.elc style/*.elc) \
 		$(wildcard latex/*.aux latex/*.drv latex/*.hd latex/*.log) \
 		$(wildcard latex/*.out latex/*.pdf latex/*.tar.gz) \
+		$(wildcard doc/*.cp doc/*.cps doc/*.fn doc/*.fns) \
+		$(wildcard doc/*.ky doc/*.kys doc/*.vr doc/*.vrs) \
+		$(wildcard doc/*.aux doc/*.log doc/*.toc) \
 		latex/preview-mk.ins latex/preview.ins \
 		auctex-autoloads.el \
 		$(DYNVARSFILES)
