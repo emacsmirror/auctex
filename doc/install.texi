@@ -135,6 +135,14 @@ in your early init file (@pxref{Early Init File,,,emacs}).  (We
 recommend this treatment over setting @code{TeX-modes} to @code{nil},
 because it doesn't leave unused autoloads persisted.)
 
+It is no longer possible to disable the site-wide installation by
+@lisp
+(unload-feature 'tex-site)
+@end lisp
+@noindent
+, so don't use it.  This was the instruction described in former versions
+of this document, but now it causes error.
+
 @node Advice for package providers
 @section Providing @AUCTeX{} as a package
 
