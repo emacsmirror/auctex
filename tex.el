@@ -252,7 +252,7 @@ If nil, none is specified."
     ("Ps2pdf" "ps2pdf %f %(O?pdf)" TeX-run-ps2pdf nil
      (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Convert PostScript file to PDF")
-    ("LaTeXMk" "latexmk %(latexmk-out) %(file-line-error) \
+    ("LaTeXMk" "latexmk %(latexmk-out) %(file-line-error) %(output-dir) \
 %`%(extraopts) %S%(mode)%' %t"
      TeX-run-format nil (LaTeX-mode docTeX-mode) :help "Run LaTeXMk")
     ("Glossaries" "makeglossaries %(d-dir) %s" TeX-run-command nil
@@ -372,7 +372,8 @@ Any additional elements get just transferred to the respective menu entries."
                                      (const :tag "ConTeXt" ConTeXt-mode)
                                      (const :tag "Texinfo" Texinfo-mode)
                                      (const :tag "AmSTeX" AmSTeX-mode)))
-                        (repeat :tag "Menu elements" :inline t sexp))))
+                        (repeat :tag "Menu elements" :inline t sexp)))
+  :package-version '(auctex . "14.0.7"))
 
 (defcustom TeX-command-output-list
   '(
