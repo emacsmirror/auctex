@@ -2,6 +2,7 @@
 #+AUTHOR: AUCTeX Maintenance Team
 #+LANGUAGE: en
 #+OPTIONS: num:nil toc:nil
+#+LINK: ELPA https://elpa.gnu.org/packages/%s
 # Copyright (C) 2024 Free Software Foundation, Inc.
 # License: GNU General Public License 3
 # The format is based on [[https://keepachangelog.com/en/1.1.0/][Keep a Changelog]]
@@ -23,8 +24,8 @@
 
 - AUCTeX 13.3 marks the last standalone tarball release.  From now on,
   AUCTeX releases are made available through the
-  [[https://elpa.gnu.org/packages/auctex.html][Emacs Lisp Package
-  Archive (ELPA)]].  Distro packagers are encouraged to use the ELPA
+  [[ELPA:auctex.html][Emacs Lisp Package Archive (ELPA)]].  Distro
+  packagers are encouraged to use the [[ELPA:auctex.html][ELPA]]
   packages as-is and install them under one of the new Emacs locations
   for system-wide packages, see ~package-directory-list~.
 
@@ -42,7 +43,8 @@
   #+begin_src emacs-lisp
     (unload-feature 'tex-site)
   #+end_src
-  Using this form when installed from ELPA will throw an error.
+  Using this form when installed from [[ELPA:auctex.html][ELPA]] will
+  throw an error.
 
 * [14.0.6] - 2024-06-30
 
@@ -164,7 +166,7 @@
 
 ** Fixed
 
-- Fix ELPA releases.
+- Fix [[ELPA:auctex.html][ELPA]] releases.
 
 * [14.0.1] - 2024-02-08
 
