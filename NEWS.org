@@ -36,6 +36,14 @@
   For users who tracked the master branch: Do =git switch main= to
   switch to the main branch where development takes place nowadays.
 
+** Removed
+
+- Remove the possibility to disable the side-wide installation with:
+  #+begin_src emacs-lisp
+    (unload-feature 'tex-site)
+  #+end_src
+  Using this form when installed from ELPA will throw an error.
+
 * [14.0.6] - 2024-06-30
 
 ** Added
