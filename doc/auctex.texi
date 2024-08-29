@@ -504,7 +504,7 @@ If you insert left size adjusting macros such as @samp{\left},
 @samp{\bigl} etc.@: with @code{TeX-insert-macro}, it asks for left brace
 to use and supplies automatically right size adjusting macros such as
 @samp{\right}, @samp{\bigr} etc.@: and corresponding right brace in
-addtion to the intended left macro and left brace.
+addition to the intended left macro and left brace.
 
 The completion by @code{TeX-insert-macro} also applies when entering
 macros such as @samp{\langle}, @samp{\lfloor} and @samp{\lceil}, which
@@ -922,7 +922,7 @@ inserted or, as the first choice the value of the variable
 @defopt LaTeX-default-environment
 Default environment to insert when invoking @code{LaTeX-environment}
 first time.  When the current environment is @samp{document}, it is
-overriden by @code{LaTeX-default-document-environment}.
+overridden by @code{LaTeX-default-document-environment}.
 @end defopt
 
 @defvar LaTeX-default-document-environment
@@ -2633,7 +2633,7 @@ forced fontification by customizing the variable
 @defopt TeX-fold-auto
 By default, a macro inserted with @code{TeX-insert-macro} (@kbd{C-c C-m})
 will not be folded.  Set this variable to a non-@code{nil} value to
-aumatically fold macros as soon as they are inserted.
+automatically fold macros as soon as they are inserted.
 @end defopt
 
 @defopt TeX-fold-preserve-comments
@@ -2644,7 +2644,7 @@ alone.
 @end defopt
 
 @defopt TeX-fold-unfold-around-mark
-When this variable is non-@code{nil} and there is an active regione, text
+When this variable is non-@code{nil} and there is an active region, text
 around the mark will be kept unfolded.
 @end defopt
 
@@ -2676,7 +2676,7 @@ point.
 (@kbd{C-c C-o C-m}) Hide the macro on which point currently is located.
 If the name of the macro is found in @code{TeX-fold-macro-spec-list},
 the respective display string will be shown instead.  If it is not
-found, the name of the macro in sqare brackets or the default string for
+found, the name of the macro in square brackets or the default string for
 unspecified macros (@code{TeX-fold-unspec-macro-display-string}) will be
 shown, depending on the value of the variable
 @code{TeX-fold-unspec-use-name}.
@@ -2695,7 +2695,7 @@ located.  The behavior regarding the display string is analogous to
 Hide the math macro on which point currently is located.  If the name of
 the macro is found in @code{TeX-fold-math-spec-list}, the respective
 display string will be shown instead.  If it is not found, the name of
-the macro in sqare brackets or the default string for unspecified macros
+the macro in square brackets or the default string for unspecified macros
 (@code{TeX-fold-unspec-macro-display-string}) will be shown, depending
 on the value of the variable @code{TeX-fold-unspec-use-name}.
 @end deffn
@@ -2937,7 +2937,7 @@ environments.
 @kindex C-x n e
 (@kbd{C-x n e}) Make text outside current environment invisible.  With
 optional argument @var{count} keep visible that number of enclosing
-environmens.
+environments.
 @end deffn
 
 Like other standard narrowing functions, the above commands are
@@ -2954,7 +2954,7 @@ example is to display @code{(lambda () ...)} as @code{(λ () ...)} in
 Lisp buffers.
 
 @AUCTeX{} can use this feature in order to display certain math macros and
-greek letters using their Unicode representation, too.  For example, the
+Greek letters using their Unicode representation, too.  For example, the
 @TeX{} code @code{\alpha \times \beta} will be displayed as @code{α × β}.
 When point is on one of the characters, it'll be unprettified
 automatically, meaning you see the verbatim text again.  For this
@@ -3886,7 +3886,7 @@ to do exactly.  In xdvi you normally have to use @kbd{C-down-mouse-1}.
 Note that inverse search with the Evince @acronym{PDF} viewer or its MATE fork
 Atril might fail in raising the Emacs frame after updating point in your
 document's buffer.  There is simply no way to raise the Emacs frame
-reliably accross different operating systems and different window
+reliably across different operating systems and different window
 managers with their different focus stealing policies.  If the Emacs
 frame is not raised after performing an inverse search from Evince or
 Atril, you can customize the following option.
@@ -4134,7 +4134,7 @@ Note that @AUCTeX{} currently only provides support for using
 @code{LaTeX-flymake-chktex-options}.
 
 @defopt LaTeX-flymake-chktex-options
-List of strings passed to @code{chktex} program as additonal options.
+List of strings passed to @code{chktex} program as additional options.
 This option can be used to pass a specific warning number to @code{chktex}
 like @option{-w41}.
 @end defopt
@@ -4891,7 +4891,7 @@ times @samp{--}.
 
 Replacement of language-specific hyphen strings like @samp{"=} with
 dashes does not require to type @key{-} three times in a row.  You can
-put point after the hypen string anytime and trigger the replacement by
+put point after the hyphen string anytime and trigger the replacement by
 typing @key{-}.
 
 In case you are not satisfied with the suggested behavior of quote and
@@ -5964,7 +5964,7 @@ arguments.
 List of optional arguments available for the package.
 @end defvar
 
-Here is an excerption from @samp{acronym.el}:
+Here is an excerpt from @samp{acronym.el}:
 @lisp
 (defvar LaTeX-acronym-package-options
   '("footnote" "nohyperlinks" "printonlyused" "withpage"
@@ -5982,7 +5982,7 @@ as a string, instead of built-in option query facility.  When this function
 is defined, @AUCTeX{} calls it with no argument.
 @end defun
 
-Here is an excerption from @samp{acro.el}:
+Here is an excerpt from @samp{acro.el}:
 @lisp
 (defun LaTeX-acro-package-options ()
   "Prompt for package options for the acro package."
