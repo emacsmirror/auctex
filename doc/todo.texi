@@ -167,13 +167,13 @@ Create template for (first) line of tabular environment.
 
 @item
 @c FIXME: Already fixed?
-I think prompting for the master is the intended behaviour.  It
+I think prompting for the master is the intended behavior.  It
 corresponds to a `shared' value for @code{TeX-master}.
 
 There should probably be a `none' value which wouldn't query for the
 master, but instead disable all features that relies on @code{TeX-master}.
 
-This default value for @code{TeX-master} could then be controled with mapping
+This default value for @code{TeX-master} could then be controlled with mapping
 based on the extension.
 
 @item
