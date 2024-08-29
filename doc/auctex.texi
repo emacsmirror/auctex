@@ -1324,7 +1324,7 @@ A number indicating the subgroup in the regexp containing the text.
 @item
 A function returning an alist of possible completions.
 @item
-Text to append after a succesful completion.
+Text to append after a successful completion.
 @end enumerate
 
 Or alternatively:
@@ -1404,7 +1404,7 @@ Specifies whether @code{TeX-insert-macro} will ask for all optional
 arguments.
 
 If set to the symbol @code{show-optional-args}, @code{TeX-insert-macro}
-asks for optional arguments of @TeX{} marcos, unless the previous
+asks for optional arguments of @TeX{} macros, unless the previous
 optional argument has been rejected.  If set to
 @code{show-all-optional-args}, @code{TeX-insert-macro} asks for all
 optional arguments.  @code{mandatory-args-only}, @code{TeX-insert-macro}
@@ -1670,7 +1670,7 @@ There are environments in @code{LaTeX-indent-environment-list} which do
 not bring a special indentation function with them.  This is due to the
 fact that first the respective functions are not implemented yet and
 second that filling will be disabled for the specified environments.
-This shall prevent the source code from being messed up by accidently
+This shall prevent the source code from being messed up by accidentally
 filling those environments with the standard filling routine.  If you
 think that providing special filling routines for such environments
 would be an appropriate and challenging task for you, you are invited to
@@ -2451,7 +2451,7 @@ variables @code{font-latex-fontify-script} and
 If non-@code{nil}, fontify subscript and superscript strings.  Concretely,
 this means that the scripts are raised or lowered.
 
-Another possiblity is setting this variable to the symbol
+Another possibility is setting this variable to the symbol
 @code{multi-level}.  In this case, in a formula @i{x^@{y^z@}}, @i{y} is
 raised above and smaller than @i{x}, and @i{z} is raised above and
 smaller than @i{y}.  With many script levels, the text might become too
@@ -2958,7 +2958,7 @@ Greek letters using their Unicode representation, too.  For example, the
 @TeX{} code @code{\alpha \times \beta} will be displayed as @code{α × β}.
 When point is on one of the characters, it'll be unprettified
 automatically, meaning you see the verbatim text again.  For this
-behaviour however you need to set
+behavior however you need to set
 @code{prettify-symbols-unprettify-at-point} to @code{t} or
 @code{right-edge} which will unprettify the symbol when point moves into
 or near it.
@@ -6194,7 +6194,7 @@ See the file @file{history.texi} for older changes.  It is available at
 @node Texinfo mode
 @appendixsec Features specific to @AUCTeX{}'s Texinfo major mode
 
-@AUCTeX{} includes a major mode for editting Texinfo files.  This major
+@AUCTeX{} includes a major mode for editing Texinfo files.  This major
 mode is not the same mode as the native Texinfo mode (@pxref{Texinfo Mode,,,
 texinfo,Texinfo}) of Emacs, although they have the same name.  However,
 @AUCTeX{} still relies on a number of functions from the native Texinfo
