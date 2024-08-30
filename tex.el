@@ -1376,38 +1376,37 @@ description of the data format.")
 
 (defcustom TeX-view-program-list nil
   "List of viewer specifications.
-This variable can be used to specify how a viewer is to be
-invoked and thereby add new viewers on top of the built-in list
-of viewers defined in `TeX-view-program-list-builtin' or override
-entries in the latter.
+This variable can be used to specify how a viewer is to be invoked and
+thereby add new viewers on top of the built-in list of viewers defined
+in `TeX-view-program-list-builtin' or override entries in the latter
+which also serves as an example for usage.
 
-The car of each item is a string with a user-readable name.  The
-second element can be a command line to be run as a process or a
-Lisp function to be executed.  The command line can either be
-specified as a single string or a list of strings and two-part
-lists.  The first element of the two-part lists is a symbol or a
-list of symbols referring to one or more of the predicates in
-`TeX-view-predicate-list' or `TeX-view-predicate-list-builtin'.
-The second part of the two-part lists is a command line part.
-The command line for the viewer is constructed by concatenating
-the command line parts.  Parts with a predicate are only
-considered if the predicate was evaluated with a positive result.
-Note that the command line can contain placeholders as defined in
-`TeX-expand-list' which are expanded before the viewer is called.
-The third element of the item is optional and is a string, or a
-list of strings, with the name of the executable, or executables,
-needed to open the output file in the viewer.  Placeholders
-defined in `TeX-expand-list' can be used here.  This element is
-used to check whether the viewer is actually available on the
-system.
+The car of each item is a string with a user-readable name.  The second
+element can be a command line to be run as a process or a Lisp function
+to be executed.  The command line can either be specified as a single
+string or a list of strings and two-part lists.  The first element of
+the two-part lists is a symbol or a list of symbols referring to one or
+more of the predicates in `TeX-view-predicate-list' or
+`TeX-view-predicate-list-builtin'.  The second part of the two-part
+lists is a command line part.  The command line for the viewer is
+constructed by concatenating the command line parts.  Parts with a
+predicate are only considered if the predicate was evaluated with a
+positive result.  Note that the command line can contain placeholders as
+defined in the variable `TeX-expand-list' or in
+`TeX-expand-list-builtin' which are expanded before the viewer is
+called.  The third element of the item is optional and is a string, or a
+list of strings, with the name of the executable, or executables, needed
+to open the output file in the viewer.  Placeholders defined in the
+variable `TeX-expand-list' or in `TeX-expand-list-builtin' can be used
+here.  This element is used to check whether the viewer is actually
+available on the system.
 
-The use of a function as the second element only works if the
-View command in `TeX-command-list' makes use of the hook
+The use of a function as the second element only works if the View
+command in `TeX-command-list' makes use of the hook
 `TeX-run-discard-or-function'.
 
-Note: Predicates defined in the current Emacs session will only
-show up in the customization interface for this variable after
-restarting Emacs."
+Note: Predicates defined in the current Emacs session will only show up
+in the customization interface for this variable after restarting Emacs."
   :group 'TeX-view
   :type
   `(repeat
