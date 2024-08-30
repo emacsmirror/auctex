@@ -1,6 +1,6 @@
 ;;; This file is only used for installing AUCTeX.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2021  Free Software Foundation, Inc.
+;; Copyright (C) 2013-2024  Free Software Foundation, Inc.
 ;; Maintainer: auctex-devel@gnu.org
 
 ;;; It is not a part of AUCTeX itself.
@@ -9,7 +9,6 @@
 
 (let ((auctex-dir (file-name-directory load-file-name)))
   (add-to-list 'load-path auctex-dir)
-  (add-to-list 'load-path (expand-file-name "style" auctex-dir))
   (setq TeX-lisp-directory "<none>"
         TeX-auto-global "<none>"))
 
