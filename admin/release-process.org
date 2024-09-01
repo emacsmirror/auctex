@@ -2,70 +2,101 @@
 #+AUTHOR: Mosè Giordano
 #+DATE: [2019-10-31 Thu]
 
-This document descriptes the steps for AUCTeX maintainer to do a new release of
-the package.
+This document describes the steps for AUCTeX maintainers to do a new release of
+the package via ELPA, updating the Website and other release related tasks.
 
-You will need to upload files to GNU FTP servers. In order to do so, we use an
-automated system. Before starting, [[https://www.gnu.org/prep/maintain/html_node/Automated-FTP-Uploads.html#Automated-FTP-Uploads][register for automated uploading]] if you did
-not already.
+** ELPA Release
 
-** AUCTeX package [0/3]
+GNU AUCTeX is hosted as a so-called "externals" package in the GNU ELPA Git
+repository.  ELPA is setup to track the ~main~ branch of AUCTeX Git repository
+in a way that every commit to AUCTeX repo is fetched to ELPA and a new ELPA
+release tarball is created on [[https://elpa.gnu.org/devel/auctex.html][GNU-devel ELPA AUCTeX page]].  The steps for
+creating a versioned release are described below.
 
-Note: I recommend iterating a few times the following steps in a test repository
-(of course excluding uploading of the package to the FTP server) to check that
-everything goes well, before actually doing the release.
+*** Making an ELPA release [0/5]
 
-- [ ] Synchronise with the [[https://savannah.gnu.org/git/?group=auctex][remote repository on Savannah]]: =git pull=
-- [ ] Prepare for new release [0/3]
+The following steps happen in AUCTeX Git repository:
 
-  - [ ] Update AUCTeX version and copyright year in =configure.ac=,
-    =doc/tex-ref.tex=, and =latex/preview.dtx=
-  - [ ] Make sure that all relevant changes are mentioned in =doc/changes.texi=
-  - [ ] Update =RELEASE= [0/3]
+- [ ] In =auctex.el=, edit the line ~;; Version: X.Y.Z~.  X and Y match the
+  latest AUCTeX version and Z is incremented for every ELPA release of that
+  AUCTeX version.  Z starts with 0.  Incrementing the major numbers X and Y is a
+  decision made by the maintainers; currently, there is no fixed rule.
+- [ ] In =NEWS.org=, replace the header =[Unreleased]= with =[X.Y.Z] -
+  YEAR-MM-DD=.
+- [ ] Commit the changes above with
+  #+begin_example
+  Release GNU AUCTeX X.Y.Z
 
-    - [ ] Update release version
-    - [ ] Update list of changes: use =CHANGES= (which is generated from
-      =doc/changes.texi=, you may need to run =make= to update it after
-      changes above)
-    - [ ] Update any other relevant information, like the list of
-      contributors, or required version of GNU Emacs
+  * GNU AUCTeX Version X.Y.Z released.
+  #+end_example
+- [ ] Tag the release with
+  #+begin_src shell
+    git tag -a auctex-X.Y.Z -m "AUCTeX X.Y.Z release"
+  #+end_src
+- [ ] Push the changes in files and the new tag with
+  #+begin_src shell
+    git push
+    git push --tags
+  #+end_src
 
-  - [ ] Commit all the above changes with a title like
-    #+BEGIN_SRC
-    ; Prepare for new release
-    #+END_SRC
+This is it.  The new GNU AUCTeX ELPA release will hopefully be available within
+a few hours.
 
-- [ ] Towards the end of the top-level =Makefile= there are the instructions on
-  how to do the release. Follow them.
+*** Caveats
 
-  - The instructions may mention how to build the XEmacs and Windows packages,
-    but you do not need to do that if you decided to stop providing those
-    packages.
-  - Make sure that the patch for =gendocs.sh= in the =www-docs= target applies
-    correctly, otherwise you will need to update it. Remember to update it in
-    the =gendocspath= branch of the AUCTeX remote repository too.
-  - [[https://www.nongnu.org/texi2html/][=texi2html=]] is needed to build the online documentation. So far, version
-    1.8.2 has been used and tested. Version 5.0 may not be fully compatible (in
-    particular, I have found that
-    =auctex-dist/www/manual/manual/auctex/index.html= may be a broken link using
-    =texi2html= 5.0)
+It has happened in the past that a new GNU AUCTeX ELPA release didn't really
+appear although all steps in the previous section have been performed.  The
+reason was that there has been a new style file whose copyright header didn't
+have the correct format, and ELPA's tooling is pretty strict about that.
+
+In order to check that all copyrights are ok, clone/checkout the master branch
+of the ELPA Git repository.
+
+#+BEGIN_SRC shell
+  # Clone if not done before.
+  git clone ssh://<user>@git.savannah.gnu.org/srv/git/emacs/elpa.git
+  # Otherwise checkout the master brach
+  git checkout master
+  # Get the latest changes
+  git pull
+#+END_SRC
+
+To update the external packages (such as AUCTeX), run ~make externals~ in the
+root directory of the ELPA repository.  Then run ~make check_copyrights~ which
+looks for all files without FSF-copyright line which are not listed in a
+special copyright_exceptions file.  As result, it spits out a diff between the
+actual and expected copyright exceptions.  If the diff is empty (or at least
+doesn't mention an AUCTeX file), everything is fine.
+
+*** One-time setup
+
+Sometimes it is necessary to make changes to ELPA Git repository itself and
+modify the way it handles AUCTeX.  AUCTeX is hosted as a so-called "externals"
+package, so the first step is to add the GNU ELPA Git repository as an
+additional remote to your AUCTeX Git repository.  In the following example, the
+remote name is "elpa".
+
+#+BEGIN_SRC shell
+  git remote add elpa ssh://<user>@git.savannah.gnu.org/srv/git/emacs/elpa.git
+#+END_SRC
+
+AUCTeX is kept in the ~externals/auctex~ branch of the ELPA repository.
 
 ** Website [0/6]
 
-You now have to update the information about latest AUCTeX version on the
-website, and the online documentation. The website is maintained in a CVS
-repository on Savannah. Read the [[https://savannah.gnu.org/cvs/?group=www][Savannah instructions about how to use CVS for
-webpages]] (remember to replace =www= with =auctex= as project). The command to
-checkout the repository locally should be
+The website is maintained in a CVS repository on Savannah.  Read the
+[[https://savannah.gnu.org/cvs/?group=www][Savannah instructions about how to
+use CVS for webpages]] (remember to replace =www= with =auctex= as project). The
+command to checkout the repository locally should be
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC shell
   cvs -z3 -d:ext:YOUR_USER_NAME@cvs.savannah.gnu.org:/web/auctex co auctex
 #+END_SRC
 
 In order to access the [[http://web.cvs.savannah.gnu.org/viewvc/auctex/auctex/][remote CVS repository]], you also need to have the
 environment variable =CVS_RSH= set to =ssh=:
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC shell
   export CVS_RSH=ssh
 #+END_SRC
 
@@ -108,13 +139,13 @@ cp "${AUCTEX_DIR}"/auctex-dist/www/manual/manual/preview-latex/* "${AUCTEX_WEBPA
 
 ** =preview= package to CTAN
 
-Upload the =preview= tarball generated with =make preview-ball= to CTAN as a
+Upload the =preview= tarball generated with =make preview-ctan= to CTAN as a
 "package update" using the [[https://ctan.org/upload][upload form]].
 
 My understanding is that you can use your own name and email in the "Your name"
-and "Your email" fields only if you are an authorised uploader of
-=preview=. David and Mosè are authorised, I do not know if other people are
-authorised.  If in doubt, ask them.
+and "Your email" fields only if you are an authorized uploader of =preview=.
+David, Mosè and Arash are authorized, I do not know if other people are
+authorized.  If in doubt, ask them.
 
 For the other fields, re-use the details of the [[https://ctan.org/pkg/preview][=preview= page on CTAN]].
 
@@ -132,11 +163,14 @@ For the other fields, re-use the details of the [[https://ctan.org/pkg/preview][
 
 ** Announcement email
 
-Send the announcement email to
+An announcement email is sent automatically from =ELPA update= to
+=auctex-devel@gnu.org= if the release was successful.
+
+This message can be forwarded to:
 
 - info-auctex@gnu.org, auctex@gnu.org, info-gnu@gnu.org, ctan@dante.de
 
-Include a =Mail-Followup-To= to auctex@gnu.org. So the header of the email
+Include a =Mail-Followup-To= to auctex@gnu.org.  So the header of the email
 should be something like (adapt as necessary)
 
 #+BEGIN_SRC message
@@ -147,108 +181,18 @@ should be something like (adapt as necessary)
   --text follows this line--
 #+END_SRC
 
-The content of the email is simply the content of the =RELEASE= file.
-
-** ELPA Release
-
-*** One-time setup
-
-GNU AUCTeX is hosted as a so-called "externals" package in the GNU ELPA Git
-repository.  So the first step is to add the GNU ELPA Git repository as an
-additional remote to your AUCTeX Git repository.  In the following example, the
-remote name is "elpa".
-
-#+BEGIN_SRC sh
-  git remote add elpa ssh://<user>@git.savannah.gnu.org/srv/git/emacs/elpa.git
-#+END_SRC
-
-AUCTeX is kept in the ~externals/auctex~ branch of the ELPA repository.
-
-*** Making an ELPA release
-
-1. Switch to the ~externals/auctex~ branch by issuing ~git checkout
-   externals/auctex~.
-2. Ensure you are up-to-date using ~git pull~ and ~git fetch --all~.
-3. Merge the commits which have taken place in the normal auctex development on
-   the ~master~ branch using ~git merge origin/master~.
-4. In case of conflicts, edit, and commit.
-5. Check that everything compiles by running ~make -f GNUmakefile~.
-6. Push your changes to the elpa remote (~git push~).
-
-Just updating the ~externals/auctex~ branch by merging in the changes from the
-AUCTeX ~master~ branch won't have any effect on the version one can get in
-Emacs' package manager.  To do an actual release which will be published, you
-have to do the following steps in addition.
-
-7. Edit the line ~;; Version: X.Y.Z~ in the file ~auctex.el~.  For ELPA
-   releases, X and Y match the latest AUCTeX version and Z is incremented for
-   every ELPA release of that AUCTeX version.  Z starts with 0, so AUCTeX
-   12.2.0 should be (almost) identical to the AUCTeX release 12.2.
-8. Commit that change with this Git commit message (but do not push yet!).  The
-   ChangeLog formatted line must be written in exactly this way for the next
-   step!
-
-#+BEGIN_EXAMPLE
-Release GNU AUCTeX X.Y.Z
-
-* GNU AUCTeX Version X.Y.Z released.
-#+END_EXAMPLE
-
-9. Run ~make -f GNUmakefile~ again.  In the output you should see that the
-   above version is inserted into several files, e.g., the info documentation.
-   The version change is gotten from the current HEAD of the branch.  That's
-   the reason the commit message has to be in exactly this format.
-10. Commit again to have the version changes captured (but don't push).
-11. Now our commit from step 8 announces the release but only the commit after
-    that captures the version changes.  Therefore, we "fixup" the commit from
-    step 10 into that of step 8 using ~git rebase --interactive HEAD^^~ and
-    changing the "pick" to "fixup" for the commit of step 10.  Save and exit.
-    Now the commit of step 8 includes the one of step 10.
-12. Now push your changes, and the new GNU AUCTeX ELPA release will hopefully
-    be available within a few hours.
-
-*** Caveats
-
-It has happened in the past that a new GNU AUCTeX ELPA release didn't really
-appear although all steps in the previous section have been performed.  The
-reason was that there has been a new style file whose copyright header didn't
-have the correct format, and ELPA's tooling is pretty strict about that.
-
-In order to check that all copyrights are ok, clone/checkout the master branch
-of the ELPA Git repository.
-
-#+BEGIN_SRC sh
-  # Clone if not done before.
-  git clone ssh://<user>@git.savannah.gnu.org/srv/git/emacs/elpa.git
-  # Otherwise checkout the master brach
-  git checkout master
-  # Get the latest changes
-  git pull
-#+END_SRC
-
-To update the external packages (such as AUCTeX), run ~make externals~ in the
-root directory of the ELPA repository.  Then run ~make check_copyrights~ which
-looks for all files without FSF-copyright line which are not listed in a
-special copyright_exceptions file.  As result, it spits out a diff between the
-actual and expected copyright exceptions.  If the diff is empty (or at least
-doesn't mention an AUCTeX file), everything is fine.
-
 ** Bumping required Emacs version
 
 It happens from time to time that AUCTeX requires a newer Emacs
 version.  For this, the following files in the main directory has to
 be adjusted.
 
-- [ ] =auctex.el.in= :: Change the ~;; Package-Requires:~ cookie in
-  the header.
-- [ ] =configure.ac= :: Change the argument of ~EMACS_CHECK_VERSION~
+- [ ] =auctex.el= :: Change the ~;; Package-Requires:~ cookie in the header.
 - [ ] =tex-site.el.in= :: Change the number after ~emacs-major-version~
 - [ ] =tex.el= :: Change the number after ~emacs-major-version~
 
 Other files to be updated accordingly:
 
-- [ ] =doc/changes.texi= :: Add an entry under *News* about the
-  required version.
 - [ ] =doc/faq.texi= :: Adjust the number in this sentence:
   =@AUCTeX{} was tested with @w{GNU Emacs XX.X}=.
 - [ ] =doc/install.texi= :: Adjust the number in ~@node Prerequisites~:
@@ -256,11 +200,7 @@ Other files to be updated accordingly:
 - [ ] =doc/preview-faq.texi= :: Adjust the number in ~@section Requirements~
   =@previewlatex{} nominally requires @w{GNU Emacs} with a version of
   at least XX.X.=.
-- [ ] =RELEASE= :: Update the version of GNU Emacs in the
-  "Requirements" section.
-
-For ELPA releases:
-
-- [ ] =auctex.el= :: Since this file is not regenerated, the required
-  Emacs version must be adjusted manually in the GNU ELPA Git
-  repository.
+- [ ] =NEWS.org= :: Under a =** Changed= header, add the following:
+   =- AUCTeX now requires GNU Emacs XX.1 or higher.=.  AUCTeX supports the last 3
+  major releases, so if the current Emacs release is 29.x, AUCTeX supports 29.1,
+  28.1 and 27.1.
