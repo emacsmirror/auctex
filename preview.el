@@ -38,7 +38,7 @@
 
 ;;; Code:
 
-(require 'tex-site)
+(require 'auctex)
 (require 'tex)
 (require 'latex)
 
@@ -1298,7 +1298,7 @@ are functions to call on preview's clicks."
   (let ((buff (get-buffer-create
                "*Preview-Ghostscript-Error*")))
     (with-current-buffer buff
-      (kill-all-local-variables)
+      (fundamental-mode)
       (setq-local view-exit-action #'kill-buffer)
       (setq buffer-undo-list t)
       (erase-buffer)
@@ -4336,9 +4336,6 @@ internal parameters, STR may be a log to insert into the current log."
 (defconst preview-version AUCTeX-version
   "Preview version.
 If not a regular release, the date of the last change.")
-
-(defconst preview-release-date AUCTeX-date
-  "Preview release date using the ISO 8601 format, yyyy-mm-dd.")
 
 (defun preview-dump-state (buffer)
   (condition-case nil

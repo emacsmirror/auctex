@@ -3,7 +3,6 @@
 # Files we need to auto-generate for elpa:
 #   README
 #   ChangeLog
-#   tex-site.el
 #   doc: preview-dtxdoc.texi
 #   doc: version.texi
 #   doc: tex-ref.pdf
@@ -33,7 +32,6 @@ TEXMFGEN:=$(shell sed -n 's/^%<installer>.*file[{]\([^}.]*\.[sdc][tef][yfg]\)[}]
 LATEX_FILES:=$(patsubst %, latex/%, $(shell echo $$(echo "$(TEXMFGEN)")))
 
 MAIN_GENERATED_FILES=README 		\
-		tex-site.el		\
 		doc/version.texi	\
 		doc/preview-dtxdoc.texi	\
 		doc/tex-ref.pdf         \
@@ -46,7 +44,7 @@ ALL_GENERATED_FILES=$(MAIN_GENERATED_FILES)	\
 # Generate & compile everything including the manuals below doc/.
 all: $(ALL_GENERATED_FILES) compile auctex-autoloads.el
 
-compile: $(patsubst %.el,%.elc,$(wildcard *.el style/*.el)) tex-site.elc
+compile: $(patsubst %.el,%.elc,$(wildcard *.el style/*.el))
 
 # If we were depending on emacs 29.1, we could simply use
 # loaddefs-generate...
@@ -87,11 +85,6 @@ auctex-autoloads.el:
 # compiling is done locally.
 elpa: $(MAIN_GENERATED_FILES) ChangeLog
 
-# We want the tex-site.el target to be always run so that the version
-# (especially the release version grabbed from the top of the git log)
-# is correct.
-.PHONY: tex-site.el
-
 clean:
 	rm -f $(ALL_GENERATED_FILES) \
 		$(wildcard *.elc style/*.elc) \
@@ -125,11 +118,6 @@ THISVERSION:=$(shell git show HEAD -- auctex.el 2>/dev/null \
 LASTVERSION:=$(shell grep "^;; Version:" auctex.el \
                      | sed -nre 's/;; Version: ([0-9]+.[0-9]+.[0-9]+)/\1/p;q')
 AUCTEXVERSION:=$(if $(THISVERSION),$(THISVERSION),$(LASTVERSION).$(AUCTEXDATE))
-
-tex-site.el: tex-site.el.in
-	sed -e 's|@AUCTEXVERSION@|$(AUCTEXVERSION)|'\
-	    -e 's|@AUCTEXDATE@|$(AUCTEXDATE)|'\
-	    $< >$@
 
 doc/version.texi:
 	echo @set VERSION $(AUCTEXVERSION) >$@

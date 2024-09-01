@@ -41,6 +41,10 @@
 (require 'tex-site
          (expand-file-name "tex-site.el"
                            (file-name-directory load-file-name)))
+
+(defconst AUCTeX-version (package-get-version)
+  "AUCTeX version.")
+
 (provide 'auctex)
 
 ;; Local Variables:

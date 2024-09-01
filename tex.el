@@ -32,7 +32,7 @@
   (error "AUCTeX requires Emacs 27.1 or later"))
 
 (require 'custom)
-(require 'tex-site)
+(require 'auctex)
 (require 'cl-lib)
 (require 'subr-x)
 (require 'texmathp)
@@ -6518,8 +6518,7 @@ information about your AUCTeX version and AUCTeX configuration."
     (reporter-submit-bug-report
      "bug-auctex@gnu.org"
      AUCTeX-version
-     (list 'AUCTeX-date
-           'window-system
+     (list 'window-system
            'LaTeX-version
            'TeX-style-path
            'TeX-auto-save

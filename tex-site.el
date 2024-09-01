@@ -193,13 +193,6 @@ Otherwise, restore AUCTeX definition saved in the symbol property
   (if (featurep 'tex-site)
       (TeX--alias-overlapped-modes t)))
 
-(defconst AUCTeX-version "@AUCTEXVERSION@"
-  "AUCTeX version.
-If not a regular release, the date of the last change.")
-
-(defconst AUCTeX-date "@AUCTEXDATE@"
-  "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
-
 ;; Store bibitems when saving a BibTeX buffer
 (add-hook 'bibtex-mode-hook #'BibTeX-auto-store)
 
