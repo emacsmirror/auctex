@@ -1,6 +1,6 @@
 ;;; changes.el --- AUCTeX style for `changes.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2021--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -21,8 +21,8 @@
 
 ;; You should have received a copy of the GNU General Public License
 ;; along with AUCTeX; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301 USA.
+;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+;; 02110-1301, USA.
 
 ;;; Commentary:
 

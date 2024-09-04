@@ -8,25 +8,25 @@
 ;; Created:    06 July 1996
 ;; Keywords:   tex, text, faces
 
-;;; This file is not part of GNU Emacs.
+;; This file is part of AUCTeX.
 
-;; This package is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
+;; AUCTeX is free software; you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
 
-;; This package is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
+;; AUCTeX is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
-;; Boston, MA 02110-1301, USA.
+;; along with AUCTeX; see the file COPYING.  If not, write to the Free
+;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+;; 02110-1301, USA.
 
 ;;; Commentary:
-;;
+
 ;; This package enhances font-lock fontification patterns for LaTeX.
 ;; font-lock mode is a minor mode that causes your comments to be
 ;; displayed in one face, strings in another, reserved words in
