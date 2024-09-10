@@ -66,6 +66,7 @@
 ;; siunitx.sty
 ;; splitidx.sty
 ;; stabular.sty
+;; tabularray.sty
 ;; tabularx.sty
 ;; tabulary.sty
 ;; tcolorbox.sty
@@ -237,6 +238,9 @@
       ("SI" . 2)
       ;; splitidx.sty
       ("sindex" . 1)
+      ;; tabularray.sty
+      ("SetTblrInner" . 1)
+      ("SetTblrOuter" . 1)
       ;; tcolorbox.sty
       ("tcbox" . 0)
       ("tcbset" . 1)
@@ -398,6 +402,9 @@ not be quoted.  An opening brace `{', asterisk `*' and at-sign
    ;; stabular.sty
    ("stabular" ispell-tex-arg-end)
    ("stabular\\*" TeX-ispell-tex-arg-end)
+   ;; tabularray.sty
+   ("\\(?:long\\|tall\\)?tblr" ispell-tex-arg-end)
+   ("booktabs" ispell-tex-arg-end)
    ;; tabularx.sty, tabulary.sty, Standard LaTeX tabular*-env
    ("tabular[*xy]" TeX-ispell-tex-arg-end)
    ;; tcolorbox.sty -- raster library
