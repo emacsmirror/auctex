@@ -37,6 +37,10 @@
   For users who tracked the master branch: Do =git switch main= to
   switch to the main branch where development takes place nowadays.
 
+- Move additions to the variable ~LaTeX-indent-environment-list~ for
+  various tabular environments to =latex.el= from the respective style
+  files.
+
 ** Removed
 
 - Remove the possibility to disable the side-wide installation with:

@@ -1,6 +1,6 @@
 ;;; ltcaption.el --- AUCTeX style for `ltcaption.sty' version v1.4c  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -95,12 +95,6 @@
 
    (LaTeX-add-environments
     '("longtable*" LaTeX-env-longtable*))
-
-   ;; Use the enhanced table formatting.  Append to
-   ;; `LaTeX-indent-environment-list' in order not to override custom
-   ;; settings.
-   (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-                '("longtable*" LaTeX-indent-tabular) t)
 
    ;; Append 'longtable*' to `LaTeX-item-list' with `LaTeX-item-longtable':
    (add-to-list 'LaTeX-item-list '("longtable*" . LaTeX-item-longtable) t)

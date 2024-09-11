@@ -4138,6 +4138,10 @@ consideration just as is in the non-commented source code."
     ("Vmatrix"     LaTeX-indent-tabular)
     ("smallmatrix" LaTeX-indent-tabular)
     ("cases"       LaTeX-indent-tabular)
+    ;; env of longtable.sty
+    ("longtable" LaTeX-indent-tabular)
+    ;; env of ltcaption.sty
+    ("longtable*" LaTeX-indent-tabular)
     ;; envs of mathtools.sty
     ("matrix*"       LaTeX-indent-tabular)
     ("pmatrix*"      LaTeX-indent-tabular)
@@ -4161,12 +4165,19 @@ consideration just as is in the non-commented source code."
     ("drcases"       LaTeX-indent-tabular)
     ("drcases*"      LaTeX-indent-tabular)
     ("cases*"        LaTeX-indent-tabular)
+    ;; envs of stabular.sty
+    ("stabular"  LaTeX-indent-tabular)
+    ("stabular*" LaTeX-indent-tabular)
     ;; envs of supertabular.sty
     ("supertabular"    LaTeX-indent-tabular)
     ("supertabular*"   LaTeX-indent-tabular)
     ("mpsupertabular"  LaTeX-indent-tabular)
     ("mpsupertabular*" LaTeX-indent-tabular)
     ;; envs of tabularray.sty
+    ("tblr"     LaTeX-indent-tabular)
+    ("longtblr" LaTeX-indent-tabular)
+    ("talltblr" LaTeX-indent-tabular)
+    ("booktabs" LaTeX-indent-tabular)
     ("+array"   LaTeX-indent-tabular)
     ("+matrix"  LaTeX-indent-tabular)
     ("+bmatrix" LaTeX-indent-tabular)
@@ -4175,6 +4186,12 @@ consideration just as is in the non-commented source code."
     ("+vmatrix" LaTeX-indent-tabular)
     ("+Vmatrix" LaTeX-indent-tabular)
     ("+cases"   LaTeX-indent-tabular)
+    ;; env from tabularx.sty
+    ("tabularx" LaTeX-indent-tabular)
+    ;; env from tabulary.sty
+    ("tabulary" LaTeX-indent-tabular)
+    ;; env from xltabular.sty
+    ("xltabular" LaTeX-indent-tabular)
     ;; envs of xtab.sty
     ("xtabular"    LaTeX-indent-tabular)
     ("xtabular*"   LaTeX-indent-tabular)
@@ -4199,7 +4216,8 @@ Environments present in this list are not filled by filling
 functions, see `LaTeX-fill-region-as-paragraph'."
   :group 'LaTeX-indentation
   :type '(repeat (list (string :tag "Environment")
-                       (option function))))
+                       (option function)))
+  :package-version '(auctex . "14.0.7"))
 
 (defcustom LaTeX-indent-environment-check t
   "If non-nil, check for any special environments."

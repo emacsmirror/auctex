@@ -1,6 +1,6 @@
 ;;; xltabular.el --- AUCTeX style for `xltabular.sty' (v0.05)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -120,11 +120,6 @@ If SUPPRESS is non-nil, do not insert line break macro."
 
    ;; Add xltabular with `LaTeX-env-xltabular'::
    (LaTeX-add-environments '("xltabular" LaTeX-env-xltabular))
-
-   ;; Use the enhanced table formatting.  Append to
-   ;; `LaTeX-indent-environment-list' in order not to override custom settings.
-   (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-                '("xltabular" LaTeX-indent-tabular) t)
 
    ;; Append xltabular to `LaTeX-label-alist', in order not to
    ;; override possible custome values.

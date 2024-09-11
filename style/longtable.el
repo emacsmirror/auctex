@@ -128,12 +128,6 @@ insert line break macro."
    ;; This parameter is set with \setcounter
    (LaTeX-add-counters "LTchunksize")
 
-   ;; Use the enhanced table formatting.  Append to
-   ;; `LaTeX-indent-environment-list' in order not to override custom
-   ;; settings.
-   (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
-                '("longtable" LaTeX-indent-tabular) t)
-
    ;; Append longtable to `LaTeX-label-alist', in order not to override
    ;; possible custome values.
    (add-to-list 'LaTeX-label-alist '("longtable" . LaTeX-table-label) t)
