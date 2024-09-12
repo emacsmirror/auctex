@@ -1833,7 +1833,7 @@ This is necessary since index entries may contain commands and stuff.")
           "\\\\\\(New\\|Renew\\|Provide\\|Declare\\)"
           "DocumentEnvironment"
           "[ \t\n\r]*"
-          "{\\([^}]+\\)}"
+          "{[ \t]*\\([^}]+?\\)[ \t]*}"
           "[ \t\n\r]*"
           "{\\([^}{]*\\(?:{[^}{]*\\(?:{[^}{]*\\(?:{[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}")
         (0 2 3 1) LaTeX-auto-xparse-environment)
