@@ -9473,7 +9473,7 @@ no caption key is found, an error is issued.  See also the docstring of
                  (setq capt-end (progn (skip-chars-forward "^,") (point)))))
           ;; Return the extracted string
           (buffer-substring-no-properties capt-start capt-end))
-      (error "No caption found"))))
+      (error "%s" "No caption found"))))
 
 (defvar LaTeX-font-family '("normalfont" "rmfamily"
                             "sffamily"   "ttfamily")
