@@ -52,6 +52,8 @@
 (autoload 'Texinfo-find-env-start "tex-info")
 (autoload 'Texinfo-find-env-end "tex-info")
 
+(declare-function LaTeX-verbatim-macro-boundaries "latex")
+
 (defgroup TeX-fold nil
   "Fold TeX macros."
   :group 'AUCTeX)
@@ -656,11 +658,19 @@ backward compatibility and always nil."
                                          (concat open-string " \t"))
                                         (point)))
                   (goto-char
-                   (if delims
-                       (with-syntax-table
-                           (TeX-search-syntax-table open-char close-char)
-                         (scan-lists (point) 1 1))
-                     (TeX-find-closing-brace)))
+                   (if (TeX-verbatim-p)
+                       (cond ((derived-mode-p 'LaTeX-mode)
+                              (cdr (LaTeX-verbatim-macro-boundaries)))
+                             ;; FIXME: When other modes implement a
+                             ;; nontrivial `TeX-verbatim-p-function', we
+                             ;; should return the appropriate endpoint
+                             ;; here.
+                             )
+                     (if delims
+                         (with-syntax-table
+                             (TeX-search-syntax-table open-char close-char)
+                           (scan-lists (point) 1 1))
+                       (TeX-find-closing-brace))))
                   (setq content-end (save-excursion
                                       (backward-char)
                                       (skip-chars-backward " \t")

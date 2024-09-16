@@ -41,6 +41,10 @@
   various tabular environments to =latex.el= from the respective style
   files.
 
+** Fixed
+
+- Fold argument of verbatim macros more accurately.
+
 ** Removed
 
 - Remove the possibility to disable the side-wide installation with:
