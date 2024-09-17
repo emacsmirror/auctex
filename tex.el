@@ -4678,15 +4678,18 @@ EXTENSIONS defaults to `TeX-file-extensions'."
 ;; We keep this function in addition to `TeX-search-files' because it
 ;; is faster.  Since it does not look further into subdirectories,
 ;; this comes at the price of finding a smaller number of files.
-(defun TeX-search-files-kpathsea (var extensions scope nodir strip)
+(defun TeX-search-files-kpathsea (var extensions scope nodir strip &optional extra-dirs)
   "Return a list of files in directories determined by expanding VAR.
 Only files which match EXTENSIONS are returned.  SCOPE defines
 the scope for the search and can be `local' or `global' besides
 nil.  If NODIR is non-nil, remove directory part.  If STRIP is
-non-nil, remove file extension."
+non-nil, remove file extension.
+If SCOPE is `local' and the optional argument EXTRA-DIRS is passed, it
+is appended to the list of local directories to search.  In `global'
+scope, EXTRA-DIRS does nothing."
   (when TeX-kpathsea-path-delimiter
     (let ((dirs (if (eq scope 'local)
-                    '("./")
+                    (cons "./" extra-dirs)
                   (TeX-tree-expand (list var) nil)))
           result)
       (if (eq scope 'global)
@@ -4773,7 +4776,7 @@ Each AUCTeX mode should set the variable buffer-locally with a
 more specific value.  See `LaTeX-search-files-type-alist' for an
 example.")
 
-(defun TeX-search-files-by-type (filetype &optional scope nodir strip)
+(defun TeX-search-files-by-type (filetype &optional scope nodir strip extra-dirs)
   "Return a list of files in TeX's search path with type FILETYPE.
 FILETYPE is a symbol used to choose the search paths and
 extensions.  See `TeX-search-files-type-alist' for supported
@@ -4786,7 +4789,9 @@ in the global directories only and nil in both.
 
 If optional argument NODIR is non-nil, remove directory part.
 
-If optional argument STRIP is non-nil, remove file extension."
+If optional argument STRIP is non-nil, remove file extension.
+
+The optional argument EXTRA-DIRS is passed to `TeX-search-files-kpathsea'."
   (let* ((gc-cons-threshold 10000000)
          (spec (assq filetype TeX-search-files-type-alist))
          (kpse-var (nth 1 spec))
@@ -4794,7 +4799,7 @@ If optional argument STRIP is non-nil, remove file extension."
          (exts (nth 3 spec))
          expdirs dirs local-files)
     (setq exts (if (symbolp exts) (eval exts t) exts))
-    (or (TeX-search-files-kpathsea kpse-var exts scope nodir strip)
+    (or (TeX-search-files-kpathsea kpse-var exts scope nodir strip extra-dirs)
         (progn
           (unless (eq scope 'global)
             (setq local-files

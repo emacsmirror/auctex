@@ -172,12 +172,30 @@ May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 ;; Add the variable to `TeX-normal-mode-reset-list':
 (add-to-list 'TeX-normal-mode-reset-list 'LaTeX-includegraphics-global-files)
 
+(defun LaTeX-parse-graphicspath ()
+  "Parse the current document for \\graphicspath commands.
+Return value is a list of paths."
+  (let ((results '())
+        (graphicspath-regex "\\\\graphicspath{\\({\\([^}]*\\)}\\)*}")
+        (single-path-regex "{\\([^{}]*\\)}"))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward graphicspath-regex nil t)
+        (let ((start-pos (match-beginning 0))
+              (end-pos (match-end 0)))
+          (save-excursion
+            (goto-char start-pos)
+            (while (re-search-forward single-path-regex end-pos t)
+              (push (match-string-no-properties 1) results)))))
+      (nreverse results))))
+
 (defun LaTeX-includegraphics-read-file-TeX ()
   "Read image file for \\includegraphics.
 Offers all graphic files found in the TeX search path.  See
 `LaTeX-includegraphics-read-file' for more."
   (let ((LaTeX-includegraphics-extensions
-         (LaTeX-includegraphics-extensions-list)))
+         (LaTeX-includegraphics-extensions-list))
+        (extra-dirs (LaTeX-parse-graphicspath)))
     (unless LaTeX-includegraphics-global-files
       (message "Searching for graphic files...")
       (setq LaTeX-includegraphics-global-files
@@ -189,7 +207,8 @@ Offers all graphic files found in the TeX search path.  See
      "Image file: "
      (append
       (TeX-search-files-by-type 'graphics 'local t
-                                LaTeX-includegraphics-strip-extension-flag)
+                                LaTeX-includegraphics-strip-extension-flag
+                                extra-dirs)
       LaTeX-includegraphics-global-files)
      nil nil nil)))
 
