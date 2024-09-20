@@ -4,6 +4,7 @@
 *.spec
 .elpaignore
 .dir-locals.el
+ChangeLog.1
 README.GIT
 admin
 build-aux
