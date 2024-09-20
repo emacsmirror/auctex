@@ -1654,7 +1654,13 @@ This list is consulted by the default value of `preview-auto-reveal'."
                          (sexp :tag "Key binding"))))
 
 (defcustom preview-auto-reveal
-  '(eval (apply #'preview-arrived-via preview-auto-reveal-commands))
+  '(eval . ((apply #'preview-arrived-via
+                   (mapcar (lambda (cmd)
+                             (if (and (listp cmd) (eq (car cmd) 'key-binding))
+                                 (eval cmd t)
+                               cmd))
+                           preview-auto-reveal-commands))
+            t))
   "Cause previews to open automatically when entered.
 Possibilities are:
 t autoopens,

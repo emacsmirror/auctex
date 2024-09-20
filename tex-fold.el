@@ -268,7 +268,13 @@ This list is consulted by the default value of `TeX-fold-auto-reveal'."
                          (sexp :tag "Key binding"))))
 
 (defcustom TeX-fold-auto-reveal
-  '(eval (apply #'TeX-fold-arrived-via TeX-fold-auto-reveal-commands))
+  '(eval . ((apply #'TeX-fold-arrived-via
+                   (mapcar (lambda (cmd)
+                             (if (and (listp cmd) (eq (car cmd) 'key-binding))
+                                 (eval cmd t)
+                               cmd))
+                           TeX-fold-auto-reveal-commands))
+            t))
   "Predicate to open a fold when entered.
 Possibilities are:
 t autoopens,
