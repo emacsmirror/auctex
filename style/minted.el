@@ -1,6 +1,6 @@
-;;; minted.el --- AUCTeX style for `minted.sty' (v2.8)  -*- lexical-binding: t; -*-
+;;; minted.el --- AUCTeX style for `minted.sty' (v2.9)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2024 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `minted.sty' (v2.8) from 2023/09/12.
+;; This file adds support for `minted.sty' (v2.9) from 2023/12/18.
 
 ;;; Code:
 
@@ -104,6 +104,7 @@
     ("gobble")
     ("highlightcolor")
     ("highlightlines")
+    ("ignorelexererrors" ("true" "false"))
     ("keywordcase" ("lower" "upper" "capitalize"))
     ("label")
     ("labelposition" ("none" "topline" "bottomline" "all"))
@@ -131,17 +132,19 @@
     ;; in a .tex file, Emacs asks to apply a variable which is not
     ;; safe and does not restore the window; the splitted frame
     ;; remains.  I couldn't figure out why, so for now, I add the
-    ;; styles from Pygments version 2.14.0 here.
+    ;; styles from Pygments version 2.18.0 here.
     ("style" ("abap" "algol" "algol_nu" "arduino" "autumn"
-              "borland" "bw" "colorful" "default" "dracula"
-              "emacs" "friendly" "friendly_grayscale" "fruity"
+              "bw" "borland" "coffee" "colorful" "default" "dracula"
+              "emacs" "friendly_grayscale" "friendly" "fruity"
               "github-dark" "gruvbox-dark" "gruvbox-light"
-              "igor" "inkpot" "lilypond" "lovelace" "manni" "material"
-              "monokai" "murphy" "native" "nord" "nord-darker"
-              "one-dark" "paraiso-dark" "paraiso-light" "pastie" "perldoc"
-              "rainbow_dash" "rrt" "sas" "solarized-dark" "solarized-light"
-              "staroffice" "stata" "stata-dark" "stata-light"
-              "tango" "trac" "vim" "vs" "xcode" "zenburn"))
+              "igor" "inkpot" "lightbulb" "lilypond"
+              "lovelace" "manni" "material" "monokai" "murphy"
+              "native" "nord-darker" "nord"
+              "one-dark" "paraiso-dark" "paraiso-light" "pastie"
+              "perldoc" "rainbow_dash" "rrt" "sas"
+              "solarized-dark" "solarized-light" "staroffice"
+              "stata-dark" "stata-light" "tango" "trac"
+              "vim" "vs" "xcode" "zenburn"))
     ("stepnumber")
     ("stepnumberfromfirst")
     ("stepnumberoffsetvalues" ("true" "false"))
@@ -351,6 +354,9 @@ a list of strings."
 (TeX-add-style-hook
  "minted"
  (lambda ()
+
+   ;; Run the relevant style hooks:
+   (TeX-run-style-hooks "xcolor" "fvextra")
 
    ;; New symbols
    (TeX-add-symbols
