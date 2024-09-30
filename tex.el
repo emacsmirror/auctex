@@ -6626,12 +6626,20 @@ enter the number of the file to view, anything else to skip: ") list)))
                 (when (get-buffer-window buffer)
                   (quit-window t (get-buffer-window buffer)))))
           ;; Called without prefix argument:
-          ;; just run "texdoc --view <pkg>".
-          ;; Recent Texdoc returns exit code 3 when it can't find the
-          ;; specified document, according to
-          ;; <URL:https://tug.org/texdoc/doc/texdoc.man1.pdf>
-          (if (= (call-process "texdoc" nil nil nil "--view" pkg) 3)
-              (message "No documentation found for %s" pkg)))))))
+          ;; just run "texdoc -I --view <pkg>".
+          (make-process
+           :name "texdoc"
+           :command (list "texdoc" "-I" "--view" pkg)
+           :sentinel (lambda (proc _string)
+                       ;; Recent Texdoc returns exit code 3 when it
+                       ;; can't find the specified document:
+                       ;; <URL:https://tug.org/texdoc/doc/texdoc.man1.pdf>
+                       (when (= (process-exit-status proc) 3)
+                         (message "No documentation found for %s" pkg)))
+           ;; Use pipe rather than pty for particular situations.  See
+           ;; <URL:https://lists.gnu.org/r/auctex/2024-09/msg00012.html>
+           ;; for detail.
+           :connection-type 'pipe))))))
 
 (defun TeX-goto-info-page ()
   "Read documentation for AUCTeX in the info system."
