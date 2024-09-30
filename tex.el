@@ -6386,6 +6386,24 @@ the settings of style files.  Style files should therefore check
 if this symbol is present and not alter `TeX-quote-language' if
 it is.")
 
+(defun TeX-get-quote-characters ()
+  "Get appropriate open and close quote strings.
+Return list consisting of three elements as in
+`TeX-quote-language-alist'."
+  (let* ((lang-override (if (eq (car TeX-quote-language) 'override)
+                            TeX-quote-language
+                          (assoc (car TeX-quote-language)
+                                 TeX-quote-language-alist)))
+         (lang (or lang-override TeX-quote-language))
+         (open-quote (if lang (nth 1 lang) TeX-open-quote))
+         (close-quote (if lang (nth 2 lang) TeX-close-quote))
+         (q-after-q (if lang (nth 3 lang) TeX-quote-after-quote)))
+    (when (functionp open-quote)
+      (setq open-quote (funcall open-quote)))
+    (when (functionp close-quote)
+      (setq close-quote (funcall close-quote)))
+    (list open-quote close-quote q-after-q)))
+
 ;; TODO: rework according to the slogan from
 ;; `TeX--put-electric-delete-selection'. That entails splitting off the
 ;; «electric» part that tries to do smart things and the plain part that
@@ -6411,18 +6429,8 @@ With prefix argument FORCE, always inserts \" characters."
           (and (TeX-in-comment) (not (eq major-mode 'docTeX-mode))))
       (self-insert-command (prefix-numeric-value force))
     (TeX-update-style)
-    (let* ((lang-override (if (eq (car TeX-quote-language) 'override)
-                              TeX-quote-language
-                            (assoc (car TeX-quote-language)
-                                   TeX-quote-language-alist)))
-           (lang (or lang-override TeX-quote-language))
-           (open-quote (if lang (nth 1 lang) TeX-open-quote))
-           (close-quote (if lang (nth 2 lang) TeX-close-quote))
-           (q-after-q (if lang (nth 3 lang) TeX-quote-after-quote)))
-      (when (functionp open-quote)
-        (setq open-quote (funcall open-quote)))
-      (when (functionp close-quote)
-        (setq close-quote (funcall close-quote)))
+    (pcase-let ((`(,open-quote ,close-quote ,q-after-q)
+                 (TeX-get-quote-characters)))
       (if q-after-q
           (insert (cond ((bobp)
                          ?\")
@@ -6473,7 +6481,28 @@ With prefix argument FORCE, always inserts \" characters."
                          (looking-at "[ \t\n]\\|\\s("))
                        open-quote)
                       (t
-                       close-quote)))))))
+                       close-quote))))
+      ;; Fold quotes if TeX-fold-quotes-on-insert is t
+      (when (and (boundp 'TeX-fold-mode)
+                 (boundp 'TeX-fold-quotes-on-insert)
+                 (fboundp 'TeX-fold-quotes)
+                 TeX-fold-mode
+                 TeX-fold-quotes-on-insert
+                 (not (eq (char-before) ?\")))  ; Don't fold single quotes
+        (save-excursion
+          (let* ((end (point))
+                 (start (- end
+                           (length
+                            (if (string= (buffer-substring-no-properties
+                                          (max (point-min)
+                                               (- end (length open-quote)))
+                                          end)
+                                         open-quote)
+                                open-quote
+                              close-quote)))))
+            (when start
+              (TeX-fold-quotes start end))))))))
+
 
 (put 'TeX-insert-quote 'delete-selection t)
 

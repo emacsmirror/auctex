@@ -56,6 +56,8 @@
 (declare-function LaTeX-verbatim-macro-boundaries "latex")
 (declare-function LaTeX-verbatim-macros-with-braces "latex")
 (declare-function LaTeX-verbatim-macros-with-delims "latex")
+(declare-function bibtex-parse-entry "bibtex")
+(declare-function bibtex-text-in-field "bibtex")
 
 (defgroup TeX-fold nil
   "Fold TeX macros."
@@ -361,53 +363,12 @@ and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
       (TeX-fold-clearout-region start end)
       (TeX-fold-region start end))))
 
-(defcustom TeX-fold-region-functions '(TeX-fold-verbs)
+(defcustom TeX-fold-region-functions '(TeX-fold-verbs TeX-fold-quotes)
   "List of additional functions to call when folding a region.
 Each function is called with two arguments, the start and end positions
 of the region to fold."
   :type '(repeat function)
-  :package-version '(auctex . "14.0.7"))
-
-(defun TeX-fold--verb-data (&rest _args)
-  "Return data describing verbatim macro at point.
-Returns list of the form (START END CONTENT).  This should be called
-only in LaTeX modes."
-  (when-let* ((boundaries (LaTeX-verbatim-macro-boundaries))
-              (bound-start (car boundaries))
-              (bound-end (cdr boundaries))
-              (end-delim-char (char-before bound-end))
-              (start-delim-char (if (= end-delim-char ?\})
-                                    ?\{
-                                  end-delim-char))
-              (start-delim (char-to-string start-delim-char))
-              (verb-arg-start
-               (1+ (progn
-                     (goto-char bound-end)
-                     (if (string= start-delim TeX-grop)
-                         (progn (backward-sexp) (point))
-                       (forward-char -1)
-                       (search-backward start-delim bound-start t)))))
-              (verb-arg-end (1- bound-end)))
-    (list bound-start
-          bound-end
-          (buffer-substring verb-arg-start verb-arg-end))))
-
-(defun TeX-fold-verbs (start end)
-  "In LaTeX modes, fold verbatim macros between START and END."
-  (when (derived-mode-p 'LaTeX-mode)
-    (save-excursion
-      (goto-char start)
-      (let ((re (concat (regexp-quote TeX-esc)
-                        (regexp-opt
-                         (append
-                          (LaTeX-verbatim-macros-with-braces)
-                          (LaTeX-verbatim-macros-with-delims))))))
-        (while (let ((case-fold-search nil))
-                 (re-search-forward re end t))
-          (when-let* ((data (TeX-fold--verb-data))
-                      (spec (lambda (&rest _args)
-                              (nth 2 (TeX-fold--verb-data)))))
-            (apply #'TeX-fold--make-misc-overlay (append data (list spec)))))))))
+  :package-version '(auctex . "14.0.8"))
 
 (defun TeX-fold-region (start end)
   "Fold all items in region from START to END."
@@ -822,8 +783,6 @@ with some additional non-alphabetical characters such as braces."
 Return string of the form \"XYZ99\", formed using authors' last names and
 publication year, or nil if author/year not found."
   (require 'bibtex)
-  (declare-function bibtex-parse-entry "bibtex")
-  (declare-function bibtex-text-in-field "bibtex")
   (when-let* ((case-fold-search t)
               (entry (bibtex-parse-entry))
               (author (bibtex-text-in-field "author" entry))
@@ -898,14 +857,17 @@ using authors' last names and the the publication year."
 
 ;;; Utilities
 
-(defun TeX-fold-make-overlay (ov-start ov-end type display-string-spec)
+(defun TeX-fold-make-overlay (ov-start ov-end type display-string-spec
+                                       &optional display-string)
   "Make a TeX-fold overlay extending from OV-START to OV-END.
-TYPE is a symbol which is used to describe the content to hide
-and may be `macro' for macros, `math' for math macro and `env' for
-environments.
+TYPE is a symbol which is used to describe the content to hide and may
+be `macro' for macros, `math' for math macro, `env' for environments, or
+`misc' for miscellaneous constructs like quotes and dashes.
 DISPLAY-STRING-SPEC is the original specification of the display
 string in the variables `TeX-fold-macro-spec-list' and alikes.
-See its doc string for detail."
+See its doc string for detail.
+If DISPLAY-STRING is provided, it will be used directly as the overlay's
+display property."
   ;; Calculate priority before the overlay is instantiated.  We don't
   ;; want `TeX-overlay-prioritize' to pick up a non-prioritized one.
   (let ((priority (TeX-overlay-prioritize ov-start ov-end))
@@ -913,27 +875,11 @@ See its doc string for detail."
     (overlay-put ov 'category 'TeX-fold)
     (overlay-put ov 'priority priority)
     (overlay-put ov 'evaporate t)
-    (overlay-put ov 'TeX-fold-type type)
+    (when type
+      (overlay-put ov 'TeX-fold-type type))
     (overlay-put ov 'TeX-fold-display-string-spec display-string-spec)
-    ov))
-
-(defun TeX-fold--make-misc-overlay (start end display-string display-string-spec)
-  "Create a miscellaneous overlay between START and END.
-DISPLAY-STRING is the display string, while DISPLAY-STRING-SPEC is as in
-`TeX-fold-make-overlay'.
-
-This function is intended to be used with verbatim environments and
-other miscellaneous folding constructs.  By contrast, the function
-`TeX-fold-make-overlay' is used in the implementation of
-`TeX-fold-hide-item', which applies to typical macros, environments and
-math."
-  (let ((priority (TeX-overlay-prioritize start end))
-        (ov (make-overlay start end)))
-    (overlay-put ov 'category 'TeX-fold)
-    (overlay-put ov 'priority priority)
-    (overlay-put ov 'evaporate t)
-    (overlay-put ov 'display display-string)
-    (overlay-put ov 'TeX-fold-display-string-spec display-string-spec)
+    (when display-string
+      (overlay-put ov 'display display-string))
     ov))
 
 (defun TeX-fold-item-end (start type)
@@ -1396,6 +1342,104 @@ With zero or negative ARG turn mode off."
 
 ;;;###autoload
 (defalias 'tex-fold-mode #'TeX-fold-mode)
+
+;;; Miscellaneous folding
+
+;; This section provides functions for use in
+;; `TeX-fold-region-functions'.
+
+;;;; Verbatim constructs
+
+(defun TeX-fold--verb-data (&rest _args)
+  "Return data describing verbatim macro at point.
+Returns list of the form (START END CONTENT).  This should be called
+only in LaTeX modes."
+  (when-let* ((boundaries (LaTeX-verbatim-macro-boundaries))
+              (bound-start (car boundaries))
+              (bound-end (cdr boundaries))
+              (end-delim-char (char-before bound-end))
+              (start-delim-char (if (= end-delim-char ?\})
+                                    ?\{
+                                  end-delim-char))
+              (start-delim (char-to-string start-delim-char))
+              (verb-arg-start
+               (1+ (progn
+                     (goto-char bound-end)
+                     (if (string= start-delim TeX-grop)
+                         (progn (backward-sexp) (point))
+                       (forward-char -1)
+                       (search-backward start-delim bound-start t)))))
+              (verb-arg-end (1- bound-end)))
+    (list bound-start
+          bound-end
+          (buffer-substring verb-arg-start verb-arg-end))))
+
+(defun TeX-fold-verbs (start end)
+  "In LaTeX modes, fold verbatim macros between START and END.
+Replaces the verbatim content with its own text."
+  (when (derived-mode-p 'LaTeX-mode)
+    (save-excursion
+      (goto-char start)
+      (let ((re (concat (regexp-quote TeX-esc)
+                        (regexp-opt
+                         (append
+                          (LaTeX-verbatim-macros-with-braces)
+                          (LaTeX-verbatim-macros-with-delims))))))
+        (while (let ((case-fold-search nil))
+                 (re-search-forward re end t))
+          (when-let* ((data (TeX-fold--verb-data))
+                      (verb-start (nth 0 data))
+                      (verb-end (nth 1 data))
+                      (verb-content (nth 2 data)))
+            (TeX-fold-make-overlay
+             verb-start verb-end
+             'misc
+             (lambda (&rest _args)
+               (nth 2 (TeX-fold--verb-data)))
+             verb-content)))))))
+
+;;;; Quotes
+
+(defcustom TeX-fold-open-quote "“"
+  "Folded version of opening quote."
+  :type 'string
+  :package-version '(auctex . "14.0.8"))
+
+(defcustom TeX-fold-close-quote "”"
+  "Folded verison of closing quote."
+  :type 'string
+  :package-version '(auctex . "14.0.8"))
+
+(defcustom TeX-fold-quotes-on-insert nil
+  "Non-nil means to automatically fold LaTeX quotes when they are inserted.
+Consulted by `TeX-insert-quote'."
+  :type 'boolean
+  :package-version '(auctex . "14.0.8"))
+
+(defun TeX-fold-quotes (start end)
+  "Fold LaTeX quotes between START and END.
+Replaces opening and closing quotes with `TeX-fold-open-quote' and
+`TeX-fold-close-quote', respectively, except in math environments,
+verbatim contexts and comments."
+  (pcase-let ((`(,open-quote ,close-quote _) (TeX-get-quote-characters)))
+    (save-excursion
+      (goto-char start)
+      (let ((regexp (regexp-opt (list open-quote close-quote))))
+        (while (re-search-forward regexp end t)
+          (let ((str (if (string= (match-string-no-properties 0) open-quote)
+                         TeX-fold-open-quote
+                       TeX-fold-close-quote))
+                (quote-start (match-beginning 0))
+                (quote-end (match-end 0)))
+            (unless (or (and (fboundp 'font-latex-faces-present-p)
+                             (font-latex-faces-present-p
+                              '(tex-math
+                                font-latex-verbatim-face
+                                font-latex-math-face
+                                font-lock-comment-face)
+                              quote-start))
+                        (texmathp))
+              (TeX-fold-make-overlay quote-start quote-end 'misc str str))))))))
 
 (provide 'tex-fold)
 

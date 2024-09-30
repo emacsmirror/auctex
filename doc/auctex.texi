@@ -2651,7 +2651,8 @@ around the mark will be kept unfolded.
 @defopt TeX-fold-region-functions
 This variable is a list of functions which allow the user, or external
 packages, to fold additional @LaTeX{} constructs beyond those supported by
-default.
+default.  By default, it is configured to support folding for verbatim
+environments and quotes.
 @end defopt
 
 @deffn Command TeX-fold-region
@@ -2957,13 +2958,29 @@ specifications for @samp{begin} and @samp{end} from
 
 @defopt TeX-fold-bib-file
 The default folding behavior for @samp{\cite@{...@}} macros that point to
-a BibTeX entry is to replace them with a string of the form [XYZ99],
-formed using the authors' last names and the publication year.  If
-@AUCTeX{} cannot find the required BibTeX entries in any bib files
-included in the current document, then, as a backup, it searches the files
-specified in @code{TeX-fold-bib-file}.  This may be useful when using
-@samp{\thebibliography@{...@}} rather than BibTeX, or when working in
-non-file buffers.
+a Bib@TeX{} entry is to replace them with a string of the form
+@samp{[XYZ99]}, formed using the authors' last names and the publication
+year.  If @AUCTeX{} cannot find the required Bib@TeX{} entries in any bib
+files included in the current document, then, as a backup, it searches the
+files specified in @code{TeX-fold-bib-file}.  This may be useful when
+using @samp{\thebibliography@{...@}} rather than Bib@TeX{}, or when
+working in non-file buffers.
+@end defopt
+
+@defopt TeX-fold-open-quote
+Folded version of opening quote.  This string is used to replace opening
+quotes when folding @LaTeX{} quotes.
+@end defopt
+
+@defopt TeX-fold-close-quote
+Folded version of closing quote.  This string is used to replace closing
+quotes when folding @LaTeX{} quotes.
+@end defopt
+
+@defopt TeX-fold-quotes-on-insert
+If non-@code{nil}, automatically fold @LaTeX{} quotes when they are
+inserted.  This option is consulted by @code{TeX-insert-quote} when
+determining whether to fold newly inserted quotes.
 @end defopt
 
 @node Outline
