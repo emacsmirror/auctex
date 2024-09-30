@@ -52,7 +52,10 @@
 (autoload 'Texinfo-find-env-start "tex-info")
 (autoload 'Texinfo-find-env-end "tex-info")
 
+;; Silence the compiler
 (declare-function LaTeX-verbatim-macro-boundaries "latex")
+(declare-function LaTeX-verbatim-macros-with-braces "latex")
+(declare-function LaTeX-verbatim-macros-with-delims "latex")
 
 (defgroup TeX-fold nil
   "Fold TeX macros."
@@ -353,11 +356,54 @@ and `TeX-fold-math-spec-list', and environments in `TeX-fold-env-spec-list'."
       (TeX-fold-clearout-region start end)
       (TeX-fold-region start end))))
 
-(defcustom TeX-fold-region-functions nil
+(defcustom TeX-fold-region-functions '(TeX-fold-verbs)
   "List of additional functions to call when folding a region.
 Each function is called with two arguments, the start and end positions
 of the region to fold."
-  :type '(repeat function))
+  :type '(repeat function)
+  :package-version '(auctex . "14.0.7"))
+
+(defun TeX-fold--verb-data (&rest _args)
+  "Return data describing verbatim macro at point.
+Returns list of the form (START END CONTENT).  This should be called
+only in LaTeX modes."
+  (when-let* ((boundaries (LaTeX-verbatim-macro-boundaries))
+              (bound-start (car boundaries))
+              (bound-end (cdr boundaries))
+              (end-delim-char (char-before bound-end))
+              (start-delim-char (if (= end-delim-char ?\})
+                                    ?\{
+                                  end-delim-char))
+              (start-delim (char-to-string start-delim-char))
+              (verb-arg-start
+               (1+ (progn
+                     (goto-char bound-end)
+                     (if (string= start-delim TeX-grop)
+                         (progn (backward-sexp) (point))
+                       (forward-char -1)
+                       (search-backward start-delim bound-start t)))))
+              (verb-arg-end (1- bound-end)))
+    (list bound-start
+          bound-end
+          (buffer-substring-no-properties verb-arg-start
+                                          verb-arg-end))))
+
+(defun TeX-fold-verbs (start end)
+  "In LaTeX modes, fold verbatim macros between START and END."
+  (when (derived-mode-p 'LaTeX-mode)
+    (save-excursion
+      (goto-char start)
+      (let ((re (concat (regexp-quote TeX-esc)
+                        (regexp-opt
+                         (append
+                          (LaTeX-verbatim-macros-with-braces)
+                          (LaTeX-verbatim-macros-with-delims))))))
+        (while (let ((case-fold-search nil))
+                 (re-search-forward re end t))
+          (when-let* ((data (TeX-fold--verb-data))
+                      (spec (lambda (&rest _args)
+                              (nth 2 (TeX-fold--verb-data)))))
+            (apply #'TeX-fold--make-misc-overlay (append data (list spec)))))))))
 
 (defun TeX-fold-region (start end)
   "Fold all items in region from START to END."
@@ -588,6 +634,25 @@ See its doc string for detail."
     (overlay-put ov 'TeX-fold-display-string-spec display-string-spec)
     ov))
 
+(defun TeX-fold--make-misc-overlay (start end display-string display-string-spec)
+  "Create a miscellaneous overlay between START and END.
+DISPLAY-STRING is the display string, while DISPLAY-STRING-SPEC is as in
+`TeX-fold-make-overlay'.
+
+This function is intended to be used with verbatim environments and
+other miscellaneous folding constructs.  By contrast, the function
+`TeX-fold-make-overlay' is used in the implementation of
+`TeX-fold-hide-item', which applies to typical macros, environments and
+math."
+  (let ((priority (TeX-overlay-prioritize start end))
+        (ov (make-overlay start end)))
+    (overlay-put ov 'category 'TeX-fold)
+    (overlay-put ov 'priority priority)
+    (overlay-put ov 'evaporate t)
+    (overlay-put ov 'display display-string)
+    (overlay-put ov 'TeX-fold-display-string-spec display-string-spec)
+    ov))
+
 (defun TeX-fold-item-end (start type)
   "Return the end of an item of type TYPE starting at START.
 TYPE can be either `env' for environments, `macro' for macros or
@@ -664,7 +729,14 @@ backward compatibility and always nil."
                                          (concat open-string " \t"))
                                         (point)))
                   (goto-char
-                   (if (TeX-verbatim-p)
+                   (if (save-restriction
+                         (widen)
+                         ;; `widen' accomodates the following issue:
+                         ;; with point on the `v' in `\end{verbatim}',
+                         ;; LaTeX-verbatim-p returns nil normally, but t
+                         ;; with region narrowed to avoid the
+                         ;; corresponding `\begin{verbatim}'.
+                         (TeX-verbatim-p))
                        (cond ((derived-mode-p 'LaTeX-mode)
                               (cdr (LaTeX-verbatim-macro-boundaries)))
                              ;; FIXME: When other modes implement a
