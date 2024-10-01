@@ -385,8 +385,7 @@ only in LaTeX modes."
               (verb-arg-end (1- bound-end)))
     (list bound-start
           bound-end
-          (buffer-substring-no-properties verb-arg-start
-                                          verb-arg-end))))
+          (buffer-substring verb-arg-start verb-arg-end))))
 
 (defun TeX-fold-verbs (start end)
   "In LaTeX modes, fold verbatim macros between START and END."
