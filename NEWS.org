@@ -11,8 +11,11 @@
 
 ** Added
 
+- Add new custom option ~TeX-fold-alert-color~ which determines the
+  color used when folding the ~\alert~ macro, defaults to ~red~.
+
 - Add new support file =style/minted2.el= (=style/minted.el= is updated
-  to package version v3.1.2).
+  to package v3.1.2).
 
 * [14.0.7] - 2024-10-05
 

@@ -81,6 +81,8 @@ macros, `math' for math macros and `comment' for comments."
     ("(C)" ("copyright"))
     ("(R)" ("textregistered"))
     ("TM"  ("texttrademark"))
+    (TeX-fold-alert-display ("alert"))
+    (TeX-fold-textcolor-display ("textcolor"))
     (1 ("part" "chapter" "section" "subsection" "subsubsection"
         "paragraph" "subparagraph"
         "part*" "chapter*" "section*" "subsection*" "subsubsection*"
@@ -611,6 +613,30 @@ Return non-nil if a comment was found and folded, nil otherwise."
           (TeX-fold-hide-item (TeX-fold-make-overlay beg (point) 'comment
                                                      TeX-fold-ellipsis)))))))
 
+;;; Display functions
+
+(defun TeX-fold-textcolor-display (color text &rest _args)
+  "Fold display for a \\textcolor{COLOR}{TEXT} macro."
+  (with-temp-buffer
+    (insert text)
+    (put-text-property (point-min) (point-max)
+                       'face `(:foreground ,color)
+                       (current-buffer))
+    (buffer-string)))
+
+(defcustom TeX-fold-alert-color "red"
+  "Color for alert text."
+  :type 'color
+  :package-version '(auctex . "14.0.8"))
+
+(defun TeX-fold-alert-display (text &rest _args)
+  "Fold display for a \\alert{TEXT} macro."
+  (with-temp-buffer
+    (insert text)
+    (put-text-property (point-min) (point-max)
+                       'face `(:foreground ,TeX-fold-alert-color)
+                       (current-buffer))
+    (buffer-string)))
 
 ;;; Utilities
 
