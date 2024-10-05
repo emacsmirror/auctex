@@ -83,6 +83,8 @@ macros, `math' for math macros and `comment' for comments."
     ("TM"  ("texttrademark"))
     (TeX-fold-alert-display ("alert"))
     (TeX-fold-textcolor-display ("textcolor"))
+    (TeX-fold-begin-display ("begin"))
+    (TeX-fold-end-display ("end"))
     (1 ("part" "chapter" "section" "subsection" "subsubsection"
         "paragraph" "subparagraph"
         "part*" "chapter*" "section*" "subsection*" "subsubsection*"
@@ -616,6 +618,8 @@ Return non-nil if a comment was found and folded, nil otherwise."
 
 ;;; Display functions
 
+;;;; textcolor
+
 (defun TeX-fold-textcolor-display (color text &rest _args)
   "Fold display for a \\textcolor{COLOR}{TEXT} macro."
   (with-temp-buffer
@@ -624,6 +628,8 @@ Return non-nil if a comment was found and folded, nil otherwise."
                        'face `(:foreground ,color)
                        (current-buffer))
     (buffer-string)))
+
+;;;; alert
 
 (defcustom TeX-fold-alert-color "red"
   "Color for alert text."
@@ -638,6 +644,160 @@ Return non-nil if a comment was found and folded, nil otherwise."
                        'face `(:foreground ,TeX-fold-alert-color)
                        (current-buffer))
     (buffer-string)))
+
+;;;; begin/end
+
+(defcustom TeX-fold-begin-end-spec-list
+  '((("↴" . "↲")
+     ("itemize" "enumerate" "description" "frame"))
+    ((TeX-fold-format-titled-block . "◼")
+     ("block"))
+    ((TeX-fold-format-titled-alertblock . "◼")
+     ("alertblock"))
+    ((TeX-fold-format-theorem-environment . "□")
+     ("proof"))
+    ((TeX-fold-format-theorem-environment . "◼")
+     ("abstract"
+      "acknowledgment"
+      "algorithm"
+      "assumptions"
+      "claim"
+      "commentary"
+      "fact"
+      "note"
+      "questions"
+      ("answer" "ans")
+      ("conclusion" "conc")
+      ("condition" "cond")
+      ("conjecture" "conj")
+      ("corollary" "cor")
+      ("criterion" "crit")
+      ("definition" "def" "defn")
+      ("example" "ex")
+      ("exercise" "exer")
+      ("lemma" "lem")
+      ("notation" "not")
+      ("problem" "prob")
+      ("proposition" "prop")
+      ("question" "ques")
+      ("remark" "rem" "rmk")
+      ("summary" "sum")
+      ("terminology" "term")
+      ("theorem" "thm"))))
+  "Replacement specifier list for \\begin{env} and \\end{env} macros.
+
+This option is relevant only if the replacement specifiers in
+`TeX-fold-macro-spec-list' for \"begin\" and \"end\" macros are the
+defaults, namely `TeX-fold-begin-display' and `TeX-fold-end-display'.
+
+Each item is a list consisting of two elements:
+
+The first element is a cons cell, with car and cdr the display
+specifications for \\begin{...} and \\end{...}  macros, respectively.
+Each specification is either
+
+  - a string, used as the fold display string, or
+
+  - a function, called with the (unabbreviated) environment name and a
+    list consisting of the remaining mandatory macro arguments, that
+    returns a string.
+
+The second element is a list of environment types, which are either
+
+- the environment name, e.g., \"remark\", or
+
+- a list with first element an environment name and remaining elements
+  any abbreviated environment names, e.g., (\"remark\" \"rem\" \"rmk\")."
+  :type '(repeat
+          (group
+           (cons (choice (string :tag "Display String for \\begin{...}")
+                         (function :tag "Function to execute for \\begin{...}"))
+                 (choice (string :tag "Display String for \\end{...}")
+                         (function :tag "Function to execute for \\end{...}")))
+           (repeat :tag "Environment Types"
+                   (choice (string :tag "Environment")
+                           (cons :tag "Environment and Abbreviations"
+                                 (string :tag "Environment")
+                                 (repeat :tag "Abbreviations"
+                                         (string :tag "Abbreviation")))))))
+  :package-version '(auctex . "14.0.8"))
+
+
+(defun TeX-fold-begin-display (env &rest args)
+  "Fold display for a \\begin{ENV}.
+Intended for use in `TeX-fold-begin-end-spec-list'.  ARGS is a list
+consisting of the remaining mandatory macro arguments."
+  (TeX-fold--helper-display env args #'car))
+
+(defun TeX-fold-end-display (env &rest args)
+  "Fold display for a \\end{ENV} macro.
+Intended for use in `TeX-fold-begin-end-spec-list'.  ARGS is a list
+consisting of the remaining mandatory macro arguments."
+  (TeX-fold--helper-display env args #'cdr))
+
+(defun TeX-fold--helper-display (env args spec-retriever)
+  "Generate fold display string for \\begin{ENV} or \\end{ENV} macro.
+ARGS are the remaining mandatory macro arguments.  Returns the string or
+function determined by `TeX-fold-begin-end-spec-list' if ENV is found
+there, otherwise `abort'.  SPEC-RETRIEVER, which should be either `car'
+or `cdr', retrieves the appropriate part of the display specification."
+  (catch 'result
+    (dolist (item TeX-fold-begin-end-spec-list)
+      (let* ((spec (funcall spec-retriever (car item)))
+             (types (cadr item)))
+        (dolist (type types)
+          (when-let ((name (cond ((stringp type)
+                                  (when (string= env type)
+                                    env))
+                                 ((consp type)
+                                  (when (member env type)
+                                    (car type))))))
+            (throw 'result
+                   (if (functionp spec)
+                       (funcall spec name args)
+                     spec))))))
+    'abort))
+
+;;;;; block environments
+
+(defun TeX-fold-format-titled-block (_env args)
+  "Format fold display for beamer block environments.
+Intended for use in `TeX-fold-begin-end-spec-list'.  ENV is ignored.
+ARGS is a list whose car will be the block title.
+
+Example: \"\\begin{block}{Theorem 1}\" folds to \"Theorem 1\"."
+  (car args))
+
+(defun TeX-fold-format-titled-alertblock (_env args)
+  "Format fold display for beamer alertblock environments.
+Intended for use in `TeX-fold-begin-end-spec-list'.  The arguments
+ENV/ARGS and the behavior are as in `TeX-fold-format-titled-block', but
+the folded text is colored using `TeX-fold-alert-color'."
+  (let ((caption (car args)))
+    (add-face-text-property 0 (length caption)
+                            `(:foreground ,TeX-fold-alert-color) nil caption)
+    (format "%s" caption)))
+
+;;;;; theorem-like environments
+
+(defun TeX-fold-format-theorem-environment (env _args)
+  "Format fold display for theorem-like LaTeX environments.
+Intended for use in `TeX-fold-begin-end-spec-list'.  ENV is the
+environment name, ARGS are ignored.  Returns a string of the form
+\"Environment \" or \"Environment (Description) \""
+  (let* ((env (with-temp-buffer
+                (insert env)
+                (goto-char (point-min))
+                (capitalize-word 1)
+                (buffer-string)))
+         (description
+          (car (TeX-fold-macro-nth-arg 1 (point)
+                                       (TeX-fold-item-end (point) 'macro)
+                                       '(?\[ . ?\])))))
+    (concat
+     (format "%s " env)
+     (when description
+       (format "(%s) " description)))))
 
 ;;; Utilities
 

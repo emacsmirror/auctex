@@ -11,6 +11,10 @@
 
 ** Added
 
+- Add support for folding of =\begin{env}= and =\end{env}= macros.  The
+  replacement specifiers are controlled by the custom option
+  ~TeX-fold-begin-end-spec-list~.
+
 - Add new custom option ~TeX-fold-alert-color~ which determines the
   color used when folding the ~\alert~ macro, defaults to ~red~.
 

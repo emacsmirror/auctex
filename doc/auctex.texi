@@ -2880,6 +2880,81 @@ replacement specifier given by the default value of
 @code{TeX-fold-macro-spec-list}).
 @end defopt
 
+@defopt TeX-fold-begin-end-spec-list
+List of replacement specifiers for @samp{\begin@{@var{env}@}} and
+@samp{\end@{@var{env}@}} macros.  This option is used only when the
+replacement specifiers for @samp{begin} and @samp{end} macros in
+@code{TeX-fold-macro-spec-list} are set to their default values:
+@code{TeX-fold-begin-display} and @code{TeX-fold-end-display},
+respectively.
+
+Each item in the list consists of two elements.  The first element is a
+cons cell @code{(@var{BEGIN} . @var{END})}, where @var{BEGIN} and
+@var{END} are the display specifications for @samp{\begin@{...@}} and
+@samp{\end@{...@}} macros, respectively.  Each specification can be
+either:
+
+@itemize @bullet
+@item
+A string, which will be used directly as the fold display string.
+
+@item
+A function symbol, which will be called with two arguments: the
+(unabbreviated) environment name and a list of the remaining mandatory
+macro arguments.  The function should return a string to be used as the
+fold display.
+@end itemize
+
+The second element is a list of environment types.  Each type can be:
+
+@itemize @bullet
+@item
+A string representing the environment name (e.g., @code{"remark"}).
+
+@item
+A list with the first element being the environment name and the remaining
+elements being any abbreviated forms of that name (e.g., @code{("remark"
+"rem" "rmk")}).
+@end itemize
+
+For example:
+
+@lisp
+(((">" . "<") ("itemize" "enumerate" "description" "frame"))
+ ((TeX-fold-format-theorem-environment . "*")
+  ("note" ("theorem" "thm"))))
+@end lisp
+
+In this example:
+
+@itemize @bullet
+@item
+@samp{\begin@{itemize@}}, @samp{\begin@{enumerate@}},
+@samp{\begin@{description@}} and @samp{\begin@{frame@}} will fold to
+@samp{>}, while their corresponding @samp{\end@{...@}} macros will fold to
+@samp{<}.
+
+@item
+@samp{\begin@{note@}} will fold to @samp{Note}.
+
+@item
+@samp{\begin@{theorem@}} and @samp{\begin@{thm@}} will fold to @samp{Theorem}.
+
+@item
+If an optional argument is provided, e.g., @samp{\begin@{theorem@}[Foo]},
+it will fold to @samp{Theorem (Foo)}.
+
+@item
+All corresponding @samp{\end@{...@}} macros for @samp{note},
+@samp{theorem}, and @samp{thm} will fold to @samp{*}.
+@end itemize
+
+To disable folding for @samp{\begin@{...@}} and @samp{\end@{...@}} macros,
+you can either set this variable to @code{nil}, or remove the display
+specifications for @samp{begin} and @samp{end} from
+@code{TeX-fold-macro-spec-list}.
+@end defopt
+
 @node Outline
 @section Outlining the Document
 @cindex Outlining
