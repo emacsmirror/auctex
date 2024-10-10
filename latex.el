@@ -7078,7 +7078,7 @@ language.  It is usually set by language-related style files.")
 (defun LaTeX-babel-insert-hyphen (force)
   "Insert a hyphen string.
 The string can be either a normal hyphen or the string specified
-in `LaTeX-babel-hyphen'.  Wether one or the other is chosen
+in `LaTeX-babel-hyphen'.  Whether one or the other is chosen
 depends on the value of `LaTeX-babel-hyphen-after-hyphen' and
 the buffer context.
 If prefix argument FORCE is non-nil, always insert a regular hyphen."
