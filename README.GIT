@@ -5,8 +5,8 @@ This repository has several branches:
 
    * 'main': the main branch of development of AUCTeX;
 
-   * 'master': the old main branch of development of AUCTeX; not used
-     anymore;
+   * 'auctex-13': (renamed from 'master') the old main branch of
+     development of AUCTeX; not used anymore;
 
 Other branches are feature branches.  They are created and deleted from
 time to time.  To name a few:
