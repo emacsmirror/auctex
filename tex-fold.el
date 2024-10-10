@@ -122,7 +122,8 @@ Customize or reset the mode."
   :type '(repeat (group (choice (string :tag "Display String")
                                 (integer :tag "Number of argument" :value 1)
                                 (function :tag "Function to execute"))
-                        (repeat :tag "Macros" (string)))))
+                        (repeat :tag "Macros" (string))))
+  :package-version '(auctex . "14.0.8"))
 
 (defvar-local TeX-fold-macro-spec-list-internal nil
   "Internal list of display strings and macros to fold.
