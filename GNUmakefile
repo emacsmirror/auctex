@@ -108,6 +108,7 @@ clean:
 		$(wildcard doc/*.cp doc/*.cps doc/*.fn doc/*.fns) \
 		$(wildcard doc/*.ky doc/*.kys doc/*.vr doc/*.vrs) \
 		$(wildcard doc/*.aux doc/*.log doc/*.toc) \
+		$(wildcard doc/*.pdf doc/*.synctex.gz) \
 		latex/preview-mk.ins latex/preview.ins \
 		auctex-autoloads.el \
 		$(DYNVARSFILES)
