@@ -72,7 +72,7 @@ macros, `math' for math macros and `comment' for comments."
 
 (defcustom TeX-fold-macro-spec-list
   '(("[f]" ("footnote" "marginpar"))
-    ("[c]" ("cite"))
+    (TeX-fold-cite-display ("cite"))
     ("[l]" ("label"))
     ("[r]" ("ref" "pageref" "eqref" "footref"))
     ("[i]" ("index" "glossary"))
@@ -618,6 +618,8 @@ Return non-nil if a comment was found and folded, nil otherwise."
 
 ;;; Display functions
 
+;; This section provides functions for use in `TeX-fold-macro-spec-list'.
+
 ;;;; textcolor
 
 (defun TeX-fold-textcolor-display (color text &rest _args)
@@ -798,6 +800,102 @@ environment name, ARGS are ignored.  Returns a string of the form
      (format "%s " env)
      (when description
        (format "(%s) " description)))))
+
+;;;; citations
+
+(defun TeX-fold--last-name (name)
+  "Return string consisting of last name of NAME.
+NAME should be of the form \"Last, First\" or \"First Last\", possibly
+with some additional non-alphabetical characters such as braces."
+  (if-let ((comma (string-match "," name)))
+      (setq name (substring name 0 comma))
+    (when-let ((space (string-match " " name)))
+      (setq name (substring name space))))
+  (when-let ((index (string-match "[[:alpha:]]" name)))
+    (setq name (substring name index)))
+  (when-let ((index (string-match "[^[:alpha:]]" name)))
+    (setq name (substring name 0 index)))
+  name)
+
+(defun TeX-fold--bib-abbrev-entry-at-point ()
+  "Abbreviate the BibTeX entry at point.
+Return string of the form \"XYZ99\", formed using authors' last names and
+publication year, or nil if author/year not found."
+  (require 'bibtex)
+  (declare-function bibtex-parse-entry "bibtex")
+  (declare-function bibtex-text-in-field "bibtex")
+  (when-let* ((case-fold-search t)
+              (entry (bibtex-parse-entry))
+              (author (bibtex-text-in-field "author" entry))
+              (year (bibtex-text-in-field "year" entry))
+              (last-names
+               (mapcar #'TeX-fold--last-name (string-split author " and ")))
+              (last-names (seq-filter (lambda (name) (> (length name) 0))
+                                      last-names))
+              (initials
+               (if (and (eq (length last-names) 1)
+                        (> (length (car last-names)) 1))
+                   (substring (car last-names) 0 2)
+                 (mapconcat (lambda (name)
+                              (substring name 0 1))
+                            last-names)))
+              (year-XX (when year (substring year -2))))
+    (concat initials year-XX)))
+
+(defun TeX-fold--bib-entry (key files)
+  "Retrieve BibTeX entry for KEY from FILES.
+Return first BibTeX entry found as a string, or nil if none found."
+  (when (fboundp 'reftex-pop-to-bibtex-entry)
+    (condition-case nil
+        (reftex-pop-to-bibtex-entry key files nil nil nil t)
+      (error nil))))
+
+(defcustom TeX-fold-bib-files nil
+  "List of BibTeX files from which to extract citation keys.
+This is used as a fallback option for citation folding when RefTeX can't
+find the citation keys in the provided bib files, and may be useful when
+using \\thebibliography or when working in non-file buffers."
+  :type '(repeat file)
+  :package-version '(auctex . "14.0.8"))
+
+(defun TeX-fold--bib-abbrev (key)
+  "Get abbreviation for BibTeX entry associated with KEY.
+Search using RefTeX (if available) and `TeX-fold-bib-file'.  Return
+string of the form \"XYZ99\" or nil if the key is not found or does not
+contain the required information."
+  (when-let* ((entry (or (and (bound-and-true-p reftex-mode)
+                              (fboundp 'reftex-get-bibfile-list)
+                              (when-let (files
+                                         (condition-case nil
+                                             (reftex-get-bibfile-list)
+                                           (error nil)))
+                                (TeX-fold--bib-entry key files)))
+                         (TeX-fold--bib-entry
+                          key TeX-fold-bib-files))))
+    (with-temp-buffer
+      (insert entry)
+      (goto-char (point-min))
+      (TeX-fold--bib-abbrev-entry-at-point))))
+
+(defun TeX-fold-cite-display (keys &rest _args)
+  "Fold display for a \\cite{KEYS} macro.
+KEYS are the citation key(s), as a comma-delimited list.  Return string
+of the form \"[XYZ99]\" or \"[XYZ99, Optional Citation Text]\", formed
+using authors' last names and the the publication year."
+  (let* ((citation (car (TeX-fold-macro-nth-arg
+                         1 (point)
+                         (TeX-fold-item-end (point) 'macro)
+                         '(?\[ . ?\]))))
+         (key-list (split-string keys "[ \f\t\n\r\v,]+"))
+         (references
+          (mapcar #'TeX-fold--bib-abbrev key-list))
+         (joined-references (string-join references ", ")))
+    (concat "["
+            (if (string-empty-p joined-references)
+                "c" joined-references)
+            (when citation
+              (format ", %s" citation))
+            "]")))
 
 ;;; Utilities
 

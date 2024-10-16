@@ -2955,6 +2955,17 @@ specifications for @samp{begin} and @samp{end} from
 @code{TeX-fold-macro-spec-list}.
 @end defopt
 
+@defopt TeX-fold-bib-file
+The default folding behavior for @samp{\cite@{...@}} macros that point to
+a BibTeX entry is to replace them with a string of the form [XYZ99],
+formed using the authors' last names and the publication year.  If
+@AUCTeX{} cannot find the required BibTeX entries in any bib files
+included in the current document, then, as a backup, it searches the files
+specified in @code{TeX-fold-bib-file}.  This may be useful when using
+@samp{\thebibliography@{...@}} rather than BibTeX, or when working in
+non-file buffers.
+@end defopt
+
 @node Outline
 @section Outlining the Document
 @cindex Outlining

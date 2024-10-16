@@ -11,6 +11,12 @@
 
 ** Added
 
+- Improve support for folding of citations macros.  The current folding
+  =[c]= is changed to a more descriptive version, using author names and
+  publication years, like =[Ne21]= or =[ABC99]=.  These are extracted
+  from any bib files referenced in the document or specified by the user
+  option ~TeX-fold-bib-file~.
+
 - Add support for folding of =\begin{env}= and =\end{env}= macros.  The
   replacement specifiers are controlled by the custom option
   ~TeX-fold-begin-end-spec-list~.
