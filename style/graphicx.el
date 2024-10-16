@@ -179,15 +179,17 @@ Return value is a list of paths."
         (graphicspath-regex "\\\\graphicspath{\\({\\([^}]*\\)}\\)*}")
         (single-path-regex "{\\([^{}]*\\)}"))
     (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward graphicspath-regex nil t)
-        (let ((start-pos (match-beginning 0))
-              (end-pos (match-end 0)))
-          (save-excursion
-            (goto-char start-pos)
-            (while (re-search-forward single-path-regex end-pos t)
-              (push (match-string-no-properties 1) results)))))
-      (nreverse results))))
+      (save-restriction
+        (widen)
+        (goto-char (point-min))
+        (while (re-search-forward graphicspath-regex nil t)
+          (let ((start-pos (match-beginning 0))
+                (end-pos (match-end 0)))
+            (save-excursion
+              (goto-char start-pos)
+              (while (re-search-forward single-path-regex end-pos t)
+                (push (match-string-no-properties 1) results)))))
+        (nreverse results)))))
 
 (defun LaTeX-includegraphics-read-file-TeX ()
   "Read image file for \\includegraphics.
