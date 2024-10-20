@@ -1205,7 +1205,9 @@ entry in `TeX-view-program-list-builtin'."
       (with-current-buffer (or (when TeX-current-process-region-p
                                  (get-file-buffer (TeX-region-file t)))
                                (current-buffer))
-        (pdf-sync-forward-search))
+        (save-restriction
+          (widen)
+          (pdf-sync-forward-search)))
     (let ((pdf (TeX-active-master (TeX-output-extension))))
       (pop-to-buffer (or (find-buffer-visiting pdf)
                          (find-file-noselect pdf))))))
