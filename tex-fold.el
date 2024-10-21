@@ -887,8 +887,7 @@ using authors' last names and the the publication year."
                          (TeX-fold-item-end (point) 'macro)
                          '(?\[ . ?\]))))
          (key-list (split-string keys "[ \f\t\n\r\v,]+"))
-         (references
-          (mapcar #'TeX-fold--bib-abbrev key-list))
+         (references (delq nil (mapcar #'TeX-fold--bib-abbrev key-list)))
          (joined-references (string-join references ", ")))
     (concat "["
             (if (string-empty-p joined-references)
