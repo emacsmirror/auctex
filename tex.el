@@ -10011,6 +10011,11 @@ It must end with a fallback entry that matches any error, for example
   '((t (:inherit TeX-error-description-tex-said)))
   "Face for \"Help\" string in error descriptions.")
 
+(defvar-local TeX--log-file-readin-modtime nil
+  "Recorded modification time of the TeX log file.
+It is updated each time the file is read into the buffer, and is to
+avoid unnecessary reads of the log file.")
+
 (defun TeX-help-error (error output runbuffer type)
   "Print ERROR in context OUTPUT from RUNBUFFER in another window.
 TYPE is a symbol specifing if ERROR is a real error, a warning or
@@ -10053,29 +10058,27 @@ a bad box."
                    'TeX-error-description-help)
        (let ((help (cdr (nth TeX-error-pointer
                              error-description-list))))
-         (save-excursion
-           (if (and (= (1+ TeX-error-pointer)
-                       (length error-description-list))
-                    (let* ((log-buffer (find-buffer-visiting log-file)))
-                      (if log-buffer
-                          (progn
-                            (set-buffer log-buffer)
-                            (revert-buffer t t))
-                        (setq log-buffer
-                              (find-file-noselect log-file))
-                        (set-buffer log-buffer))
-                      (auto-save-mode nil)
-                      (setq buffer-read-only t)
-                      (goto-char (point-min))
-                      (search-forward error nil t 1))
-                    (re-search-forward "^l\\." nil t)
-                    (re-search-forward "^ [^\n]+$" nil t))
-               (let ((start (1+ (point))))
-                 (forward-char 1)
-                 (re-search-forward "^$")
-                 (concat "From the .log file...\n\n"
-                         (buffer-substring start (point))))
-             help)))))
+         (or (and (= (1+ TeX-error-pointer)
+                     (length error-description-list))
+                  (with-current-buffer
+                      (get-buffer-create (format " *%s*" log-file))
+                    (let ((modtime (file-attribute-modification-time
+                                    (file-attributes log-file))))
+                      (unless (and TeX--log-file-readin-modtime
+                                   (time-equal-p TeX--log-file-readin-modtime
+                                                 modtime))
+                        (insert-file-contents log-file nil nil nil 'replace)
+                        (setq TeX--log-file-readin-modtime modtime)))
+                    (goto-char (point-min))
+                    (when (and (search-forward error nil t 1)
+                               (re-search-forward "^l\\." nil t)
+                               (re-search-forward "^ [^\n]+$" nil t))
+                      (let ((start (1+ (point))))
+                        (forward-char 1)
+                        (re-search-forward "^$")
+                        (concat "From the .log file...\n\n"
+                                (buffer-substring start (point)))))))
+             help))))
     (goto-char (point-min))
     (TeX-special-mode)
     (TeX-pop-to-buffer old-buffer nil t)))
