@@ -748,12 +748,12 @@ or `cdr', retrieves the appropriate part of the display specification."
       (let* ((spec (funcall spec-retriever (car item)))
              (types (cadr item)))
         (dolist (type types)
-          (when-let ((name (cond ((stringp type)
-                                  (when (string= env type)
-                                    env))
-                                 ((consp type)
-                                  (when (member env type)
-                                    (car type))))))
+          (when-let* ((name (cond ((stringp type)
+                                   (when (string= env type)
+                                     env))
+                                  ((consp type)
+                                   (when (member env type)
+                                     (car type))))))
             (throw 'result
                    (if (functionp spec)
                        (funcall spec name args)
@@ -809,11 +809,11 @@ NAME should be of the form \"Last, First\" or \"First Last\", possibly
 with some additional non-alphabetical characters such as braces."
   (if-let* ((comma (string-match "," name)))
       (setq name (substring name 0 comma))
-    (when-let ((space (string-match " " name)))
+    (when-let* ((space (string-match " " name)))
       (setq name (substring name space))))
-  (when-let ((index (string-match "[[:alpha:]]" name)))
+  (when-let* ((index (string-match "[[:alpha:]]" name)))
     (setq name (substring name index)))
-  (when-let ((index (string-match "[^[:alpha:]]" name)))
+  (when-let* ((index (string-match "[^[:alpha:]]" name)))
     (setq name (substring name 0 index)))
   name)
 
@@ -865,10 +865,10 @@ string of the form \"XYZ99\" or nil if the key is not found or does not
 contain the required information."
   (when-let* ((entry (or (and (bound-and-true-p reftex-mode)
                               (fboundp 'reftex-get-bibfile-list)
-                              (when-let (files
-                                         (condition-case nil
-                                             (reftex-get-bibfile-list)
-                                           (error nil)))
+                              (when-let* ((files
+                                           (condition-case nil
+                                               (reftex-get-bibfile-list)
+                                             (error nil))))
                                 (TeX-fold--bib-entry key files)))
                          (TeX-fold--bib-entry
                           key TeX-fold-bib-files))))
@@ -1186,16 +1186,16 @@ Replace them with the respective macro argument."
                      ((equal close (cdr (assoc open delims)))))
                ;; … then replace it and move on.  Otherwise, it must have been
                ;; a spurious spec, so abort.
-               (when-let ((arg (car (save-match-data
-                                      (TeX-fold-macro-nth-arg
-                                       num ov-start ov-end (assoc open delims)))))
-                          (spec* (replace-match arg nil t spec)))
+               (when-let* ((arg (car (save-match-data
+                                       (TeX-fold-macro-nth-arg
+                                        num ov-start ov-end (assoc open delims)))))
+                           (spec* (replace-match arg nil t spec)))
                  (expand spec*
                          (+ (match-end 0) (- (length spec*) (length spec)))))
              ;; Nothing to replace: return the (completed) spec.
              spec)))
       (or (cl-loop for elt in spec-list
-                   do (when-let (expanded (expand elt))
+                   do (when-let* ((expanded (expand elt)))
                         (cl-return expanded)))
           TeX-fold-ellipsis))))
 
