@@ -6259,7 +6259,7 @@ You can also see the same content
 at @uref{https://elpa.gnu.org/packages/auctex.html, @acronym{ELPA}
 @AUCTeX{} page}.
 
-@subheading Older versions
+@subheading Older Versions
 See the file @file{history.texi} for older changes.  It is available at
 @ifinfo
 @samp{doc} subdirectory of @acronym{ELPA} @AUCTeX{} contents directory.
@@ -6267,6 +6267,25 @@ See the file @file{history.texi} for older changes.  It is available at
 @ifnotinfo
 @AUCTeX{} Git repository.
 @end ifnotinfo
+
+@subheading List of Contributors
+
+The following people have contributed to @AUCTeX{} (in alphabetical
+order): Ivan Andrus, Ralf Angeli, Masayuki Ataka, Mohammad Hossein Bateni,
+Fabrice Ben Hamouda, Thomas Baumann, Vincent Belaïche, Berend de Boer,
+Alex Branham, Uwe Brauer, Ken Brown, Joshua Buhl, Jean-François Burnol,
+Patrice Dumas, Arash Esbati, Vangelis Evangelou, Werner Fink, Miguel
+Frasson, David Fussner, Peter@tie{}S. Galbraith, Mosè Giordano, Andrea
+Greselin, Patrick Gundlach, Abdul-Lateef Haji-Ali, Jobst Hoffmann, Tassilo
+Horn, Yvon Hevel, Orlando Iovino, Mads Jensen, Arne Jørgensen, Philip
+Kaludercic, David Kastrup, Ikumi Keita, Philip Kime, Oleh Krehel, Joost
+Kremers, Frank Küster, Jan-Åke Larsson, Matthew Leach, Brian Leung,
+Antoine Levitt, Leo Liu, Vladimir Lomov, Stefan Monnier, Paul Nelson, Dan
+Nicolaescu, Piet van Oostrum, Pieter Pareit, Nicolas Richard, Florent
+Rougon, Santiago Saavedra, Davide@tie{}G.@tie{}M. Salvetti, Rüdiger
+Sonderfeld, Holger Sparr, Mike Sperber, Reiner Steib, Christian Schlauer,
+Augusto Ritter Stoffel, Shiro Takeda, Mark Trettin, Artem Yurchenko, Tony
+Zorman (Please accept our apologies if we forgot somebody).
 
 @node Development
 @appendixsec Future Development
