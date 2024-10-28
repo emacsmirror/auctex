@@ -807,7 +807,7 @@ environment name, ARGS are ignored.  Returns a string of the form
   "Return string consisting of last name of NAME.
 NAME should be of the form \"Last, First\" or \"First Last\", possibly
 with some additional non-alphabetical characters such as braces."
-  (if-let ((comma (string-match "," name)))
+  (if-let* ((comma (string-match "," name)))
       (setq name (substring name 0 comma))
     (when-let ((space (string-match " " name)))
       (setq name (substring name space))))
@@ -1178,12 +1178,12 @@ Replace them with the respective macro argument."
         ((expand (spec &optional index)
            ;; If there is something to replace and the closing delimiter
            ;; matches the opening one…
-           (if-let (((string-match "\\([[{<(]\\)\\([1-9]\\)\\([]}>)]\\)"
-                                   spec index))
-                    (open (string-to-char (match-string 1 spec)))
-                    (num (string-to-number (match-string 2 spec)))
-                    (close (string-to-char (match-string 3 spec)))
-                    ((equal close (cdr (assoc open delims)))))
+           (if-let* (((string-match "\\([[{<(]\\)\\([1-9]\\)\\([]}>)]\\)"
+                                    spec index))
+                     (open (string-to-char (match-string 1 spec)))
+                     (num (string-to-number (match-string 2 spec)))
+                     (close (string-to-char (match-string 3 spec)))
+                     ((equal close (cdr (assoc open delims)))))
                ;; … then replace it and move on.  Otherwise, it must have been
                ;; a spurious spec, so abort.
                (when-let ((arg (car (save-match-data

@@ -1246,16 +1246,16 @@ for the file extension."
   (overlay-put ov 'preview-image
                (let ((default (list (preview-icon-copy preview-nonready-icon))))
                  (if preview-leave-open-previews-visible
-                     (if-let ((img
-                               (car
-                                (delq
-                                 nil
-                                 (mapcar
-                                  (lambda (ovr)
-                                    (and
-                                     (eq (overlay-start ovr) (overlay-start ov))
-                                     (overlay-get ovr 'preview-image)))
-                                  (overlays-at (overlay-start ov)))))))
+                     (if-let* ((img
+                                (car
+                                 (delq
+                                  nil
+                                  (mapcar
+                                   (lambda (ovr)
+                                     (and
+                                      (eq (overlay-start ovr) (overlay-start ov))
+                                      (overlay-get ovr 'preview-image)))
+                                   (overlays-at (overlay-start ov)))))))
                          img
                        default)
                    default)))
