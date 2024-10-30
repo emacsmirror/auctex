@@ -6483,11 +6483,9 @@ With prefix argument FORCE, always inserts \" characters."
                       (t
                        close-quote))))
       ;; Fold quotes if TeX-fold-quotes-on-insert is t
-      (when (and (boundp 'TeX-fold-mode)
-                 (boundp 'TeX-fold-quotes-on-insert)
+      (when (and (bound-and-true-p TeX-fold-mode)
+                 (bound-and-true-p TeX-fold-quotes-on-insert)
                  (fboundp 'TeX-fold-quotes)
-                 TeX-fold-mode
-                 TeX-fold-quotes-on-insert
                  (not (eq (char-before) ?\")))  ; Don't fold single quotes
         (save-excursion
           (let* ((end (point))
