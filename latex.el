@@ -66,12 +66,14 @@ A comma-seperated list of strings."
 
 (make-variable-buffer-local 'LaTeX-default-options)
 
-(defcustom LaTeX-insert-into-comments t
+(defcustom LaTeX-insert-into-comments nil
   "Whether insertion commands stay in comments.
-This allows using the insertion commands even when
-the lines are outcommented, like in dtx files."
+This allows using the insertion commands even when the lines are
+outcommented, like in dtx files."
   :group 'LaTeX-environment
-  :type 'boolean)
+  :type 'boolean
+  :safe #'booleanp
+  :package-version '(auctex . "14.0.8"))
 
 (defcustom docTeX-indent-across-comments nil
   "If non-nil, indentation in docTeX is done across comments."

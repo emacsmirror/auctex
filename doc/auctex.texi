@@ -1616,6 +1616,21 @@ paragraph is considered to consist of all preceding and succeeding
 lines starting with a @samp{%}, until the first non-comment line.
 @end deffn
 
+In doc@TeX{} document, all documentations are commented out.  @AUCTeX{}
+inserts @samp{%} (with an accompanying space) at the beginning of line
+when you issue some commands including sectioning (@kbd{C-c C-s}) and
+inserting environments (@kbd{C-c C-e}), on a commented line.  This
+behavior is controlled by @code{LaTeX-insert-into-comments}.
+
+@defopt LaTeX-insert-into-comments
+When this option is non-@code{nil}, some editing commands are aware of
+comment prefix at the beginning of line and insert it in the line created
+anew.
+
+The default value of this option is @code{nil} and is set to @code{t}
+in doc@TeX{} mode.
+@end defopt
+
 @node Indenting
 @section Indenting
 @cindex Formatting

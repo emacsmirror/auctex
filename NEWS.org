@@ -30,6 +30,11 @@
 - Add preliminary support for parsing =\graphicspath= in
   =style/graphicx.el=.
 
+** Changed
+
+- Change the default value of ~LaTeX-insert-into-comments~ from ~t~ to
+  ~nil~.
+
 * [14.0.7] - 2024-10-05
 
 ** Added
