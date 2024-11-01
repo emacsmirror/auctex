@@ -1535,7 +1535,18 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
     (when (and (TeX-active-mark)
                (> (point) (mark)))
       (exchange-point-and-mark))
-    (unless (bolp) (LaTeX-newline))
+    (if (save-excursion
+          ;; If the current line has only whitespace characters, put
+          ;; the new \item on this line, not creating a new line
+          ;; below.
+          (goto-char (line-beginning-position))
+          (if LaTeX-insert-into-comments
+              (re-search-forward
+               (concat "\\=" TeX-comment-start-regexp "+")
+               (line-end-position) t))
+          (looking-at "[ \t]*$"))
+        (delete-region (match-beginning 0) (match-end 0))
+      (LaTeX-newline))
     (if (assoc environment LaTeX-item-list)
         (funcall (cdr (assoc environment LaTeX-item-list)))
       (TeX-insert-macro "item"))

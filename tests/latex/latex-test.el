@@ -730,4 +730,22 @@ check the indentation for optional argument of \\usepackage."
              (insert-file-contents docTeX/out)
              (buffer-string)))))
 
+;; bug#74056
+(ert-deftest LaTeX-insert-item-in-whitespace-only-line ()
+  "Test if `LaTeX-insert-item' doesn't insert spurious line."
+  (with-temp-buffer
+    (LaTeX-mode)
+    (insert "\
+\\begin{itemize}
+\\item abc
+\s\s\t")
+    (backward-char 1)
+    (LaTeX-insert-item)
+    (should (string=
+             (buffer-string)
+             "\
+\\begin{itemize}
+\\item abc
+\\item "))))
+
 ;;; latex-test.el ends here
