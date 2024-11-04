@@ -1,4 +1,4 @@
-;;; minted.el --- AUCTeX style for `minted.sty' (v3.1.2)  -*- lexical-binding: t; -*-
+;;; minted.el --- AUCTeX style for `minted.sty' (v3.2.0)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014--2024 Free Software Foundation, Inc.
 
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `minted.sty' (v3.1.2) from 2024/10/07.
+;; This file adds support for `minted.sty' (v3.2.0) from 2024/10/29.
 
 ;;; Code:
 
@@ -92,6 +92,13 @@
     ("encoding")
     ("envname" ("Verbatim" "VerbEnv"))
     ("escapeinside")
+    ("extrakeywords")
+    ("extrakeywordsconstant")
+    ("extrakeywordsdeclaration")
+    ("extrakeywordsnamespace")
+    ("extrakeywordspseudo")
+    ("extrakeywordsreserved")
+    ("extrakeywordstype")
     ("firstline")
     ("firstnumber" ("auto" "last" "integer"))
     ("fontfamily" ("tt" "courier" "helvetica"))
