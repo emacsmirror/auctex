@@ -7692,7 +7692,7 @@ this point.  If nil, limit to the previous 15 lines."
         ;; (setq env-or-mac-start (point))
         (when (and (memql (following-char) ;; '(?\[ ?\{ ?\( ?<)
                           (LaTeX-completion-macro-delimiters 'open))
-                   (re-search-backward "\\\\[*a-zA-Z]+\\=" nil t))
+                   (re-search-backward "\\\\[*+a-zA-Z]+\\=" nil t))
           (setq cmd (TeX-match-buffer 0))
           (when (looking-at "\\\\begin{\\([^}]+\\)}")
             (setq cmd (TeX-match-buffer 1))
