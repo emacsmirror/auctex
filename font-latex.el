@@ -377,7 +377,7 @@ variable `font-latex-fontify-sectioning'." ',num)
       ("RenewEnvironmentCopy"   "{{")
       ("DeclareEnvironmentCopy" "{{")
       ("ShowEnvironment"        "{")
-      ("listfiles" "[") ("hyphenation" "{"))
+      ("listfiles" "[") ("hyphenation" "{") ("DocumentMetadata" "{"))
      font-lock-function-name-face 2 command)
     ("function-noarg"
      ("enspace" "enskip" "quad" "qquad" "nonumber"

@@ -9130,7 +9130,23 @@ function would return non-nil and `(match-string 1)' would return
                                 "Position 1")
        (TeX-arg-completing-read ("top" "first" "last")
                                 "Position 2")
-       2) ))
+       2)
+
+     '("DocumentMetadata"
+       (TeX-arg-key-val (("backend")
+                         ("pdfversion")
+                         ("uncompress")
+                         ("lang")
+                         ("pdfstandard" ("A-1b" "A-2a" "A-2b" "A-2u" "A-3a"
+                                         "A-3b" "A-3u" "A-4" "A-4E" "A-4F"
+                                         "X-4" "X-4p" "X-5g" "X-5n" "X-5pg"
+                                         "X-6" "X-6n" "X-6p" "UA-1" "UA-2"))
+                         ("xmp" ("true" "false"))
+                         ("colorprofiles")
+                         ;; Skip the individual modules:
+                         ("testphase" ("phase-I" "phase-II" "phase-III"))
+                         ("debug" ("para" "log" "uncompress" "pdfmanagement"
+                                   "firstaidoff" "xmp-export" "tagpdf"))))) ))
 
   (TeX-run-style-hooks "LATEX")
 
