@@ -6114,6 +6114,7 @@ Here is an excerpt from @samp{acro.el}:
 
 As you can see in the above example, a utility function
 @code{TeX-read-key-val} is available to read key-value pair(s) from users.
+
 Note that @code{defvar} or @code{defun} of
 @code{LaTeX-@var{packagename}-package-options} should be at the top level
 of the style file and not inside the style hook, because the style hook is
