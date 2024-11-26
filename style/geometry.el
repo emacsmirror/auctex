@@ -1,6 +1,6 @@
 ;;; geometry.el --- AUCTeX style for `geometry.sty' (v5.6)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -38,7 +38,14 @@
                   (keywords class))
 
 (defvar LaTeX-geometry-always-key-val-options
-  '(("layout") ("layoutwidth") ("layoutheight") ("layoutsize")
+  '(("layout" ("a0paper" "a1paper" "a2paper" "a3paper" "a4paper"
+               "a5paper" "a6paper" "b0paper" "b1paper" "b2paper"
+               "b3paper" "b4paper" "b5paper" "b6paper" "c0paper"
+               "c1paper" "c2paper" "c3paper" "c4paper" "c5paper"
+               "c6paper" "b0j" "b1j" "b2j" "b3j" "b4j" "b5j" "b6j"
+               "ansiapaper" "ansibpaper" "ansicpaper" "ansidpaper"
+               "ansiepaper"))
+    ("layoutwidth") ("layoutheight") ("layoutsize")
     ("layouthoffset") ("layoutvoffset") ("layoutoffset") ("hscale")
     ("vscale") ("scale") ("width") ("totalwidth") ("height") ("totalheight")
     ("total") ("textwidth") ("textheight") ("text") ("body") ("lines")
