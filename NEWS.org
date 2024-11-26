@@ -24,7 +24,8 @@
 - Add new custom option ~TeX-fold-alert-color~ which determines the
   color used when folding the ~\alert~ macro, defaults to ~red~.
 
-- Add new support files =style/inlinegraphicx.el=, =style/minted2.el=
+- Add new support files =style/glossaries-extra.el=,
+  =style/glossaries.el=, =style/inlinegraphicx.el=, =style/minted2.el=
   (=style/minted.el= is updated to package v3.1.2) and
   =style/stocksize.el=.
 
