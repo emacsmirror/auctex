@@ -464,7 +464,7 @@ macro.  Insert the value in brackets if OPTIONAL is non-nil."
  TeX-dialect)
 
 (defvar LaTeX-enumitem-package-options
-  '("inline" "shortlabels" "loadonly" "sizes"
+  '("inline" "shortlabels" "loadonly" "sizes" "series=override"
     "ignoredisplayed" "includedisplayed")
   "Package options for the enumitem package.")
 
