@@ -9055,9 +9055,11 @@ function would return non-nil and `(match-string 1)' would return
      '("skipeval" t)
 
      ;; Case changing
-     '("MakeUppercase" t)
-     '("MakeLowercase" t)
-     '("MakeTitlecase" t)
+     '("MakeUppercase" [TeX-arg-key-val (("lang") ("locale"))] t)
+     '("MakeLowercase" [TeX-arg-key-val (("lang") ("locale"))] t)
+     '("MakeTitlecase" [TeX-arg-key-val (("lang") ("locale")
+                                         ("words" ("first" "all")))]
+       t)
 
      ;; Support for problem solving
      '("listfiles"
