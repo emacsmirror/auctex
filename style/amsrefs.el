@@ -40,19 +40,19 @@
   "Insert a new bib item from the amsrefs package."
   (TeX-insert-macro "bib"))
 
-(defun LaTeX-env-amsrefs-biblist (_environment)
-  "Ignore ENVIRONMENT and insert a \"biblist\" environment with arguments."
+(defun LaTeX-env-amsrefs-biblist (environment)
+  "Insert a \"biblist*?\" ENVIRONMENT with arguments."
   (let ((opt (TeX-read-string
               (TeX-argument-prompt t nil "argument")))
-        (keyvals (unless (LaTeX-provided-class-options-member "amsrefs"
-                                                              "author-year")
+        (keyvals (unless (LaTeX-provided-package-options-member "amsrefs"
+                                                                "author-year")
                    (TeX-read-key-val t '(("labels" ("numeric" "alphabetic"
                                                     "shortalphabetic"))
                                          ("prefix"))))))
-    (LaTeX-insert-environment "biblist"
-                              (concat (unless (string-empty-p opt)
+    (LaTeX-insert-environment environment
+                              (concat (when (and opt (not (string-empty-p opt)))
                                         (concat LaTeX-optop opt LaTeX-optcl))
-                                      (unless (string-empty-p keyvals)
+                                      (when (and keyvals (not (string-empty-p keyvals)))
                                         (concat "*" TeX-grop keyvals TeX-grcl)))))
   (end-of-line 0)
   (delete-char 1)
@@ -95,7 +95,7 @@
     ("isbn")
     ("issn")
     ("review")
-    ;; Compound fields: Not support by key=val system
+    ;; Compound fields: Not supported by key=val system
     ("book" ("{}"))
     ("conference" ("{}"))
     ("contribution" ("{}"))
@@ -204,7 +204,7 @@
                                 ("DefinePublisher" "{{{{")
                                 ("DefineJournal"   "{{{{"))
                               'function)
-     (when (LaTeX-provided-class-options-member "amsrefs" "author-year")
+     (when (LaTeX-provided-package-options-member "amsrefs" "author-year")
        (font-latex-add-keywords '(("ycite"      "{")
                                   ("ocite"      "{")
                                   ("citeauthor" "{")
