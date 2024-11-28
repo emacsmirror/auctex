@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds uncomplete support for `glossaries-extra.sty' (v1.53)
+;; This file adds incomplete support for `glossaries-extra.sty' (v1.53)
 ;; from 2023/09/29.  `glossaries-extra.sty' is huge, and this style
 ;; covers only part of the macros described in
 ;; `glossaries-extra-manual.pdf'.

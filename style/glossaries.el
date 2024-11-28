@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds uncomplete support for `glossaries.sty' (v4.55) from
+;; This file adds incomplete support for `glossaries.sty' (v4.55) from
 ;; 2024/11/01.  `glossaries.sty' is huge, and this style covers only
 ;; part of the macros described in `glossaries-user.pdf'.
 
