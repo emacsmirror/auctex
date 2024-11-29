@@ -160,7 +160,7 @@
     '("DefineJournal" 4))
 
    ;; 7.1 Author-year citation schemes
-   (when (LaTeX-provided-class-options-member "amsrefs" "author-year")
+   (when (LaTeX-provided-package-options-member "amsrefs" "author-year")
      (TeX-add-symbols
       '("ycite" TeX-arg-cite)
       '("ocite" TeX-arg-cite)
@@ -172,9 +172,8 @@
       '("fullocite" TeX-arg-cite)))
 
    ;; Cater for `M-RET':
-   (add-to-list 'LaTeX-item-list
-                '("biblist" . LaTeX-item-amsrefs-bib)
-                t)
+   (dolist (env '("biblist" "biblist*"))
+     (add-to-list 'LaTeX-item-list `(,env . LaTeX-item-amsrefs-bib) t))
 
    ;; Don't indent material inside the "bibdiv" env:
    (unless (string-match-p "bibdiv" LaTeX-document-regexp)
