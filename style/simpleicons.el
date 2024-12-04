@@ -1,4 +1,4 @@
-;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v13.14.1)  -*- lexical-binding: t; -*-
+;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v13.18.0)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023--2024 Free Software Foundation, Inc.
 
@@ -24,8 +24,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `simpleicons.sty' (v13.14.1) from
-;; 2024/10/25.  `simpleicons.sty' is part of TeXLive.
+;; This file adds support for `simpleicons.sty' (v13.18.0) from
+;; 2024/11/29.  `simpleicons.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -237,6 +237,7 @@
     "apachejmeter"
     "apachekafka"
     "apachekylin"
+    "apachelucene"
     "apachemaven"
     "apachenetbeanside"
     "apachenifi"
@@ -522,6 +523,7 @@
     "cbs"
     "ccleaner"
     "cdprojekt"
+    "ce"
     "celery"
     "celestron"
     "centos"
@@ -756,6 +758,7 @@
     "dbt"
     "dcentertainment"
     "debian"
+    "debridlink"
     "decapcms"
     "decentraland"
     "dedge"
@@ -892,6 +895,7 @@
     "element"
     "elementary"
     "elementor"
+    "elevenlabs"
     "eleventy"
     "elgato"
     "elixir"
@@ -973,6 +977,7 @@
     "fathom"
     "fauna"
     "favro"
+    "fcc"
     "fdroid"
     "feathub"
     "fedex"
@@ -1343,6 +1348,7 @@
     "husqvarna"
     "hyper"
     "hyperskill"
+    "hyperx"
     "hypothesis"
     "hyprland"
     "hyundai"
@@ -1978,12 +1984,14 @@
     "octoprint"
     "octopusdeploy"
     "oculus"
+    "odin"
     "odnoklassniki"
     "odoo"
     "odysee"
     "ohdear"
     "okcupid"
     "okta"
+    "okx"
     "ollama"
     "oneplus"
     "onlyfans"
@@ -2605,6 +2613,7 @@
     "smugmug"
     "snapchat"
     "snapcraft"
+    "snapdragon"
     "sncf"
     "snort"
     "snowflake"
@@ -2739,6 +2748,7 @@
     "subtitleedit"
     "subversion"
     "suckless"
+    "sui"
     "sumologic"
     "suno"
     "sunrise"
@@ -3001,6 +3011,7 @@
     "upwork"
     "usps"
     "utorrent"
+    "uv"
     "v"
     "v2ex"
     "v8"
