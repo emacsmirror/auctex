@@ -1,6 +1,6 @@
-;;; subcaption.el --- AUCTeX style for `subcaption.sty' (v1.3)  -*- lexical-binding: t; -*-
+;;; subcaption.el --- AUCTeX style for `subcaption.sty' (v1.6)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `subcaption.sty' (v1.3) from 2019-08-31.
+;; This file adds support for `subcaption.sty' (v1.6) from 2023-08-13.
 ;; `subcaption.sty' is part of TeXLive.
 
 ;;; Code:
@@ -110,12 +110,44 @@ caption, insert only a caption."
   ;; below.
   (when auto-fill-function (LaTeX-fill-paragraph)))
 
+(defun LaTeX-env-subcaption-subcaptionblock (environment)
+  "Create new LaTeX subcaptionblock ENVIRONMENT.
+This function is a copy of `LaTeX-env-minipage' with the option list for
+outer-pos adjusted."
+  (let* ((pos (and LaTeX-default-position
+                   (completing-read
+                    (TeX-argument-prompt t nil "Position")
+                    '("t" "b" "c" "T" "B"))))
+         (height (when (and pos (not (string= pos "")))
+                   (completing-read (TeX-argument-prompt t nil "Height")
+                                    (mapcar (lambda (elt)
+                                              (concat TeX-esc (car elt)))
+                                            (LaTeX-length-list)))))
+         (inner-pos (when (and height (not (string= height "")))
+                      (completing-read
+                       (TeX-argument-prompt t nil "Inner position")
+                       '("t" "b" "c" "s"))))
+         (width (TeX-read-string
+                 (TeX-argument-prompt nil nil (format "Width (default %s)"
+                                                      LaTeX-default-width))
+                 nil nil LaTeX-default-width)))
+    (setq LaTeX-default-position pos)
+    (setq LaTeX-default-width width)
+    (LaTeX-insert-environment environment
+                              (concat
+                               (unless (zerop (length pos))
+                                 (concat LaTeX-optop pos LaTeX-optcl))
+                               (unless (zerop (length height))
+                                 (concat LaTeX-optop height LaTeX-optcl))
+                               (unless (zerop (length inner-pos))
+                                 (concat LaTeX-optop inner-pos LaTeX-optcl))
+                               (concat TeX-grop width TeX-grcl)))))
+
 (TeX-add-style-hook
  "subcaption"
  (lambda ()
    ;; Run style hook for caption.el
    (TeX-run-style-hooks "caption")
-
 
    (TeX-add-symbols
     ;; Basic commands
@@ -169,12 +201,16 @@ caption, insert only a caption."
    (LaTeX-paragraph-commands-add-locally
     '("subcaption" "subcaptionbox" "subcaptionsetup" "subfloat"))
 
-   ;; The subfigure & subtable environments
    (LaTeX-add-environments
+    ;; 4 The subcaptionblock environment
+    '("subcaptionblock" LaTeX-env-subcaption-subcaptionblock)
     '("subfigure" LaTeX-env-minipage)
-    '("subtable"  LaTeX-env-minipage))
+    '("subtable"  LaTeX-env-minipage)
 
-   ;; Append them to `LaTeX-label-alist':
+    ;; 5 The subcaptiongroup environment
+    "subcaptiongroup" "subcaptiongroup*")
+
+   ;; Append env's to `LaTeX-label-alist':
    (add-to-list 'LaTeX-label-alist '("subfigure" . LaTeX-figure-label) t)
    (add-to-list 'LaTeX-label-alist '("subtable" . LaTeX-table-label) t)
 
