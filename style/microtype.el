@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `microtype.sty' v3.0e from 2022-06-20.
+;; This file adds support for `microtype.sty' v3.2 from 2024-12-12.
 
 ;;; Code:
 
@@ -66,8 +66,8 @@
                    "smallcaps" "footnotesize" "scriptsize" "normalfont"))
     ;; 3.2 Character protrusion
     ("factor")
-    ("patch"   ("all" "none" "item" "toc" "footnote" "eqnum"))
-    ("nopatch" ("all" "none" "item" "toc" "footnote" "eqnum"))
+    ("patch"   ("all" "none" "item" "toc" "footnote" "verbatim" "eqnum"))
+    ("nopatch" ("all" "none" "item" "toc" "footnote" "verbatim" "eqnum"))
     ("unit")
     ;; 3.3 Font expansion
     ("auto" ("true" "false"))
@@ -138,9 +138,15 @@
 
     ;; 5.3 Tracking
     '("SetTracking"
-      [TeX-arg-key-val (("name") ("unit") ("context") ("spacing")
-                        ("outer spacing") ("outer kerning") ("no ligatures"))]
-
+      [TeX-arg-key-val
+       (lambda ()
+         (append
+          (when (member "fontspec" (TeX-style-list))
+            `(("features" ,(cadr (assoc "Ligatures"
+                                        LaTeX-fontspec-font-features)))))
+          '(("name") ("unit") ("context") ("spacing")
+            ("outer spacing") ("outer kerning")
+            ("no ligatures" ("all" "none")))))]
       2)
 
     ;; 5.4 Additional kerning
@@ -165,6 +171,7 @@
     '("DeclareMicrotypeVariants*" t)
     '("DeclareMicrotypeAlias" "Font name" "Alias name")
     '("LoadMicrotypeFile" "Font name")
+    '("DeclareMicrotypeFilePrefix" "Prefix")
 
     ;; 6 Context-sensitive setup
     '("microtypecontext"
@@ -216,6 +223,7 @@
                                 ("DeclareMicrotypeVariants"    "*{")
                                 ("DeclareMicrotypeAlias"       "{{")
                                 ("LoadMicrotypeFile"   "{")
+                                ("DeclareMicrotypeFilePrefix" "{")
                                 ("microtypecontext"    "{")
                                 ("DeclareMicrotypeBabelHook"   "{{")
                                 ("DisableLigatures"    "[{"))
