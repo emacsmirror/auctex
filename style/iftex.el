@@ -1,6 +1,6 @@
-;;; iftex.el --- AUCTeX style for `iftex.sty' version 1.0f  -*- lexical-binding: t; -*-
+;;; iftex.el --- AUCTeX style for `iftex.sty' version 1.0g  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2024 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `iftex.sty' v1.0f from 2022/02/03.
+;; This file adds support for `iftex.sty' v1.0g from 2024/12/12.
 ;; `iftex.sty' is part of TeXlive.
 
 ;;; Code:
@@ -77,6 +77,13 @@
       LaTeX-iftex-set-TeX-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifLuaHBTeX"
+      LaTeX-iftex-set-TeX-exit-mark
+      (TeX-arg-literal "\\else\\fi"))
+
+    '("ifluametatex"
+      LaTeX-iftex-set-TeX-exit-mark
+      (TeX-arg-literal "\\else\\fi"))
+    '("ifLuaMetaTeX"
       LaTeX-iftex-set-TeX-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
@@ -143,11 +150,19 @@
       LaTeX-iftex-set-TeX-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
+    '("ifprote"
+      LaTeX-iftex-set-TeX-exit-mark
+      (TeX-arg-literal "\\else\\fi"))
+    '("ifProte"
+      LaTeX-iftex-set-TeX-exit-mark
+      (TeX-arg-literal "\\else\\fi"))
+
     "RequireeTeX"
     "RequirePDFTeX"
     "RequireXeTeX"
     "RequireLuaTeX"
     "RequireLuaHBTeX"
+    "RequireLuaMetaTeX"
     "RequirepTeX"
     "RequireupTeX"
     "RequirepTeXng"
@@ -155,7 +170,8 @@
     "RequireAlephTeX"
     "RequireTUTeX"
     "RequireTexpadTeX"
-    "RequireHINT")
+    "RequireHINT"
+    "RequireProte")
 
    ;; This package is used to make it possible to compile a document
    ;; with different TeX engines.  By setting `TeX-check-engine-list'
@@ -165,19 +181,21 @@
    ;; Fontification:
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("RequireeTeX"      "")
-                                ("RequirePDFTeX"    "")
-                                ("RequireXeTeX"     "")
-                                ("RequireLuaTeX"    "")
-                                ("RequireLuaHBTeX"  "")
-                                ("RequirepTeX"      "")
-                                ("RequireupTeX"     "")
-                                ("RequirepTeXng"    "")
-                                ("RequireVTeX"      "")
-                                ("RequireAlephTeX"  "")
-                                ("RequireTUTeX"     "")
-                                ("RequireTexpadTeX" "")
-                                ("RequireHINT"      ""))
+     (font-latex-add-keywords '(("RequireeTeX"       "")
+                                ("RequirePDFTeX"     "")
+                                ("RequireXeTeX"      "")
+                                ("RequireLuaTeX"     "")
+                                ("RequireLuaHBTeX"   "")
+                                ("RequireLuaMetaTeX" "")
+                                ("RequirepTeX"       "")
+                                ("RequireupTeX"      "")
+                                ("RequirepTeXng"     "")
+                                ("RequireVTeX"       "")
+                                ("RequireAlephTeX"   "")
+                                ("RequireTUTeX"      "")
+                                ("RequireTexpadTeX"  "")
+                                ("RequireHINT"       "")
+                                ("RequireProte"      ""))
                               'function)))
  TeX-dialect)
 
