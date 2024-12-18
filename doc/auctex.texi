@@ -2110,12 +2110,15 @@ information on controlling font locking with Emacs' Font Lock mode, see
 @ref{Font Lock, , Font Lock Mode, emacs, GNU Emacs Manual}.
 
 @defopt TeX-install-font-lock
+@findex font-latex-setup
 Once font locking is enabled globally or for the major modes provided by
-@AUCTeX{}, the font locking patterns and functionality of @fontlatex{}
-are activated by default.  You can switch to a different font locking
+@AUCTeX{}, the font locking patterns and functionality of @fontlatex{} are
+activated by default since this variable is initialized to
+@code{font-latex-setup}.  You can switch to a different font locking
 scheme or disable font locking in @AUCTeX{} by customizing the variable
 @code{TeX-install-font-lock}.
 
+@findex tex-font-setup
 Besides @fontlatex{} @AUCTeX{} ships with a scheme which is derived
 from Emacs' default @LaTeX{} mode and activated by choosing
 @code{tex-font-setup}.  Be aware that this scheme is not coupled with
