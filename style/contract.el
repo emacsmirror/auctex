@@ -1,6 +1,6 @@
 ;;; contract.el --- AUCTeX style for `contract.sty' (v0.91)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2024 Free Software Foundation, Inc.
+;; Copyright (C) 2024--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -130,7 +130,7 @@
  TeX-dialect)
 
 (defun LaTeX-contract-package-options-list ()
-  "Return an alist of package options for changes package."
+  "Return an alist of package options for contract package."
   (let ((len (mapcar (lambda (x) (concat TeX-esc (car x)))
                      (LaTeX-length-list))))
     `(("juratotoc" ("true" "false" "number"))
