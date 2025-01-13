@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `elscarticle.cls' (v3.4c) from 2025-01-11.
+;; This file adds support for `elsarticle.cls' (v3.4c) from 2025-01-11.
 ;; `elsarticle.cls' is part of TeXLive.
 
 ;;; Code:
