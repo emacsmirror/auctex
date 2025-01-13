@@ -11,7 +11,7 @@
 
 ** Added
 
-- Add new support file =style/elsarticle.el=.
+- Add new support files =style/elsarticle.el= and =style/enumerate.el=.
 
 * [14.0.8] - 2024-12-11
 
