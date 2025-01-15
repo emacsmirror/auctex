@@ -1,6 +1,6 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2024  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2025  Free Software Foundation, Inc.
 ;;
 ;; completely rewritten.
 
@@ -126,6 +126,15 @@ facility."
           (progn
             (cond ((boundp 'major-mode-remap-defaults)
                    ;; For Emacs 30 and later
+
+                   ;; Remove the entry provided by tex-mode.el.
+                   ;; <URL:https://lists.gnu.org/r/auctex-devel/2025-01/msg00000.html>
+                   (setq major-mode-remap-defaults
+                         (assq-delete-all dst major-mode-remap-defaults))
+                   ;; (We don't restore the removed entry in the ELSE
+                   ;; clause because it makes too little sense.)
+
+                   ;; Add the intended entry.
                    (add-to-list 'major-mode-remap-defaults (cons elt dst)))
                   ((boundp 'major-mode-remap-alist)
                    ;; COMPATIBILITY for Emacs 29
