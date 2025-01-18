@@ -1,6 +1,6 @@
-;;; acronym.el --- AUCTeX style for `acronym.sty' version 1.38.  -*- lexical-binding: t; -*-
+;;; acronym.el --- AUCTeX style for `acronym.sty' version 1.50  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2015, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2013--2025 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `acronym.sty' version 1.38.
+;; This file adds support for `acronym.sty' version 1.50 from 2025-01-17.
 
 ;;; Code:
 
@@ -46,7 +46,7 @@
   "Temporary for parsing acronym by `acronym' package.")
 
 (defun LaTeX-acronym-prepare ()
-  "Clear `LaTex-auto-acronym' before use."
+  "Clear `LaTeX-auto-acronym' before use."
   (setq LaTeX-auto-acronym nil))
 
 (defun LaTeX-acronym-cleanup ()
@@ -122,9 +122,9 @@ string."
     '("iac*" LaTeX-arg-acronym-acronym)
     '("Iac*" LaTeX-arg-acronym-acronym)
     ;; Customization
-    '("acsfont" 1)
-    '("acffont" 1)
-    '("acfsfont" 1)
+    "acsfont"
+    "acffont"
+    "acfsfont"
     ;; Defining Acronyms
     '("acro" LaTeX-arg-define-acronym-acronym [ "Short name" ] "Full name")
     '("acroextra" "Additional info")
@@ -177,7 +177,9 @@ string."
  TeX-dialect)
 
 (defvar LaTeX-acronym-package-options
-  '("footnote" "nohyperlinks" "printonlyused" "withpage" "smaller" "dua" "nolist")
+  '("error" "footnote" "nohyperlinks" "noforwardlinks"
+    "noacroprefix" "printonlyused" "printonlyreused"
+    "withpage" "smaller" "dua" "nolist" "nolinebreak")
   "Package options for the acronym package.")
 
-;; acronym.el ends here
+;;; acronym.el ends here
