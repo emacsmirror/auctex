@@ -1,6 +1,6 @@
 ;;; thmtools.el --- AUCTeX style for `thmtools.sty' (v0.72)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,6 +26,15 @@
 
 ;; This file adds support for `thmtools.sty' (v0.72) from 2020/08/01.
 ;; `thmtools.sty' is part of TeXLive.
+
+;; With this release, the mandatory argument of \declaretheorem accepts
+;; a list of environment names, so one can define similar theorems at
+;; once, e.g., \declaretheorem{lemma, proposition, corollary}[...].
+;; Then, the parser adds the entry "lemma, proposition, corollary" to
+;; `LaTeX-auto-thmtools-declaretheorem'.  The function
+;; `LaTeX-thmtools-declaretheorem-list-clean' returns a cleaned version
+;; of parsed elements which should be used instead of auto-generated
+;; `LaTeX-thmtools-declaretheorem-list'.
 
 ;;; Code:
 
@@ -66,6 +75,17 @@
     1 LaTeX-auto-thmtools-declaretheorem)
   "Matches the argument of \\declaretheorem from thmtools package.")
 
+(defun LaTeX-thmtools-declaretheorem-list-clean ()
+  "Clean entries returned by function `LaTeX-thmtools-declaretheorem-list'.
+Return an alist with the name of parsed entries as single element of
+each sub-list."
+  (let (envs)
+    (dolist (newthm (mapcar #'car (LaTeX-thmtools-declaretheorem-list)))
+      (if (string-match-p "," newthm)
+          (setq envs (append (split-string newthm "[^[:alnum:]]+" t) envs))
+        (push newthm envs)))
+    (mapcar #'list (sort envs #'string<))))
+
 (defun LaTeX-thmtools-auto-prepare ()
   "Clear `LaTeX-auto-thmtools-*' before parsing."
   (setq LaTeX-auto-thmtools-declaretheoremstyle nil
@@ -73,7 +93,7 @@
 
 (defun LaTeX-thmtools-auto-cleanup ()
   "Process parsed elements from thmtools package."
-  (dolist (newthm (mapcar #'car (LaTeX-thmtools-declaretheorem-list)))
+  (dolist (newthm (mapcar #'car (LaTeX-thmtools-declaretheorem-list-clean)))
     (LaTeX-add-environments `(,newthm LaTeX-thmtools-env-label))))
 
 (add-hook 'TeX-auto-prepare-hook #'LaTeX-thmtools-auto-prepare t)
@@ -153,8 +173,9 @@ If OPTIONAL is non-nil, also insert the second argument in square
 brackets.  PROMPT replaces the standard one for the second
 argument."
   (let ((env (TeX-read-string
-              (TeX-argument-prompt optional prompt "Environment"))))
-    (LaTeX-add-environments `(,env LaTeX-thmtools-env-label))
+              (TeX-argument-prompt optional prompt "Environment(s)"))))
+    (LaTeX-add-thmtools-declaretheorems env)
+    (LaTeX-thmtools-auto-cleanup)
     (TeX-argument-insert env optional)))
 
 (defun LaTeX-thmtools-listoftheorems-key-val-options ()
@@ -172,7 +193,7 @@ argument."
                           (LaTeX-ntheorem-newtheorem-list))
                  (mapcar #'car (LaTeX-ntheorem-newtheorem-list)))
                ;; thmtools version is called \declaretheorem:
-               (mapcar #'car (LaTeX-thmtools-declaretheorem-list)))))
+               (mapcar #'car (LaTeX-thmtools-declaretheorem-list-clean)))))
     `(("title")
       ("ignore" ,thms)
       ("ignoreall" ("true" "false"))
@@ -265,7 +286,7 @@ RET in order to leave it empty.")
                                (LaTeX-ntheorem-newtheorem-list))
                       (mapcar #'car (LaTeX-ntheorem-newtheorem-list)))
                     ;; thmtools version is called \declaretheorem:
-                    (mapcar #'car (LaTeX-thmtools-declaretheorem-list))))
+                    (mapcar #'car (LaTeX-thmtools-declaretheorem-list-clean))))
        "Environment(s)"))
     '("listtheoremname" 0))
 

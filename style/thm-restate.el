@@ -1,6 +1,6 @@
 ;;; thm-restate.el --- AUCTeX style for `thm-restate.sty' (v66)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -35,11 +35,8 @@
 (require 'latex)
 
 ;; Silence the parser:
-(declare-function LaTeX-thmtools-declaretheorem-list
-                  "thmtools" ())
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function LaTeX-thmtools-declaretheorem-list-clean "thmtools" ())
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 ;; Setup for macro names defined with
 ;; \begin{restatable*?}[<Heading>]{<env-name>}{<macro name>}:
@@ -112,7 +109,7 @@
                       (LaTeX-ntheorem-newtheorem-list))
              (LaTeX-ntheorem-newtheorem-list))
            ;; Environments defined with \declaretheorem
-           (LaTeX-thmtools-declaretheorem-list)))
+           (LaTeX-thmtools-declaretheorem-list-clean)))
        "Environment")
       LaTeX-env-thmrestate-restatable)
 
@@ -132,7 +129,7 @@
                       (LaTeX-ntheorem-newtheorem-list))
              (LaTeX-ntheorem-newtheorem-list))
            ;; Environments defined with \declaretheorem
-           (LaTeX-thmtools-declaretheorem-list)))
+           (LaTeX-thmtools-declaretheorem-list-clean)))
        "Environment")
       LaTeX-env-thmrestate-restatable)))
  TeX-dialect)
