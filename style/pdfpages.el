@@ -1,6 +1,6 @@
-;;; pdfpages.el --- AUCTeX style for `pdfpages.sty' (v0.6c)  -*- lexical-binding: t; -*-
+;;; pdfpages.el --- AUCTeX style for `pdfpages.sty' (v0.6d)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2024 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `pdfpages.sty' (v0.6c) from 2024/10/28.
+;; This file adds support for `pdfpages.sty' (v0.6d) from 2025/01/20.
 ;; `pdfpages.sty' is part of TeXLive.
 
 ;; Thanks to Andreas Matthias for testing this style and writing
@@ -60,7 +60,9 @@
     ("reflect"      ("true" "false"))
     ("signature")
     ("signature*")
-    ("booklet"      ("true" "false"))
+    ("booklet"         ("true" "false"))
+    ("booklet*"        ("true" "false"))
+    ("flip-other-edge" ("true" "false"))
     ("picturecommand")
     ("picturecommand*")
     ("pagetemplate")
