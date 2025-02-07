@@ -1,6 +1,6 @@
 ;;; acro.el --- AUCTeX style for `acro.sty' version v3.8  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2024 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2025 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -271,7 +271,7 @@ list of defined acronyms."
                                   'LaTeX-acro-acronym-history)))
     (if (and definition (not (string-empty-p acronym)))
         (LaTeX-add-acro-acronyms acronym))
-    (TeX-argument-insert acronym optional optional)))
+    (TeX-argument-insert acronym optional)))
 
 (defun LaTeX-arg-define-acro-acronym (optional &optional prompt)
   "Prompt for an acronym completing with known acronyms.

@@ -1,6 +1,6 @@
 ;;; latex.el --- Support for LaTeX documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1991, 1993-2024 Free Software Foundation, Inc.
+;; Copyright (C) 1991, 1993-2025 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -2400,7 +2400,7 @@ string.  If DEFINITION is non-nil, add the chosen label to the
 list of defined labels.  `TeX-read-label-prefix' is used as
 initial input for the label."
   (TeX-argument-insert
-   (TeX-read-label optional prompt definition) optional optional))
+   (TeX-read-label optional prompt definition) optional))
 
 (defvar reftex-ref-macro-prompt)
 
@@ -2434,7 +2434,7 @@ string.  ARGS is unused."
     (if (and (not (string-equal "" entry))
              (not (member (list entry) (LaTeX-index-entry-list))))
         (LaTeX-add-index-entries entry))
-    (TeX-argument-insert entry optional optional)))
+    (TeX-argument-insert entry optional)))
 
 (defalias 'TeX-arg-define-index #'TeX-arg-index)
 
@@ -2476,7 +2476,7 @@ string.  DEFINITION is unused."
   (let ((items (multi-prompt "," t (TeX-argument-prompt optional prompt "Key")
                              (LaTeX-bibitem-list))))
     (apply #'LaTeX-add-bibitems items)
-    (TeX-argument-insert (mapconcat #'identity items ",") optional optional)))
+    (TeX-argument-insert (mapconcat #'identity items ",") optional)))
 
 (defun TeX-arg-counter (optional &optional prompt definition)
   "Prompt for a LaTeX counter.

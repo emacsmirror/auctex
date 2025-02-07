@@ -75,7 +75,7 @@ list of defined acronyms."
                                   'LaTeX-acronym-acronym-history)))
     (if (and definition (not (string-equal "" acronym)))
         (LaTeX-add-acronyms acronym))
-    (TeX-argument-insert acronym optional optional)))
+    (TeX-argument-insert acronym optional)))
 
 (defun LaTeX-arg-define-acronym-acronym (optional &optional prompt)
   "Prompt for an acronym completing with known acronyms.
