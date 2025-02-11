@@ -6715,7 +6715,8 @@ Each item consists of four elements.
 
 The first is a symbol describing the backend's name.
 
-The second is a list of modes the backend should be activated in.
+The second is either a list of modes the backend should be activated in,
+or the symbol t, which stands for all modes.
 
 The third is a function returning a list of documents available
 to the backend.  It should return nil if the backend is not
@@ -6733,7 +6734,8 @@ NAME may be a package, a command, or a document."
   (let (docs)
     ;; Build the lists of available documentation used for completion.
     (dolist (elt TeX-doc-backend-alist)
-      (when (memq major-mode (nth 1 elt))
+      (when (or (eq t (nth 1 elt))
+                (memq major-mode (nth 1 elt)))
         (let ((completions (funcall (nth 2 elt))))
           (unless (null completions)
             (cl-pushnew (cons completions (nth 0 elt)) docs :test #'equal)))))
