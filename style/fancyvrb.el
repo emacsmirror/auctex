@@ -1,6 +1,6 @@
 ;;; fancyvrb.el --- AUCTeX style for `fancyvrb.sty' version 4.5.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2014, 2016-2024 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2014, 2016-2025 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -58,13 +58,8 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
-
-(declare-function font-latex-set-syntactic-keywords
-                  "font-latex")
-
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
+(declare-function font-latex-set-syntactic-keywords "font-latex")
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
 (defvar LaTeX-fvextra-key-val-options)
@@ -135,17 +130,29 @@ takes its key=vals into account."
      (let* ((colorcmd (if (member "xcolor" TeX-active-styles)
                           #'LaTeX-xcolor-definecolor-list
                         #'LaTeX-color-definecolor-list))
-            (keys '("highlightcolor"
+            (keys '("backgroundcolor"
+                    "bgcolor"
+                    "highlightcolor"
                     "rulecolor"
                     "fillcolor"
-                    "tabcolor"
-                    "spacecolor"))
+                    "spacecolor"
+                    "tabcolor"))
             (colors (mapcar #'car (funcall colorcmd)))
+            (lengths (mapcar (lambda (x) (concat TeX-esc x))
+                             (mapcar #'car (LaTeX-length-list))))
+            (keys1 '("backgroundcolorboxoverlap"
+                     "backgroundcolorpadding"
+                     "bgcolorboxoverlap"
+                     "bgcolorpadding"))
             result)
-       (dolist (key keys result)
+       (dolist (key keys)
          (if (string= key "highlightcolor")
              (push (list key colors) result)
-           (push (list key (cons "none" colors)) result)))))
+           (push (list key (cons "none" colors)) result)))
+       (dolist (key keys1)
+         (push (list key lengths) result))
+       (dolist (key '("backgroundcolorvphantom" "bgcolorvphantom") result)
+         (push `(,key) result))))
 
    ;; Check if fvextra is loaded:
    (when (member "fvextra" TeX-active-styles)

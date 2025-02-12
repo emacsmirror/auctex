@@ -1,6 +1,6 @@
-;;; fvextra.el --- AUCTeX style for `fvextra.sty' (v1.6)  -*- lexical-binding: t; -*-
+;;; fvextra.el --- AUCTeX style for `fvextra.sty' (v1.11)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `fvextra.sty' (v1.6) from 2023/11/19.
+;; This file adds support for `fvextra.sty' (v1.11) from 2025/02/09.
 ;; `fvextra.sty' is part of TeXLive.
 
 ;;; Code:
@@ -33,11 +33,8 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
-(declare-function font-latex-set-syntactic-keywords
-                  "font-latex")
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
+(declare-function font-latex-set-syntactic-keywords "font-latex")
 
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
@@ -45,6 +42,8 @@
 
 (defvar LaTeX-fvextra-key-val-options
   '(;; 3 General options
+    ;; backgroundcolor et al. are added in fancyvrb.el inside
+    ;; `LaTeX-fancyvrb-key-val-options'
     ("beameroverlays" ("true" "false"))
     ("curlyquotes" ("true" "false"))
     ("extra" ("true" "false"))
@@ -71,6 +70,7 @@
     ("stepnumberoffsetvalues" ("true" "false"))
     ("tab" ("\\FancyVerbTab"))
     ("tabcolor" ("none"))
+    ("vargsingleline" ("true" "false"))
     ;; 7.1 Line breaking options
     ("breakafter" ("none"))
     ("breakafterinrun" ("true" "false"))
@@ -135,15 +135,41 @@
       [TeX-arg-key-val (LaTeX-fancyvrb-key-val-options)] "Text")
 
     ;; 6.5 \VerbatimInsertBuffer
+    ;; FIXME: Not sure it the options are correct:
     '("VerbatimInsertBuffer"
       [TeX-arg-key-val (lambda ()
                          (append (LaTeX-fancyvrb-key-val-options)
-                                 '(("afterbuffer")
-                                   ("bufferer")
+                                 '(("formatcom" ("\\formatter"))
                                    ("bufferlengthname")
                                    ("bufferlinename")
                                    ("buffername")
-                                   ("globalbuffer" ("true" "false")))))])
+                                   ("insertenvname" ("Verbatim" "BVerbatim")))))])
+
+    ;; 6.6 \VerbatimClearBuffer
+    '("VerbatimClearBuffer"
+      [TeX-arg-key-val (("formatcom" ("\\formatter"))
+                        ("bufferlengthname")
+                        ("bufferlinename")
+                        ("buffername")
+                        ("insertenvname" ("Verbatim" "BVerbatim")))])
+
+    ;; 6.7 \InsertBuffer
+    '("InsertBuffer"
+      [TeX-arg-key-val (lambda ()
+                         (append (LaTeX-fancyvrb-key-val-options)
+                                 '(("formatcom" ("\\formatter"))
+                                   ("bufferlengthname")
+                                   ("bufferlinename")
+                                   ("buffername")
+                                   ("insertenvname" ("Verbatim" "BVerbatim")))))])
+
+    ;; 6.8 \ClearBuffer
+    '("ClearBuffer"
+      [TeX-arg-key-val (("formatcom" ("\\formatter"))
+                        ("bufferlengthname")
+                        ("bufferlinename")
+                        ("buffername")
+                        ("insertenvname" ("Verbatim" "BVerbatim")))])
 
     ;; 7.3.2 Breaks within macro arguments
     "FancyVerbBreakStart"
@@ -173,12 +199,23 @@
                         ("globalbuffer" ("true" "false")))]) )
 
    ;; Filling
-   (let ((envs '("VerbEnv" "VerbatimWrite" "VerbatimBuffer")))
+   (let ((envs '("VerbEnv" "VerbatimWrite")))
      (make-local-variable 'LaTeX-indent-environment-list)
      (dolist (env envs)
        (add-to-list 'LaTeX-verbatim-environments-local env)
        (add-to-list 'LaTeX-indent-environment-list
                     `(,env current-indentation) t)))
+
+   ;; `VerbatimBuffer' is special; the buffer can be retrieved with
+   ;; \VerbatimInsertBuffer and \InsertBuffer, where the latter
+   ;; interprets buffer as LaTeX.  So we don't add `VerbatimBuffer' to
+   ;; `LaTeX-verbatim-environments-local', but mimic such an environment:
+   (unless (string-match-p "VerbatimBuffer" LaTeX-document-regexp)
+     (make-local-variable 'LaTeX-document-regexp)
+     (setq LaTeX-document-regexp (concat LaTeX-document-regexp "\\|VerbatimBuffer")))
+   (add-to-list 'LaTeX-indent-environment-list
+                '("VerbatimBuffer" current-indentation)
+                t)
 
    ;; Add \Verb*? and \EscVerb*? to
    ;; `LaTeX-verbatim-macros-with-braces-local':
@@ -190,7 +227,11 @@
    ;; Fontification
    (when (and (fboundp 'font-latex-add-keywords)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("fvinlineset" "{"))
+     (font-latex-add-keywords '(("fvinlineset"          "{")
+                                ("VerbatimInsertBuffer" "[")
+                                ("VerbatimClearBuffer"  "[")
+                                ("ClearBuffer"  "[")
+                                ("InsertBuffer" "["))
                               'function)
      (font-latex-add-keywords '(("EscVerb"     "*["))
                               'textual)
