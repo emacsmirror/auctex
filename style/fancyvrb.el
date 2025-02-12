@@ -138,8 +138,8 @@ takes its key=vals into account."
                     "spacecolor"
                     "tabcolor"))
             (colors (mapcar #'car (funcall colorcmd)))
-            (lengths (mapcar (lambda (x) (concat TeX-esc x))
-                             (mapcar #'car (LaTeX-length-list))))
+            (lengths (mapcar (lambda (x) (concat TeX-esc (car x)))
+                             (LaTeX-length-list)))
             (keys1 '("backgroundcolorboxoverlap"
                      "backgroundcolorpadding"
                      "bgcolorboxoverlap"
