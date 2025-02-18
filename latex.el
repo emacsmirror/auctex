@@ -8550,10 +8550,16 @@ function would return non-nil and `(match-string 1)' would return
                       "enumiv" "footnote" "mpfootnote")
 
   (LaTeX-add-lengths "arraycolsep" "arrayrulewidth" "baselineskip" "baselinestretch"
-                     "bibindent" "columnsep" "columnseprule" "columnwidth" "doublerulesep"
-                     "evensidemargin" "linewidth" "oddsidemargin" "paperwidth"
-                     "paperheight" "parindent" "parskip" "tabcolsep"
-                     "textheight" "textwidth" "topmargin" "unitlength")
+                     "bibindent" "columnsep" "columnseprule" "columnwidth"
+                     "dblfloatsep" "dbltextfloatsep" "doublerulesep" "evensidemargin"
+                     "fboxrule" "fboxsep" "floatsep" "footnotesep"
+                     "headheight" "headsep"
+                     "intextsep" "linewidth"
+                     "marginparpush" "marginparsep" "marginparwidth"
+                     "oddsidemargin" "paperwidth" "paperheight" "parindent" "parskip"
+                     "stockheight" "stockwidth"
+                     "tabcolsep" "textfloatsep" "textheight" "textwidth" "topmargin"
+                     "unitlength")
 
   (TeX-add-symbols
    '("addtocounter" TeX-arg-counter "Value")
