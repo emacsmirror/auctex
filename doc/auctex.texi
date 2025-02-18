@@ -1068,6 +1068,7 @@ The label of this float.  The label will have a default prefix, which is
 controlled by the variables @code{LaTeX-figure-label} and
 @code{LaTeX-table-label}.
 @vindex LaTeX-figure-label
+@vindex LaTeX-listing-label
 @vindex LaTeX-table-label
 @cindex Prefix for labels
 @cindex Label prefix
@@ -1098,6 +1099,16 @@ List of float environments with top caption.
 @defopt LaTeX-short-caption-prompt-length
 Number of chars a caption should be before prompting for a short
 caption.
+@end defopt
+
+It is also possible to have a caption and label in non-floating listing
+environments like in @samp{lstlisting} environment provided by the
+@samp{listings} package, or user defined listing floats defined with the
+@samp{newfloat} package.  Such labels are prefixed with the value of
+@code{LaTeX-listing-label}.
+
+@defopt LaTeX-listing-label
+Prefix to use for listing labels.
 @end defopt
 
 @node Itemize-like
