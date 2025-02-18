@@ -12,7 +12,8 @@
 ** Added
 
 - Add new support files =style/csthm.el=, =style/elsarticle.el=,
-  =style/enumerate.el= and =style/keytheorems.el=.
+  =style/enumerate.el=, =style/keytheorems.el= and
+  =style/marginalia.el=.
 
 * [14.0.8] - 2024-12-11
 
