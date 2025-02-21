@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1985-2024 Free Software Foundation, Inc.
+;; Copyright (C) 1985-2025 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -252,7 +252,7 @@ If nil, none is specified."
      :help "Convert PostScript file to PDF")
     ("LaTeXMk" "latexmk %(latexmk-out) %(file-line-error) %(output-dir) \
 %`%(extraopts) %S%(mode)%' %t"
-     TeX-run-format nil (LaTeX-mode docTeX-mode) :help "Run LaTeXMk")
+     TeX-run-TeX nil (LaTeX-mode docTeX-mode) :help "Run LaTeXMk")
     ("Glossaries" "makeglossaries %(d-dir) %s" TeX-run-command nil
      (plain-TeX-mode LaTeX-mode docTeX-mode AmSTeX-mode Texinfo-mode)
      :help "Run makeglossaries to create glossary file")
