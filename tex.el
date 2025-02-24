@@ -371,7 +371,7 @@ Any additional elements get just transferred to the respective menu entries."
                                      (const :tag "Texinfo" Texinfo-mode)
                                      (const :tag "AmSTeX" AmSTeX-mode)))
                         (repeat :tag "Menu elements" :inline t sexp)))
-  :package-version '(auctex . "14.0.7"))
+  :package-version '(auctex . "14.0.9"))
 
 (defcustom TeX-command-output-list
   '(
