@@ -1,6 +1,6 @@
 ;;; fancyhdr.el --- AUCTeX style for `fancyhdr.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012, 2013, 2018-2022 Free Software Foundation, Inc.
+;; Copyright (C) 2012--2025 Free Software Foundation, Inc.
 
 ;; Author: Mads Jensen <mje@inducks.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `fancyhdr.sty', v4.0 from 2021/01/04.
+;; This file adds support for `fancyhdr.sty', v5.2 from 2025/02/07.
 
 ;;; Code:
 
@@ -31,12 +31,10 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (defvar LaTeX-fancyhdr-fancypagestyle-regexp
-  '("\\\\fancypagestyle{\\([^}]+\\)}"
+  '("\\\\fancypagestyle\\(?:\\*\\|assign\\)?{\\([^}]+\\)}"
     1 LaTeX-auto-pagestyle)
   "Regexp matching the first argument of \\fancypagestyle macro.")
 
@@ -73,17 +71,68 @@
                                         "Places"]
       TeX-arg-length)
 
+    '("fancyheadwidth"
+      [TeX-arg-completing-read-multiple ("L" "LO" "LE" "C" "CO" "CE"
+                                         "R" "RE" "RO")
+                                        "Places"]
+      [TeX-arg-completing-read
+       ("T" "t" "c" "b" "B" "l" "c" "r" "j")
+       "Alignment"]
+      TeX-arg-length)
+    '("fancyfootwidth"
+      [TeX-arg-completing-read-multiple ("L" "LO" "LE" "C" "CO" "CE"
+                                         "R" "RE" "RO")
+                                        "Places"]
+      [TeX-arg-completing-read ("T" "t" "c" "b" "B" "l" "c" "r" "j")
+                               "Alignment"]
+      TeX-arg-length)
+    '("fancyhfwidth"
+      [TeX-arg-completing-read-multiple ("L" "LO" "LE" "C" "CO" "CE"
+                                         "R" "RE" "RO")
+                                        "Places"]
+      [TeX-arg-completing-read ("T" "t" "c" "b" "B" "l" "c" "r" "j")
+                               "Alignment"]
+      TeX-arg-length)
+    '("fancyheadwidth*"
+      [TeX-arg-completing-read-multiple ("L" "LO" "LE" "C" "CO" "CE"
+                                         "R" "RE" "RO")
+                                        "Places"]
+      [TeX-arg-completing-read ("T" "t" "c" "b" "B" "l" "c" "r" "j")
+                               "Alignment"]
+      TeX-arg-length)
+    '("fancyfootwidth*"
+      [TeX-arg-completing-read-multiple ("L" "LO" "LE" "C" "CO" "CE"
+                                         "R" "RE" "RO")
+                                        "Places"]
+      [TeX-arg-completing-read ("T" "t" "c" "b" "B" "l" "c" "r" "j")
+                               "Alignment"]
+      TeX-arg-length)
+    '("fancyhfwidth*"
+      [TeX-arg-completing-read-multiple ("L" "LO" "LE" "C" "CO" "CE"
+                                         "R" "RE" "RO")
+                                        "Places"]
+      [TeX-arg-completing-read ("T" "t" "c" "b" "B" "l" "c" "r" "j")
+                               "Alignment"]
+      TeX-arg-length)
+
     "headrulewidth" "footrulewidth"
     "headruleskip"  "footruleskip"
     "headrule"      "footrule"
-    "headwidth"
 
     '("fancyheadinit" t)
     '("fancyfootinit" t)
     '("fancyhfinit"   t)
 
+    '("fancyfootalign" TeX-arg-length)
+
     '("fancycenter"
       [TeX-arg-length "Distance"] [ "Stretch" ] 3)
+
+    '("fancyhdrbox"
+      [TeX-arg-completing-read ("T" "t" "c" "b" "B" "l" "c" "r")
+                               "Alignment"]
+      [TeX-arg-length "Width"]
+      t)
 
     '("iftopfloat"  2)
     '("ifbotfloat"  2)
@@ -98,8 +147,23 @@
       [TeX-arg-pagestyle "Base pagestyle"]
       t)
 
+    '("fancypagestyle*"
+      (TeX-arg-pagestyle nil t)
+      [TeX-arg-pagestyle "Base pagestyle"]
+      t)
+
     ;; 15 The scoop on LATEX’s marks
-    '("nouppercase" t))
+    '("nouppercase" t)
+
+    ;; 16.1 The \fancypagestyleassign command
+    '("fancypagestyleassign"
+      (TeX-arg-pagestyle "First pagestyle" t)
+      (TeX-arg-pagestyle "Second pagestyle"))
+
+    '("fancyhdrsettoheight"
+      TeX-arg-length
+      (TeX-arg-completing-read ("oddhead" "evenhead" "oddfoot" "evenfoot")
+                               "Place")))
 
    ;; Don't increase indentation at various \if* macros:
    (let ((exceptions '("iftopfloat"
@@ -121,6 +185,9 @@
    ;; "plainfootrulewidth"
    ;; "plainheadrulewidth"
 
+   ;;  \headwidth is a length parameter:
+   (LaTeX-add-lengths "headwidth")
+
    ;; `fancyhdr.sty' supplies these two pagestyles.  Pagestyle
    ;; `fancyplain' is now deprecated.
    (LaTeX-add-pagestyles "fancy" "fancydefault")
@@ -137,9 +204,13 @@
                                 ("fancyheadoffset" "[{")
                                 ("fancyfootoffset" "[{")
                                 ("fancyhfoffset"   "[{")
+                                ("fancyheadwidth"  "*[[{")
+                                ("fancyfootwidth"  "*[[{")
+                                ("fancyhfwidth"    "*[[{")
                                 ("fancyheadinit"   "{")
                                 ("fancyfootinit"   "{")
                                 ("fancyhfinit"     "{")
+                                ("fancyfootalign"  "{")
                                 ;; Fontify deprecated commands for
                                 ;; older documents; to be removed
                                 ;; sometimes ...
@@ -154,12 +225,14 @@
                                 ;; their own fontification since they
                                 ;; can also be used in a document
                                 ;; top-level.
-                                ("fancypagestyle"  "{["))
+                                ("fancypagestyle"       "*{[")
+                                ("fancypagestyleassign" "{{")
+                                ("fancyhdrsettoheight"  "{{"))
                               'function)))
  TeX-dialect)
 
 (defvar LaTeX-fancyhdr-package-options
-  '("nocheck" "compatV3" "headings" "myheadings")
+  '("nocheck" "compatV3" "twoside" "headings" "myheadings")
   "Package options for fancyhdr package.")
 
 ;;; fancyhdr.el ends here
