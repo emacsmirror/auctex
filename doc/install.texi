@@ -1,6 +1,6 @@
 @c This is part of the AUCTeX Manual.
 @c Copyright (C) 1994, 1996, 2003-2007, 2012-2013,
-@c               2015-2024  Free Software Foundation, Inc.
+@c               2015-2025  Free Software Foundation, Inc.
 @c See the file auctex.texi for copying conditions.
 @node Installation
 @chapter Installing @AUCTeX{}
@@ -46,7 +46,7 @@ section and proceed to @ref{Quick Start}.
 @section Prerequisites
 
 @itemize @bullet
-@item GNU Emacs 27.1 or higher
+@item GNU Emacs 28.1 or higher
 
 Using @previewlatex{} requires a version of Emacs compiled with image
 support.

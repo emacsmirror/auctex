@@ -1,12 +1,12 @@
 ;;; auctex.el --- Integrated environment for *TeX*  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014-2024 Free Software Foundation, Inc.
+;; Copyright (C) 2014-2025 Free Software Foundation, Inc.
 
 ;; Version: 14.0.9
 ;; URL: https://www.gnu.org/software/auctex/
 ;; Maintainer: auctex-devel@gnu.org
 ;; Notifications-To: auctex-diffs@gnu.org
-;; Package-Requires: ((emacs "27.1"))
+;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: TeX LaTeX Texinfo ConTeXt docTeX preview-latex
 
 ;; This file is part of AUCTeX.

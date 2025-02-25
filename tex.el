@@ -26,8 +26,8 @@
 
 ;;; Code:
 
-(when (< emacs-major-version 27)
-  (error "AUCTeX requires Emacs 27.1 or later"))
+(when (< emacs-major-version 28)
+  (error "AUCTeX requires Emacs 28.1 or later"))
 
 (require 'custom)
 (require 'auctex)
