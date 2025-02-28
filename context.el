@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2024  Free Software Foundation, Inc.
+;; Copyright (C) 2003-2025  Free Software Foundation, Inc.
 
 ;; Author: Patrick Gundlach <pg@levana.de>
 ;;         Berend de Boer <berend@pobox.com>
@@ -493,8 +493,8 @@ in your init file such as .emacs.d/init.el or .emacs."
   "ConTeXt Mark version used for running ConTeXt."
   :type 'string
   :group 'TeX-command
-  :safe #'stringp)
-(make-variable-buffer-local 'ConTeXt-Mark-version)
+  :safe #'stringp
+  :local t)
 
 (defun ConTeXt-numbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
@@ -621,10 +621,10 @@ for a label to be inserted after the sectioning command."
 
 ;; TODO: interface awareness
 (defcustom ConTeXt-default-environment "itemize"
-  "The default environment when creating new ones with `ConTeXt-environment'."
+  "Default environment when creating new ones with `ConTeXt-environment'."
   :group 'ConTeXt-environment
-  :type 'string)
-(make-variable-buffer-local 'ConTeXt-default-environment)
+  :type 'string
+  :local t)
 
 (TeX-auto-add-type "environment" "ConTeXt")
 

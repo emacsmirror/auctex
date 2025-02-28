@@ -62,9 +62,8 @@
   "Default options to documentclass.
 A comma-seperated list of strings."
   :group 'LaTeX-environment
-  :type '(repeat (string :format "%v")))
-
-(make-variable-buffer-local 'LaTeX-default-options)
+  :type '(repeat (string :format "%v"))
+  :local t)
 
 (defcustom LaTeX-insert-into-comments nil
   "Whether insertion commands stay in comments.
@@ -556,8 +555,8 @@ The behaviour of this hook is controlled by variable `LaTeX-section-label'."
 It is overridden by `LaTeX-default-document-environment' when it
 is non-nil and the current environment is \"document\"."
   :group 'LaTeX-environment
-  :type 'string)
-(make-variable-buffer-local 'LaTeX-default-environment)
+  :type 'string
+  :local t)
 
 (defvar-local LaTeX-default-document-environment nil
   "The default environment when creating new ones with
@@ -1004,8 +1003,8 @@ optional argument is omitted.)"
   :group 'LaTeX-environment
   :type '(choice (const :tag "Do not prompt" nil)
                  (const :tag "Empty" "")
-                 (string :format "%v")))
-(make-variable-buffer-local 'LaTeX-float)
+                 (string :format "%v"))
+  :local t)
 
 (defcustom LaTeX-top-caption-list nil
   "List of float environments with top caption."
@@ -1049,14 +1048,14 @@ code listings and take a caption and label."
 (defcustom LaTeX-default-format ""
   "Default format for array and tabular environments."
   :group 'LaTeX-environment
-  :type 'string)
-(make-variable-buffer-local 'LaTeX-default-format)
+  :type 'string
+  :local t)
 
 (defcustom LaTeX-default-width "1.0\\linewidth"
   "Default width for minipage and tabular* environments."
   :group 'LaTeX-environment
-  :type 'string)
-(make-variable-buffer-local 'LaTeX-default-width)
+  :type 'string
+  :local t)
 
 (defcustom LaTeX-default-position ""
   "Default position for array and tabular environments.
@@ -1064,8 +1063,8 @@ If nil, act like the empty string is given, but do not prompt."
   :group 'LaTeX-environment
   :type '(choice (const :tag "Do not prompt" nil)
                  (const :tag "Empty" "")
-                 string))
-(make-variable-buffer-local 'LaTeX-default-position)
+                 string)
+  :local t)
 
 (defcustom LaTeX-equation-label "eq:"
   "Default prefix to equation labels."
@@ -1150,9 +1149,8 @@ corresponding entry."
   :group 'LaTeX-label
   :type '(repeat (cons (string :tag "Environment")
                        (choice (string :tag "Label prefix")
-                               (symbol :tag "Label prefix symbol")))))
-
-(make-variable-buffer-local 'LaTeX-label-alist)
+                               (symbol :tag "Label prefix symbol"))))
+  :local t)
 
 (defvar TeX-read-label-prefix nil
   "Initial input for the label in `TeX-read-label'.")

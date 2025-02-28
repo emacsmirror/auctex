@@ -530,8 +530,8 @@ string."
 
 (defcustom TeX-command-extra-options ""
   "String with the extra options to be given to the TeX processor."
-  :type 'string)
-(make-variable-buffer-local 'TeX-command-extra-options)
+  :type 'string
+  :local t)
 
 (defvar TeX-command-text nil
   "Dynamically bound by `TeX-command-expand'.")
@@ -1639,8 +1639,8 @@ It should be one of the following symbols:\n\n"
   :type `(choice ,@(mapcar (lambda (x)
                              `(const :tag ,(nth 1 x) ,(car x)))
                            (TeX-engine-alist)))
-  :safe (lambda (arg) (memq arg (mapcar #'car TeX-engine-alist-builtin))))
-(make-variable-buffer-local 'TeX-engine)
+  :safe (lambda (arg) (memq arg (mapcar #'car TeX-engine-alist-builtin)))
+  :local t)
 
 (defun TeX-engine-set (type)
   "Set TeX engine to TYPE.
@@ -2146,17 +2146,17 @@ Programs should not use this variable directly but the function
           (const :tag "No DVI to PDF conversion" nil)
           (const :tag "dvips - ps2pdf sequence" "Dvips")
           (const :tag "dvipdfmx" "Dvipdfmx"))
-  :safe #'string-or-null-p)
+  :safe #'string-or-null-p
+  :local t)
 ;; If you plan to support new values of `TeX-PDF-from-DVI' remember to update
 ;; `TeX-command-default' accordingly.
-(make-variable-buffer-local 'TeX-PDF-from-DVI)
 
 (defcustom TeX-PDF-via-dvips-ps2pdf nil
   "Whether to produce PDF output through the (La)TeX - dvips - ps2pdf sequence."
   :group 'TeX-command
   :type 'boolean
-  :safe #'booleanp)
-(make-variable-buffer-local 'TeX-PDF-via-dvips-ps2pdf)
+  :safe #'booleanp
+  :local t)
 (make-obsolete-variable 'TeX-PDF-via-dvips-ps2pdf 'TeX-PDF-from-DVI "11.90")
 
 (defun TeX-PDF-from-DVI ()
@@ -2187,21 +2187,21 @@ for backward compatibility."
 (defcustom TeX-command-BibTeX "BibTeX"
   "The name of the BibTeX entry in `TeX-command-list'."
   :group 'TeX-command-name
-  :type 'string)
-  (make-variable-buffer-local 'TeX-command-BibTeX)
+  :type 'string
+  :local t)
 
 (defcustom TeX-command-Biber "Biber"
   "The name of the Biber entry in `TeX-command-list'."
   :group 'TeX-command-name
-  :type 'string)
-  (make-variable-buffer-local 'TeX-command-Biber)
+  :type 'string
+  :local t)
 
 (defcustom TeX-command-Show "View"
   "The default command to show (view or print) a TeX file.
 Must be the car of an entry in `TeX-command-list'."
   :group 'TeX-command-name
-  :type 'string)
-  (make-variable-buffer-local 'TeX-command-Show)
+  :type 'string
+  :local t)
 
 (defcustom TeX-command-Print "Print"
   "The name of the Print entry in `TeX-command-Print'."
@@ -2323,8 +2323,8 @@ It is suggested that you use the File Variables (see the info node
                  (string :format "%v"))
   :safe (lambda (x)
           (or (stringp x)
-              (member x (quote (t nil shared dwim))))))
-(make-variable-buffer-local 'TeX-master)
+              (member x (quote (t nil shared dwim)))))
+  :local t)
 
 (defcustom TeX-one-master "\\.\\(texi?\\|[dl]tx\\)\\'"
   "Regular expression matching ordinary TeX files.
@@ -2564,8 +2564,8 @@ is assumed to be the same as the directory of `TeX-master'."
   :group 'TeX-file
   :safe #'string-or-null-p
   :type '(choice (const :tag "Directory of master file" nil)
-                 (string :tag "Custom" "build")))
-(make-variable-buffer-local 'TeX-output-dir)
+                 (string :tag "Custom" "build"))
+  :local t)
 
 (defun TeX--master-output-dir (master-dir relative-to-master &optional ensure)
   "Return the directory path where output files should be placed.
@@ -3308,9 +3308,8 @@ See `completion-at-point-functions'."
 (defcustom TeX-default-macro "ref"
   "The default macro when creating new ones with `TeX-insert-macro'."
   :group 'TeX-macro
-  :type 'string)
-
-(make-variable-buffer-local 'TeX-default-macro)
+  :type 'string
+  :local t)
 
 (defcustom TeX-insert-braces t
   "If non-nil, append an empty pair of braces after inserting a macro.
@@ -3331,8 +3330,8 @@ will use its value to decide what to do, whatever the value of
 the variable `TeX-insert-braces'."
   :group 'TeX-macro
   :type '(repeat (cons (string :tag "Macro name")
-                       (boolean :tag "Append braces?"))))
-(make-variable-buffer-local 'TeX-insert-braces-alist)
+                       (boolean :tag "Append braces?")))
+  :local t)
 
 (defcustom TeX-insert-macro-default-style 'show-optional-args
   "Specifies whether `TeX-insert-macro' will ask for all optional arguments.
@@ -4351,8 +4350,8 @@ It can also be a name of a variable having such value."
                         (group (regexp :tag "Match")
                                (sexp :tag "Groups")
                                symbol)))
-  :group 'TeX-parse)
-  (make-variable-buffer-local 'TeX-auto-regexp-list)
+  :group 'TeX-parse
+  :local t)
 
 (defun TeX-auto-add-regexp (regexp)
   "Add REGEXP to `TeX-auto-regexp-list' if not already a member."
@@ -4399,16 +4398,16 @@ alter the numbering of any ordinary, non-shy groups.")
 (defcustom TeX-auto-parse-length 999999
   "Maximal length of TeX file (in characters) that will be parsed."
   :group 'TeX-parse
-  :type 'integer)
-  (make-variable-buffer-local 'TeX-auto-parse-length)
+  :type 'integer
+  :local t)
 
 (defcustom TeX-auto-x-parse-length 0
   "Maximum length of TeX file that will be parsed additionally.
 Use `TeX-auto-x-regexp-list' for parsing the region between
 `TeX-auto-parse-length' and this value."
   :group 'TeX-parse
-  :type 'integer)
-  (make-variable-buffer-local 'TeX-auto-x-parse-length)
+  :type 'integer
+  :local t)
 
 (defcustom TeX-auto-x-regexp-list 'LaTeX-auto-label-regexp-list
   "List of regular expressions used for additional parsing.
@@ -4425,8 +4424,8 @@ See `TeX-auto-x-parse-length'."
                         (group (regexp :tag "Match")
                                (sexp :tag "Groups")
                                symbol)))
-  :group 'TeX-parse)
-  (make-variable-buffer-local 'TeX-auto-x-regexp-list)
+  :group 'TeX-parse
+  :local t)
 
 (defun TeX-regexp-group-count (regexp)
   "Return number of groups in a REGEXP.  This is not foolproof:
@@ -4576,9 +4575,8 @@ Check for potential LaTeX environments."
 (defcustom TeX-default-extension "tex"
   "Default extension for TeX files."
   :group 'TeX-file-extension
-  :type 'string)
-
-  (make-variable-buffer-local 'TeX-default-extension)
+  :type 'string
+  :local t)
 
 (defvar TeX-doc-extensions
   '("dvi" "pdf" "ps" "txt" "html" "dvi\\.gz" "pdf\\.gz" "ps\\.gz" "txt\\.gz"
@@ -8899,8 +8897,8 @@ Return nil only if no process buffer exists."
   "If non-nil, abort a running document process without user query."
   :type 'boolean
   :safe #'booleanp
-  :group 'TeX-command)
-(make-variable-buffer-local 'TeX-kill-process-without-query)
+  :group 'TeX-command
+  :local t)
 
 (defun TeX-process-check (name)
   "Check if a process for the TeX document NAME already exists.
