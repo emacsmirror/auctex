@@ -820,7 +820,7 @@ runs `bib-find', and [mouse-3] runs `bib-display'."
   bib-cite-bibtex-font-lock-keywords
   '(("^\\( \\|\t\\)*\\(@[A-Za-z]+\\)[ \t]*[({]\\([][A-Za-z0-9.:;?!`'()/*@_+=|<>-]+\\)?"
      (2 font-lock-function-name-face)
-     (3 font-lock-reference-face nil t))
+     (3 font-lock-constant-face nil t))
     ;; reference type and reference label
     ("^[ \t]*\\(OPT[^\"#%'(),={} \t\n0-9][^\"#%'(),={} \t\n]*\\)[ \t]*="
      1 font-lock-comment-face)
