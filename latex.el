@@ -5279,7 +5279,7 @@ See `fill-move-to-break-point' for the meaning of LINEBEG."
 (defun LaTeX-fill-newline ()
   "Replace whitespace here with one newline and indent the line."
   (skip-chars-backward " \t")
-  (newline 1)
+  (insert ?\n)
   ;; Give newline the properties of the space(s) it replaces
   (set-text-properties (1- (point)) (point)
                        (text-properties-at (point)))
