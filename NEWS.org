@@ -13,6 +13,13 @@
 
 - AUCTeX now requires GNU Emacs 28.1 or higher.
 
+** Fixed
+
+- Fix unwanted expansion of abbrevs during filling when ~abbrev-mode~ is
+  enabled.
+- Fix the command-line options passed to latexmk when processing files
+  with xetex in order to run the viewer correctly.
+
 * [14.0.9] - 2025-02-25
 
 ** Added
