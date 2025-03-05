@@ -681,7 +681,7 @@ string."
     ("%(latexmk-out)"
      (lambda ()
        (cond ((eq TeX-engine 'xetex)
-              " -pdfxe")
+              " -pdf -pdflatex=xelatex")
              ((eq TeX-engine 'luatex)
               (cond ((and TeX-PDF-mode
                           (TeX-PDF-from-DVI))
