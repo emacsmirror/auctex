@@ -1,6 +1,6 @@
 ;;; latex-test.el --- tests for LaTeX mode  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014-2024  Free Software Foundation, Inc.
+;; Copyright (C) 2014-2025  Free Software Foundation, Inc.
 
 ;; This file is part of AUCTeX.
 
