@@ -748,4 +748,17 @@ check the indentation for optional argument of \\usepackage."
 \\item abc
 \\item "))))
 
+(ert-deftest LaTeX-extra-abbrev-expansion ()
+  "Test if `LaTeX-fill-newline' triggers extra abbrev expansion."
+  (with-temp-buffer
+    (LaTeX-mode)
+    (let ((at (make-abbrev-table)))
+      (define-abbrev at "sab" "super apple backet")
+      (setq local-abbrev-table at)
+      (insert "sab ")
+      (LaTeX-fill-newline)
+      (should (string=
+               (buffer-string)
+               "sab\n")))))
+
 ;;; latex-test.el ends here
