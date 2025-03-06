@@ -19,6 +19,9 @@
   enabled.
 - Fix the command-line options passed to latexmk when processing files
   with xetex in order to run the viewer correctly.
+- Fix removing of stale verbatim entries in auto-parsed file once the
+  corresponding package isn't used in the .tex file anymore.  Complete
+  removal may require two invocations of =C-u C-c C-n=.
 
 * [14.0.9] - 2025-02-25
 

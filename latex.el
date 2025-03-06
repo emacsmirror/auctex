@@ -3883,10 +3883,15 @@ Style files should add constructs to this variable and not to
 Programs should not use this variable directly but the function
 `LaTeX-verbatim-macros-with-delims' which returns a value
 including values of the variable
-`LaTeX-verbatim-macros-with-delims' as well.")
+`LaTeX-verbatim-macros-with-delims' as well.
+
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 (put 'LaTeX-verbatim-macros-with-delims-local 'safe-local-variable
      #'TeX--list-of-string-p)
 
+;; Add the variable to `TeX-normal-mode-reset-list':
+(add-to-list 'TeX-normal-mode-reset-list
+             'LaTeX-verbatim-macros-with-delims-local)
 
 (defcustom LaTeX-verbatim-macros-with-braces nil
   "Macros for inline verbatim with arguments in braces, like \\foo{...}.
@@ -3907,9 +3912,15 @@ Style files should add constructs to this variable and not to
 Programs should not use this variable directly but the function
 `LaTeX-verbatim-macros-with-braces' which returns a value
 including values of the variable
-`LaTeX-verbatim-macros-with-braces' as well.")
+`LaTeX-verbatim-macros-with-braces' as well.
+
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 (put 'LaTeX-verbatim-macros-with-braces-local 'safe-local-variable
      #'TeX--list-of-string-p)
+
+;; Add the variable to `TeX-normal-mode-reset-list':
+(add-to-list 'TeX-normal-mode-reset-list
+             'LaTeX-verbatim-macros-with-braces-local)
 
 (defcustom LaTeX-verbatim-environments
   '("verbatim" "verbatim*" "filecontents" "filecontents*")
@@ -3930,9 +3941,15 @@ Style files should add constructs to this variable and not to
 
 Programs should not use this variable directly but the function
 `LaTeX-verbatim-environments' which returns a value including
-values of the variable `LaTeX-verbatim-environments' as well.")
+values of the variable `LaTeX-verbatim-environments' as well.
+
+May be reset with `\\[universal-argument] \\[TeX-normal-mode]'.")
 (put 'LaTeX-verbatim-environments-local 'safe-local-variable
      #'TeX--list-of-string-p)
+
+;; Add the variable to `TeX-normal-mode-reset-list':
+(add-to-list 'TeX-normal-mode-reset-list
+             'LaTeX-verbatim-environments-local)
 
 (defun LaTeX-verbatim-macros-with-delims ()
   "Return list of verbatim macros with delimiters."
