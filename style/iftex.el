@@ -1,6 +1,6 @@
 ;;; iftex.el --- AUCTeX style for `iftex.sty' version 1.0g  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022--2024 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -32,13 +32,7 @@
 (require 'tex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
-
-(defun LaTeX-iftex-set-TeX-exit-mark (_optional)
-  "Ignore OPTIONAL and set `TeX-exit-mark' to current point."
-  (set-marker TeX-exit-mark (point)))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (TeX-add-style-hook
  "iftex"
@@ -46,115 +40,115 @@
 
    (TeX-add-symbols
     '("ifetex"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifeTeX"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("ifpdftex"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifPDFTeX"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("ifxetex"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifXeTeX"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("ifluatex"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifLuaTeX"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("ifluahbtex"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifLuaHBTeX"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("ifluametatex"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifLuaMetaTeX"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("ifptex"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifpTeX"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("ifuptex"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifupTeX"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("ifptexng"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifpTeXng"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("ifvtex"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifVTeX"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("ifalephtex"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifAlephTeX"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("iftutex"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifTUTeX"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("iftexpadtex"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifTexpadTeX"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("iftex"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifTeX"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("ifhint"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifHINT"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     '("ifprote"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
     '("ifProte"
-      LaTeX-iftex-set-TeX-exit-mark
+      TeX-arg-set-exit-mark
       (TeX-arg-literal "\\else\\fi"))
 
     "RequireeTeX"
