@@ -5824,6 +5824,12 @@ Prompt for a @samp{key=value} list of options and return them.
 @item TeX-arg-key-val
 Prompt for a @samp{key=value} list of options and insert it as a @TeX{}
 macro argument.
+
+@item TeX-arg-space
+Insert one or more spaces.
+
+@item TeX-arg-set-exit-mark
+Set @code{TeX-exit-mark} to current point or a given position.
 @end ftable
 
 If you add new hooks, you can assume that point is placed directly after
