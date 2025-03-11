@@ -38,9 +38,9 @@
 
 (defvar LaTeX-expl3-syntax-table
   (let ((st (copy-syntax-table LaTeX-mode-syntax-table)))
-    ;; Make _ and : symbol chars
-    (modify-syntax-entry ?\_ "_" st)
-    (modify-syntax-entry ?\: "_" st)
+    ;; Make _ and : word chars
+    (modify-syntax-entry ?\_ "w" st)
+    (modify-syntax-entry ?\: "w" st)
     st))
 
 (defun LaTeX-expl3--set-TeX-exit-mark (_optional &optional pos)
@@ -710,7 +710,10 @@ Pass OPTIONAL, PROMPT and NO-PARAM to `TeX-arg-expl3-macro', which see."
 
                                 ("cs_undefine:N" "\\")
                                 ("cs_undefine:c" "\\"))
-                              'function)))
+                              'function)
+     ;; Also tell font-lock to update its internals
+     (setq font-lock-major-mode nil)
+     (font-lock-set-defaults)))
  TeX-dialect)
 
 (defvar LaTeX-expl3-package-options-list
