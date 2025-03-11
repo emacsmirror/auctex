@@ -3906,7 +3906,7 @@ Run after mode hooks and file local variables application."
   ;; Symbol & length completion.
   (or (local-variable-p 'TeX-complete-list)
       (setq-local TeX-complete-list
-                  (list (list "\\\\\\([a-zA-Z]*\\)"
+                  (list (list "\\\\\\([a-zA-Z@:_]*\\)"
                               1
                               (lambda ()
                                 (append

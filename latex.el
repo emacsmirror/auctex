@@ -4391,15 +4391,15 @@ macros are added to the regexp's.  This function is called in
                                             (regexp-opt symbs))))))))
     (funcall func
              LaTeX-indent-begin-list
-             "if[a-zA-Z@]*\\b"
+             "if[a-zA-Z@:_]*\\b"
              'LaTeX-indent-begin-regexp-local)
     (funcall func
              LaTeX-indent-mid-list
-             "else\\b\\|or\\b"
+             "else:?\\b\\|or\\b"
              'LaTeX-indent-mid-regexp-local)
     (funcall func
              LaTeX-indent-end-list
-             "fi\\b"
+             "fi:?\\b"
              'LaTeX-indent-end-regexp-local)
     (funcall func
              LaTeX-indent-begin-exceptions-list
