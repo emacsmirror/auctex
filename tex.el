@@ -2230,7 +2230,7 @@ Must be the car of an entry in `TeX-command-list'."
     "\\.lof" "\\.log" "\\.lot" "\\.nav" "\\.out"
     "\\.snm" "\\.toc" "\\.url" "\\.synctex\\.gz"
     "\\.bcf" "\\.run\\.xml" "\\.fls" "-blx\\.bib"
-    "\\.fdb_latexmk")
+    "\\.fdb_latexmk" "\\.atfi")
   "List of regexps matching suffixes of files to be cleaned.
 Used as a default in TeX, LaTeX and docTeX mode.")
 
