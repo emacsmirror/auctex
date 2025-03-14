@@ -471,7 +471,7 @@ no label is inserted."
 Insert this hook into `LaTeX-section-hook' to allow the user to change
 the name of the sectioning command inserted with \\[LaTeX-section]."
   (let ((string (completing-read
-                 (concat "Level (default " LaTeX-name "): ")
+                 (format-prompt "Level" LaTeX-name)
                  (append
                   ;; Include starred variants in candidates.
                   (mapcar (lambda (sct)
@@ -598,8 +598,7 @@ It may be customized with the following variables:
                          (string-equal (LaTeX-current-environment) "document"))
                     LaTeX-default-document-environment)
                    (t LaTeX-default-environment)))
-         (environment (completing-read (concat "Environment type (default "
-                                               default "): ")
+         (environment (completing-read (format-prompt "Environment type" default)
                                        (LaTeX-environment-list-filtered) nil nil
                                        nil 'LaTeX-environment-history default)))
     ;; Use `environment' as default for the next time only if it is different
@@ -1304,9 +1303,7 @@ Just like array and tabular."
                                         ; be nil, i.e. do not prompt
                   (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
         (fmt (TeX-read-string
-              (if (string= LaTeX-default-format "")
-                  "Format: "
-                (format "Format (default %s): " LaTeX-default-format))
+              (format-prompt "Format" LaTeX-default-format)
               nil nil
               (if (string= LaTeX-default-format "")
                   nil
@@ -1372,8 +1369,7 @@ Just like array and tabular."
                        (TeX-argument-prompt t nil "Inner position")
                        '("t" "b" "c" "s"))))
          (width (TeX-read-string
-                 (TeX-argument-prompt nil nil (format "Width (default %s)"
-                                                      LaTeX-default-width))
+                 (format-prompt "Width" LaTeX-default-width)
                  nil nil LaTeX-default-width)))
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-width width)
@@ -1390,15 +1386,13 @@ Just like array and tabular."
 (defun LaTeX-env-tabular* (environment)
   "Insert ENVIRONMENT with width, position and column specifications."
   (let ((width (TeX-read-string
-                (format "Width (default %s): " LaTeX-default-width)
+                (format-prompt "Width" LaTeX-default-width)
                 nil nil LaTeX-default-width))
         (pos (and LaTeX-default-position ; LaTeX-default-position can
                                         ; be nil, i.e. do not prompt
                   (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
         (fmt (TeX-read-string
-              (if (string= LaTeX-default-format "")
-                  "Format: "
-                (format "Format (default %s): " LaTeX-default-format))
+              (format-prompt "Format" LaTeX-default-format)
               nil nil
               (if (string= LaTeX-default-format "")
                   nil
@@ -1436,7 +1430,7 @@ Just like array and tabular."
   (LaTeX-insert-environment environment
                             (concat TeX-grop
                                     (TeX-read-string
-                                     (format "Label for BibItem (default %s): " "99")
+                                     (format-prompt "Label for BibItem" "99")
                                      nil nil "99")
                                     TeX-grcl))
   (end-of-line 0)
@@ -2516,7 +2510,8 @@ length is added to the list of defined length."
          (completing-read
           (TeX-argument-prompt optional
                                ;; Cater for the case when PROMPT and
-                               ;; DEFAULT are both given:
+                               ;; DEFAULT are both given.  Note that we
+                               ;; can't use `format-prompt' here:
                                (if (and prompt default)
                                    (concat prompt " (default " default ")")
                                  prompt)
@@ -2733,7 +2728,7 @@ OPTIONAL and IGNORE are ignored."
                   (message "Searching for LaTeX classes...done"))
               LaTeX-style-list)))
     (setq style (completing-read
-                 (concat "Document class (default " LaTeX-default-style "): ")
+                 (format-prompt "Document class" LaTeX-default-style)
                  LaTeX-global-class-files nil nil nil nil LaTeX-default-style))
     ;; Clean up hook before use.
     (setq TeX-after-document-hook nil)
@@ -2744,7 +2739,8 @@ OPTIONAL and IGNORE are ignored."
                    (mapconcat #'identity LaTeX-default-options ",")))
     (setq optprmpt
           (if (and defopt (not (string-equal defopt "")))
-              (format "Options (default %s): " defopt) "Options: "))
+              (format-prompt "Options" defopt)
+            "Options: "))
     (if (or (and (boundp var)
                  (listp (symbol-value var)))
             (fboundp var))
@@ -3114,8 +3110,8 @@ the list of defined pagestyles."
   "Prompt for delimiter and text.
 The compatibility argument OPTIONAL and IGNORE are ignored."
   (let ((del (read-quoted-char
-              (concat "Delimiter (default "
-                      (char-to-string LaTeX-default-verb-delimiter) "): "))))
+              (format-prompt "Delimiter" (char-to-string
+                                          LaTeX-default-verb-delimiter)))))
     (when (<= del ?\ ) (setq del LaTeX-default-verb-delimiter))
     (if (TeX-active-mark)
         (progn
@@ -3132,8 +3128,8 @@ a string replacing the default one when asking the user for text.
 This function is intended for \\verb like macros which take their
 argument in delimiters like \"| |\" or braces \"{ }\"."
   (let ((del (read-quoted-char
-              (concat "Delimiter (default "
-                      (char-to-string LaTeX-default-verb-delimiter) "): "))))
+              (format-prompt "Delimiter" (char-to-string
+                                          LaTeX-default-verb-delimiter)))))
     (when (<= del ?\ )
       (setq del LaTeX-default-verb-delimiter))
     (if (TeX-active-mark)
@@ -3380,7 +3376,8 @@ is nil, consult user which brace should be used."
                (TeX-argument-prompt
                 optional prompt
                 (format "Which brace (default %s)"
-                        (or rbrace "."))) TeX-left-right-braces
+                        (or rbrace ".")))
+               TeX-left-right-braces
                nil nil nil nil (or rbrace ".")))))))
 
 (defun LaTeX--find-preceding-left-macro-name ()
