@@ -2361,8 +2361,8 @@ this variable to \"<none>\"."
     (let* ((default (TeX-dwim-master))
            (name (or (and (eq 'dwim TeX-master) default)
                      (condition-case nil
-                         (read-file-name (format "Master file (default %s): "
-                                                 (or default "this file"))
+                         (read-file-name (format-prompt "Master file"
+                                                        (or default "this file"))
                                          nil default)
                        (quit "<quit>")))))
       (cond ((string= name "<quit>")
@@ -2400,7 +2400,7 @@ name of master file if it cannot be determined otherwise."
   (if (eq extension t)
       (setq extension TeX-default-extension))
   (with-current-buffer
-    ;; In case this is an indirect buffer:
+      ;; In case this is an indirect buffer:
       (or (buffer-base-buffer) (current-buffer))
     (let ((my-name (if (TeX-buffer-file-name)
                        (TeX-strip-extension nil (list TeX-default-extension) t)
@@ -2423,8 +2423,8 @@ name of master file if it cannot be determined otherwise."
             (setq TeX-master
                   (let* ((default (TeX-dwim-master))
                          (name (read-file-name
-                                (format "Master file (default %s): "
-                                        (or default "this file"))
+                                (format-prompt "Master file"
+                                               (or default "this file"))
                                 nil default)))
                     (cond ((string= name default)
                            default)
@@ -6774,8 +6774,8 @@ NAME may be a package, a command, or a document."
           ;; Query user.
           (setq name (completing-read
                       (if contained
-                          (format "Package, command, or document (default %s): "
-                                  symbol)
+                          (format-prompt "Package, command, or document"
+                                         symbol)
                         "Package, command, or document: ")
                       completions nil nil nil nil symbol))))
       (if (not name)
@@ -7866,7 +7866,7 @@ omitted) and `TeX-region-file'."
          (completion-ignore-case t)
          (answer (or TeX-command-force
                      (completing-read
-                      (concat "Command (default " default "): ")
+                      (format-prompt "Command" default)
                       (TeX-mode-specific-command-list major-mode) nil t
                       nil 'TeX-command-history default))))
     ;; If the answer is "latex" it will not be expanded to "LaTeX"
