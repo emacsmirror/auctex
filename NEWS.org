@@ -9,6 +9,10 @@
 
 * [Unreleased]
 
+** Added
+
+- Add new support file =style/embedfile.el=.
+
 ** Changed
 
 - AUCTeX now requires GNU Emacs 28.1 or higher.
