@@ -1,6 +1,6 @@
 ;;; ocg-p.el --- AUCTeX style for `ocg-p.sty' (v0.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2018--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -93,9 +93,7 @@ Just like array and tabular."
                                         ; be nil, i.e. do not prompt
                   (TeX-read-string "(Optional) Position: " LaTeX-default-position)))
         (fmt (TeX-read-string
-              (if (string= LaTeX-default-format "")
-                  "Format: "
-                (format "Format (default %s): " LaTeX-default-format))
+              (format-prompt "Format" LaTeX-default-format)
               nil nil
               (if (string= LaTeX-default-format "")
                   nil

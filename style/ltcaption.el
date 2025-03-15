@@ -1,6 +1,6 @@
 ;;; ltcaption.el --- AUCTeX style for `ltcaption.sty' version v1.4c  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022--2024 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -53,9 +53,7 @@
                                    '("l" "r" "c")
                                    nil nil LaTeX-default-position)))
         (fmt (TeX-read-string
-              (if (string= LaTeX-default-format "")
-                  "Format: "
-                (format "Format (default %s): " LaTeX-default-format))
+              (format-prompt "Format" LaTeX-default-format)
               nil nil
               (if (string= LaTeX-default-format "")
                   nil

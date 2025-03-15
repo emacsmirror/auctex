@@ -1,6 +1,6 @@
 ;;; xltabular.el --- AUCTeX style for `xltabular.sty' (v0.05)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017--2024 Free Software Foundation, Inc.
+;; Copyright (C) 2017--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -54,12 +54,10 @@ nested curly brace pair nor escaped \"}\".")
                                     '("l" "r" "c")
                                     nil nil LaTeX-default-position)))
          (width (TeX-read-string
-                 (format "Width (default %s): " LaTeX-default-width)
+                 (format-prompt "Width" LaTeX-default-width)
                  nil nil LaTeX-default-width))
          (fmt (TeX-read-string
-               (if (string= LaTeX-default-format "")
-                   "Format: "
-                 (format "Format (default %s): " LaTeX-default-format))
+               (format-prompt "Format" LaTeX-default-format)
                nil nil
                (if (string= LaTeX-default-format "")
                    nil

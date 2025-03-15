@@ -1,6 +1,6 @@
 ;;; longtable.el --- AUCTeX style for `longtable.sty'.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013--2024  Free Software Foundation, Inc.
+;; Copyright (C) 2013--2025  Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -60,9 +60,7 @@ insert line break macro."
                                     '("l" "r" "c")
                                     nil nil LaTeX-default-position)))
          (fmt (TeX-read-string
-               (if (string= LaTeX-default-format "")
-                   "Format: "
-                 (format "Format (default %s): " LaTeX-default-format))
+               (format-prompt "Format" LaTeX-default-format)
                nil nil
                (if (string= LaTeX-default-format "")
                    nil

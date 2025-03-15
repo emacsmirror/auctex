@@ -1,6 +1,6 @@
 ;;; inputenc.el --- AUCTeX style for `inputenc.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2024  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2025  Free Software Foundation, Inc.
 
 ;; Author: Arne Jørgensen <arne@arnested.dk>
 ;; Keywords: tex
@@ -39,9 +39,7 @@
                               buffer-file-coding-system)))
                 (selected 'undecided))
             (setq selected (completing-read
-                            (if default
-                                (format "Input encoding (default %s): " default)
-                              "Input encoding: ")
+                            (format-prompt "Input encoding" default)
                             (mapcar #'car latex-inputenc-coding-alist)
                             nil
                             nil

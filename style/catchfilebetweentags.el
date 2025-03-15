@@ -70,7 +70,7 @@ ENVIRONMENT is ignored."
                (LaTeX-catchfilebetweentags-counter-inc)))
          (tag (concat file ":"
                       (TeX-read-string
-                       (if fn (format "Tag (default %s): " fn) "Tag: ")
+                       (format-prompt "Tag" fn)
                        nil nil (when fn (number-to-string fn))))))
     (unless (bolp)
       (newline)
