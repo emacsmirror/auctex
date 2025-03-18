@@ -221,24 +221,24 @@ RefTeX users should customize or add ENVIRONMENT to both
   (add-to-list \\='reftex-label-alist
                \\='(\"theorem\" ?m \"thm:\" \"~\\ref{%s}\"
                  nil (\"Theorem\" \"theorem\") nil))"
-  (let* ((help-form "\
+  (let* ((help (substitute-command-keys "\
 Select the content of the optional argument with a key:
-'h' in order to insert a plain heading,
-'k' in order to insert key=value pairs with completion,
-RET in order to leave it empty.")
-         (choice (read-char-choice
-                  (TeX-argument-prompt
-                   nil nil "Heading (h), Key=val (k), Empty (RET), Help (C-h)")
-                  '(?h ?k ?\r)))
-         (opthead (pcase choice
+\\`h' in order to insert a plain heading,
+\\`k' in order to insert key=value pairs with completion,
+\\`RET' in order to leave it empty."))
+         (choice (read-multiple-choice "Heading options"
+                                       '((?h "heading")
+                                         (?k "key-value")
+                                         (?\r "empty"))
+                                       help))
+         (opthead (pcase (car choice)
                     (?h (TeX-read-string (TeX-argument-prompt t nil "Heading")))
                     (?k (TeX-read-key-val t LaTeX-keytheorems-package-options-list))
                     ;; Clear minibuffer and don't leave the ugly ^M
                     ;; there, return an empty string:
                     (_ (message nil) ""))))
     (LaTeX-insert-environment environment
-                              (when (and opthead
-                                         (not (string-empty-p opthead)))
+                              (when (and opthead (not (string-empty-p opthead)))
                                 (format "[%s]" opthead))))
   (when (LaTeX-label environment 'environment)
     (LaTeX-newline)

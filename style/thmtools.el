@@ -217,38 +217,33 @@ RefTeX users should customize or add ENVIRONMENT to
   (add-to-list \\='reftex-label-alist
                \\='(\"theorem\" ?m \"thm:\" \"~\\ref{%s}\"
                  nil (\"Theorem\" \"theorem\") nil))"
-  (let* ((help-form "\
+  (let* ((help (substitute-command-keys "\
 Select the content of the optional argument with a key:
-'h' in order to insert a plain heading,
-'k' in order to insert key=value pairs with completion,
-RET in order to leave it empty.")
-         (choice (read-char-choice
-                  (TeX-argument-prompt
-                   nil nil "Heading (h), Key=val (k), Empty (RET), Help (C-h)")
-                  '(?h ?k ?\r)))
-         (opthead (cond ((= choice ?h)
-                         (TeX-read-string
-                          (TeX-argument-prompt t nil "Heading")))
-                        ((= choice ?k)
-                         (TeX-read-key-val
-                          t
-                          `(("name")
-                            ("continues" ,(mapcar #'car (LaTeX-label-list)))
-                            ("restate" ,(mapcar #'car (LaTeX-label-list)))
-                            ;; We don't offer a label key here: It is
-                            ;; marked "experimental" in the manual and
-                            ;; inserting and parsing \label{foo} is
-                            ;; much easier for AUCTeX and RefTeX
-                            ;; ("label")
-                            ("listhack" ("true" "false")))))
-                        (t
-                         ;; Clear minibuffer and don't leave the ugly
-                         ;; ^M there and return an empty string:
-                         (message nil)
-                         ""))))
+\\`h' in order to insert a plain heading,
+\\`k' in order to insert key=value pairs with completion,
+\\`RET' in order to leave it empty."))
+         (choice (read-multiple-choice "Heading options"
+                                       '((?h "heading")
+                                         (?k "key-value")
+                                         (?\r "empty"))
+                                       help))
+         (opthead (pcase (car choice)
+                    (?h (TeX-read-string (TeX-argument-prompt t nil "Heading")))
+                    (?k (TeX-read-key-val
+                         t `(("name")
+                             ("continues" ,(mapcar #'car (LaTeX-label-list)))
+                             ("restate" ,(mapcar #'car (LaTeX-label-list)))
+                             ;; We don't offer a label key here: It is
+                             ;; marked "experimental" in the manual and
+                             ;; inserting and parsing \label{foo} is
+                             ;; much easier for AUCTeX and RefTeX
+                             ;; ("label")
+                             ("listhack" ("true" "false")))))
+                    ;; Clear minibuffer and don't leave the ugly ^M
+                    ;; there, return an empty string:
+                    (_ (message nil) ""))))
     (LaTeX-insert-environment environment
-                              (when (and opthead
-                                         (not (string= opthead "")))
+                              (when (and opthead (not (string-empty-p opthead)))
                                 (format "[%s]" opthead))))
   (when (LaTeX-label environment 'environment)
     (LaTeX-newline)
