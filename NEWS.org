@@ -11,7 +11,7 @@
 
 ** Added
 
-- Add new support file =style/embedfile.el=.
+- Add new support filse =style/embedfile.el= and =style/needspace.el=.
 
 ** Changed
 
