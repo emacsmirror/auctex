@@ -1,6 +1,6 @@
 ;;; l3doc.el --- AUCTeX style for `l3doc.cls'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022--2024 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -32,9 +32,7 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 (defvar LaTeX-article-class-options)
 
 (defvar LaTeX-l3doc-cmd-key-val-options
@@ -61,7 +59,7 @@ This function should be used for the environments \"function\" and
                                          ("noTF")
                                          ("label")
                                          ("verb"))
-                                     "Flags (k=v)"))
+                                     "Flags"))
          (mac (TeX-read-string
                (TeX-argument-prompt nil nil "Macro(s)")
                TeX-esc))
