@@ -3686,7 +3686,9 @@ INHERIT-INPUT-METHOD are passed to
                   ;; From ltpara-doc.pdf
                   "para"
                   ;; From ltmarks-doc.pdf
-                  "insertmark")))
+                  "insertmark"
+                  ;; From ltoutput.dtx
+                  "build")))
          (place (lambda (&optional opt pr)
                   (completing-read
                    (TeX-argument-prompt opt pr "Where")
@@ -3841,6 +3843,18 @@ INHERIT-INPUT-METHOD are passed to
           ;; (before|after|foreground|background|firstpage|lastpage)
           ((string= hook "shipout")
            (setq where (funcall place)))
+
+          ;; build/<name>/<where>: <name> is one of (page|column) and
+          ;; <where> is one of (before|after|(reset)?)
+          ((string= hook "build")
+           (setq name (completing-read
+                       (TeX-argument-prompt nil nil "Place")
+                       '("page" "column")))
+           (setq where (if (string= name "page")
+                           (completing-read
+                            (TeX-argument-prompt nil nil "Where")
+                            '("after" "before" "reset"))
+                         (funcall place))))
 
           ;; Other hooks or user specific input, do nothing:
           (t nil))
