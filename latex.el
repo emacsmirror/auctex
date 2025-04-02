@@ -4410,7 +4410,7 @@ macros are added to the regexp's.  This function is called in
              'LaTeX-indent-mid-regexp-local)
     (funcall func
              LaTeX-indent-end-list
-             "fi:?\\b"
+             "fi:?\\b\\|repeat\\b"
              'LaTeX-indent-end-regexp-local)
     (funcall func
              LaTeX-indent-begin-exceptions-list
