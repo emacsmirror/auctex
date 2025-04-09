@@ -215,7 +215,7 @@ For syntax environment from l3doc class."
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("cmd"  "[{")
+     (font-latex-add-keywords '(("cmd"  "[|{\\")
                                 ("cs"   "[{")
                                 ("Arg"  "{")
                                 ("marg" "{")
