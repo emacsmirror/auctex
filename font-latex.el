@@ -1,6 +1,6 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1996-2024  Free Software Foundation, Inc.
+;; Copyright (C) 1996-2025  Free Software Foundation, Inc.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
@@ -233,7 +233,8 @@ variable `font-latex-fontify-sectioning'." ',num)
       "enlargethispage" "nolinebreak" "linebreak" "newline" "-" "\\" "\\*"
       "appendix" "displaybreak" "allowdisplaybreaks" "tabularnewline"
       "backmatter" "frontmatter" "mainmatter"
-      "makeatletter" "makeatother" "newblock" "suppressfloats" "endinput")
+      "makeatletter" "makeatother" "newblock" "suppressfloats" "endinput"
+      "reversemarginpar")
      font-latex-warning-face 1 noarg)
     ("variable"
      (("setlength" "|{\\|{\\") ("addtolength" "|{\\|{\\")
