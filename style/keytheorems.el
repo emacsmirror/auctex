@@ -1,4 +1,4 @@
-;;; keytheorems.el --- AUCTeX style for `keytheorems.sty' (v0.2.4)  -*- lexical-binding: t; -*-
+;;; keytheorems.el --- AUCTeX style for `keytheorems.sty' (v0.2.6)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Free Software Foundation, Inc.
 
@@ -24,8 +24,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `keytheorems.sty' (v0.2.4) from
-;; 2025-01-21.  `keytheorems.sty' is part of TeXLive.
+;; This file adds support for `keytheorems.sty' (v0.2.6) from
+;; 2025-04-23.  `keytheorems.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -128,6 +128,7 @@ each sub-list."
       ;; 3.3 Keys added by keytheorems
       ("refname" ("{}"))
       ("Refname" ("{}"))
+      ("counter-format")
       ("leftmargin" ,lengths)
       ("rightmargin" ,lengths)
       ("tcolorbox")
