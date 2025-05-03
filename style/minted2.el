@@ -1,6 +1,6 @@
 ;;; minted2.el --- AUCTeX style for `minted2.sty' (v2.9)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014--2024 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2025 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -241,7 +241,7 @@ Update the variable `LaTeX-minted2-style-list' if still nil."
 
 (defun LaTeX-minted2-auto-cleanup ()
   "Process the parsed results from minted2 package."
-  (dolist (mint (LaTeX-minted2-newmint-list))
+  (dolist (mint LaTeX-auto-minted2-newmint)
     (cond ((string= (nth 2 mint) "ed")
            ;; \newminted{lang}{opts} => new langcode and langcode* envs.
            ;; \newminted[envname]{lang}{opts} => new envname/envname* envs.
@@ -302,7 +302,7 @@ Update the variable `LaTeX-minted2-style-list' if still nil."
                (font-latex-add-keywords `((,lang "[")) 'textual))))))
   ;; Refresh font-locking so that the verbatim envs take effect only
   ;; when there are defined shortcuts:
-  (when (and (LaTeX-minted2-newmint-list)
+  (when (and LaTeX-auto-minted2-newmint
              (fboundp 'font-latex-set-syntactic-keywords)
              (eq TeX-install-font-lock 'font-latex-setup))
     (font-latex-set-syntactic-keywords)))
