@@ -6188,10 +6188,13 @@ See `TeX-electric-math'."
              (re-search-forward "\\=\\$\\$\\([^z-a]*\\)\\$\\$" (mark) t)))
     (replace-match "\\1" t)
     (set-mark (match-beginning 0)))
-   ;; $...$ to $$...$$
+   ;; $...$ to $$...$$ or \[...\] dep. on mode:
    ((and (eq last-command #'TeX-insert-dollar)
          (re-search-forward "\\=\\$\\([^z-a]*\\)\\$" (mark) t))
-    (replace-match "$$\\1$$" t)
+    (replace-match (if (derived-mode-p 'LaTeX-mode)
+                       "\\\\[\\1\\\\]"
+                     "$$\\1$$")
+                   t)
     (set-mark (match-beginning 0)))
    ;; \(...\) to \[...\]
    ((and (eq last-command #'TeX-insert-dollar)

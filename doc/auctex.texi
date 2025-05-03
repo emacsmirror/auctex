@@ -447,7 +447,8 @@ symbols for opening and closing inline equation and keep the region
 active, leaving point after the closing symbol.  By pressing repeatedly
 @kbd{$} while the region is active you can toggle between an inline
 equation, a display equation, and no equation.  To be precise,
-@samp{$...$} is replaced by @samp{$$...$$}, whereas @samp{\(...\)} is
+@samp{$...$} is replaced by @samp{$$...$$} in plain-TeX-mode or
+@samp{\[...\]} in LaTeX-mode and docTeX-mode, whereas @samp{\(...\)} is
 replaced by @samp{\[...\]}.
 @end defopt
 
