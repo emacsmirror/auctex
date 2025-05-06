@@ -1,6 +1,6 @@
 ;;; dcolumn.el --- AUCTeX style for `dcolumn.sty' (v1.06)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2024 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,6 +30,7 @@
 ;;; Code:
 
 (require 'tex)
+(require 'latex)
 
 (TeX-add-style-hook
  "dcolumn"
