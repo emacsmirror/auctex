@@ -16,7 +16,7 @@
 ** Changed
 
 - AUCTeX now requires GNU Emacs 28.1 or higher.
-- Replace $..$ with \[..\] in ~LaTeX-mode~ and any derived mode when
+- Replace =$..$= with =\[..\]= in LaTeX mode and any derived mode when
   hitting =$= repeatedly where ~TeX-electric-math~ is non-~nil~.
 
 ** Fixed
