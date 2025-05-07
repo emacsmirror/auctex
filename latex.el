@@ -2091,10 +2091,8 @@ TYPE is one of the symbols mac or env."
                 (t nil))))
       (if (eq type 'env)
           ;; Parsed enviroments: If we are Renew'ing or Delare'ing, we
-          ;; delete the enviroment first from `LaTeX-environment-list'
-          ;; before adding the new one.  We have to sort the value of
-          ;; `LaTeX-environment-list' by running the function of the
-          ;; same name:
+          ;; delete the enviroment first from `LaTeX-auto-environment'
+          ;; before adding the new one:
           (progn
             (when (member what '("Renew" "Declare"))
               (setq LaTeX-auto-environment
@@ -2105,9 +2103,8 @@ TYPE is one of the symbols mac or env."
                              `(,name LaTeX-env-args ,@(reverse args))
                            (list name))))
         ;; Parsed macros: If we are Renew'ing or Delare'ing, we delete
-        ;; the macros first from `TeX-symbol-list' before adding the
-        ;; new ones.  We have to sort the value of `TeX-symbol-list'
-        ;; by running the function of the same name:
+        ;; the macros first from `TeX-auto-symbol' before adding the new
+        ;; ones:
         (when (member what '("Renew" "Declare"))
           (setq TeX-auto-symbol
                 (assq-delete-all (car (assoc name TeX-auto-symbol))
