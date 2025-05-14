@@ -3050,11 +3050,6 @@ and @samp{\item} being below @samp{\subparagraph}.
         ("\\\\bibliography\\b" 2)))
 @end lisp
 
-@c FIXME: Isn't this much outdated?
-You may want to check out the unbundled @file{out-xtra} package for even
-better outline support.  It is available from your favorite emacs lisp
-archive.
-
 @node Narrowing
 @section Narrowing
 
