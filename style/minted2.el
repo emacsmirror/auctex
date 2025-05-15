@@ -232,7 +232,7 @@ Update the variable `LaTeX-minted2-style-list' if still nil."
 
 (defvar LaTeX-minted2-newmint-regexp
   '("\\\\newmint\\(edfile\\|inline\\|ed\\)?\\(?:\\[\\([^]]+\\)\\]\\)?{\\([^}]+\\)}"
-    (2 3 1) LaTeX-auto-minted2-newmint)
+    (0 2 3 1) LaTeX-auto-minted2-newmint)
   "Match the arguments of \\newmint* macros from minted2 package.")
 
 (defun LaTeX-minted2-auto-prepare ()
@@ -241,68 +241,65 @@ Update the variable `LaTeX-minted2-style-list' if still nil."
 
 (defun LaTeX-minted2-auto-cleanup ()
   "Process the parsed results from minted2 package."
-  (dolist (mint LaTeX-auto-minted2-newmint)
-    (cond ((string= (nth 2 mint) "ed")
-           ;; \newminted{lang}{opts} => new langcode and langcode* envs.
-           ;; \newminted[envname]{lang}{opts} => new envname/envname* envs.
-           (let* ((env (if (string-empty-p (car mint))
-                           (concat (cadr mint) "code")
-                         (car mint)))
-                  (env* (concat env "*")))
-             (LaTeX-add-environments (list env))
-             (LaTeX-add-environments (list env* #'LaTeX-env-args
-                                           '(TeX-arg-key-val
-                                             (LaTeX-minted2-key-val-options))))
-             (add-to-list 'LaTeX-indent-environment-list
-                          `(,env current-indentation) t)
-             (add-to-list 'LaTeX-indent-environment-list
-                          `(,env* current-indentation) t)
-             (add-to-list 'LaTeX-verbatim-environments-local env)
-             (add-to-list 'LaTeX-verbatim-environments-local env*)))
-          ;; \newmintinline{foo}{opts} => \fooinline[key=vals]|code| or
-          ;;                              \fooinline[key=vals]{code}
-          ;; \newmintinline[macname]{foo}{opts} => \macname[key=vals]|code| or
-          ;;                                       \macname[key=vals]{code}
-          ((string= (nth 2 mint) "inline")
-           (let ((lang (if (string-empty-p (car mint))
-                           (concat (cadr mint) "inline")
-                         (car mint))))
-             (TeX-add-symbols `(,lang
-                                [TeX-arg-key-val (LaTeX-minted2-key-val-options)]
-                                TeX-arg-verb-delim-or-brace))
-             (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
-             (add-to-list 'LaTeX-verbatim-macros-with-braces-local lang)
-             (when (and (fboundp 'font-latex-add-keywords)
-                        (eq TeX-install-font-lock 'font-latex-setup))
-               (font-latex-add-keywords `((,lang "[")) 'textual))))
-          ;; \newmintedfile{foo}{opts} => \foofile[key=vals]{file-name}
-          ;; \newmintedfile[macname]{foo}{opts} => \macname[key=vals]{file-name}
-          ((string= (nth 2 mint) "edfile")
-           (let ((lang (if (string-empty-p (car mint))
-                           (concat (cadr mint) "file")
-                         (car mint))))
-             (TeX-add-symbols `(,lang
-                                [TeX-arg-key-val (LaTeX-minted2-key-val-options)]
-                                TeX-arg-file))))
-          ;; \newmint{foo}{opts} => \foo[key=vals]|code| or
-          ;;                        \foo[key=vals]{code}
-          ;; \newmint[macname]{foo}{opts} => \macname[key=vals]|code| or
-          ;;                                 \macname[key=vals]{code}
-          (t
-           (let ((lang (if (string-empty-p (car mint))
-                           (cadr mint)
-                         (car mint))))
-             (TeX-add-symbols `(,lang
-                                [TeX-arg-key-val (LaTeX-minted2-key-val-options)]
-                                TeX-arg-verb-delim-or-brace))
-             (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
-             (add-to-list 'LaTeX-verbatim-macros-with-braces-local lang)
-             (when (and (fboundp 'font-latex-add-keywords)
-                        (eq TeX-install-font-lock 'font-latex-setup))
-               (font-latex-add-keywords `((,lang "[")) 'textual))))))
+  (dolist (mint (LaTeX-minted2-newmint-list))
+    (pcase (nth 3 mint)
+      ;; \newminted{lang}{opts} => new langcode and langcode* envs.
+      ;; \newminted[envname]{lang}{opts} => new envname/envname* envs.
+      ("ed" (let* ((env (if (string-empty-p (nth 1 mint))
+                            (concat (nth 2 mint) "code")
+                          (nth 1 mint)))
+                   (env* (concat env "*")))
+              (LaTeX-add-environments (list env))
+              (LaTeX-add-environments (list env* #'LaTeX-env-args
+                                            '(TeX-arg-key-val
+                                              (LaTeX-minted2-key-val-options))))
+              (add-to-list 'LaTeX-indent-environment-list
+                           `(,env current-indentation) t)
+              (add-to-list 'LaTeX-indent-environment-list
+                           `(,env* current-indentation) t)
+              (add-to-list 'LaTeX-verbatim-environments-local env)
+              (add-to-list 'LaTeX-verbatim-environments-local env*)))
+      ;; \newmintinline{foo}{opts} => \fooinline[key=vals]|code| or
+      ;;                              \fooinline[key=vals]{code}
+      ;; \newmintinline[macname]{foo}{opts} => \macname[key=vals]|code| or
+      ;;                                       \macname[key=vals]{code}
+      ("inline" (let ((lang (if (string-empty-p (nth 1 mint))
+                                (concat (nth 2 mint) "inline")
+                              (nth 1 mint))))
+                  (TeX-add-symbols
+                   `(,lang [TeX-arg-key-val (LaTeX-minted2-key-val-options)]
+                           TeX-arg-verb-delim-or-brace))
+                  (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
+                  (add-to-list 'LaTeX-verbatim-macros-with-braces-local lang)
+                  (when (and (fboundp 'font-latex-add-keywords)
+                             (eq TeX-install-font-lock 'font-latex-setup))
+                    (font-latex-add-keywords `((,lang "[")) 'textual))))
+      ;; \newmintedfile{foo}{opts} => \foofile[key=vals]{file-name}
+      ;; \newmintedfile[macname]{foo}{opts} => \macname[key=vals]{file-name}
+      ("edfile" (let ((lang (if (string-empty-p (nth 1 mint))
+                                (concat (nth 2 mint) "file")
+                              (nth 1 mint))))
+                  (TeX-add-symbols
+                   `(,lang [TeX-arg-key-val (LaTeX-minted2-key-val-options)]
+                           TeX-arg-file))))
+      ;; \newmint{foo}{opts} => \foo[key=vals]|code| or
+      ;;                        \foo[key=vals]{code}
+      ;; \newmint[macname]{foo}{opts} => \macname[key=vals]|code| or
+      ;;                                 \macname[key=vals]{code}
+      (_ (let ((lang (if (string-empty-p (nth 1 mint))
+                         (nth 2 mint)
+                       (nth 1 mint))))
+           (TeX-add-symbols
+            `(,lang [TeX-arg-key-val (LaTeX-minted2-key-val-options)]
+                    TeX-arg-verb-delim-or-brace))
+           (add-to-list 'LaTeX-verbatim-macros-with-delims-local lang)
+           (add-to-list 'LaTeX-verbatim-macros-with-braces-local lang)
+           (when (and (fboundp 'font-latex-add-keywords)
+                      (eq TeX-install-font-lock 'font-latex-setup))
+             (font-latex-add-keywords `((,lang "[")) 'textual))))))
   ;; Refresh font-locking so that the verbatim envs take effect only
   ;; when there are defined shortcuts:
-  (when (and LaTeX-auto-minted2-newmint
+  (when (and (LaTeX-minted2-newmint-list)
              (fboundp 'font-latex-set-syntactic-keywords)
              (eq TeX-install-font-lock 'font-latex-setup))
     (font-latex-set-syntactic-keywords)))
