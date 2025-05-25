@@ -1362,13 +1362,17 @@ only in LaTeX modes."
                                     ?\{
                                   end-delim-char))
               (start-delim (char-to-string start-delim-char))
-              (verb-arg-start
-               (1+ (progn
-                     (goto-char bound-end)
-                     (if (string= start-delim TeX-grop)
-                         (progn (backward-sexp) (point))
-                       (forward-char -1)
-                       (search-backward start-delim bound-start t)))))
+              (start-delim-pos
+               (save-excursion
+                 (goto-char bound-end)
+                 (if (string= start-delim TeX-grop) ; "{"
+                     (when-let* ((matching-brace (save-excursion (backward-sexp)
+                                                                 (point))))
+                       (and (>= matching-brace bound-start) matching-brace))
+                   ;; delimiter is, e.g., "|"
+                   (goto-char (1- bound-end))
+                   (search-backward start-delim bound-start t))))
+              (verb-arg-start (1+ start-delim-pos))
               (verb-arg-end (1- bound-end)))
     (list bound-start
           bound-end
@@ -1384,7 +1388,8 @@ Replaces the verbatim content with its own text."
                         (regexp-opt
                          (append
                           (LaTeX-verbatim-macros-with-braces)
-                          (LaTeX-verbatim-macros-with-delims))))))
+                          (LaTeX-verbatim-macros-with-delims)))
+                        "\\_>")))
         (while (let ((case-fold-search nil))
                  (re-search-forward re end t))
           (when-let* ((data (TeX-fold--verb-data))
