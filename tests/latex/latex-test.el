@@ -761,4 +761,17 @@ check the indentation for optional argument of \\usepackage."
                (buffer-string)
                "sab\n")))))
 
+(ert-deftest TeX-find-macro-end-with-complicated-optional-args ()
+  "Check that end of macro is determined correctly."
+  ;; (bug#78587)
+  (dolist (str '("\begin{enumerate}[a]"
+                 "\begin{enumerate}[(a)]"
+                 "\begin{enumerate}[a)]"
+                 "\begin{enumerate}[a{]}]"))
+    (with-temp-buffer
+      (insert str)
+      (LaTeX-mode)
+      (should (equal (point-max)
+                     (TeX-find-macro-end-helper (point-min)))))))
+
 ;;; latex-test.el ends here

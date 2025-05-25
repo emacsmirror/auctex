@@ -5866,9 +5866,18 @@ those will be considered part of it."
                        (forward-line 1)
                        (looking-at "[ \t]*\\(\\[\\)"))))
             (goto-char (match-beginning 1))
-            (condition-case nil
-                (forward-sexp)
-              (scan-error (throw 'found (point)))))
+            ;; Imitate `font-latex-find-matching-close', motivated by
+            ;; examples like \begin{enumerate}[a{]}].
+            (let ((syntax (TeX-search-syntax-table ?\[ ?\]))
+                  (parse-sexp-ignore-comments
+                   (not (derived-mode-p 'docTeX-mode))))
+              (modify-syntax-entry ?\{ "|" syntax)
+              (modify-syntax-entry ?\} "|" syntax)
+              (modify-syntax-entry ?\\ "/" syntax)
+              (condition-case nil
+                  (with-syntax-table syntax
+                    (forward-sexp))
+                (scan-error (throw 'found (point))))))
            ;; Skip over pairs of curly braces
            ((or (looking-at "[ \t]*\n?[ \t]*{") ; Be conservative: Consider
                                         ; only consecutive lines.
