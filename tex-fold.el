@@ -901,6 +901,12 @@ TYPE can be either `env' for environments, `macro' for macros or
            (goto-char (1+ start))
            (LaTeX-find-matching-end)
            (point))
+          ((eq type 'math)
+           (goto-char (1+ start))
+           (if (zerop (skip-chars-forward "A-Za-z@"))
+               (forward-char)
+             (skip-chars-forward "*"))
+           (point))
           (t
            (goto-char start)
            (TeX-find-macro-end)))))
