@@ -9267,7 +9267,10 @@ function would return non-nil and `(match-string 1)' would return
               LaTeX-error-description-list))
 
 (defun LaTeX-imenu-create-index-function ()
-  "Imenu support function for LaTeX."
+  "Return an alist for Imenu support for LaTeX.
+The returned alist is built by the same facilities used for outline
+minor mode support.  Hence, the value of `TeX-outline-extra' is
+respected."
   (TeX-update-style)
   (let (entries
         (regexp (LaTeX-outline-regexp)))
