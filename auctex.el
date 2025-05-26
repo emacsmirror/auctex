@@ -33,21 +33,18 @@
 ;;; Code:
 
 ;; This can be used for starting up AUCTeX, e.g., when not installed
-;; from ELPA.  We have to set `no-byte-compile' to t otherwise the
-;; compiler will eval the form during the compilation where
-;; `load-file-name' is nil and things will go wrong.
+;; from ELPA.
 
-(require 'tex-site
-         (expand-file-name "tex-site.el"
-                           (file-name-directory load-file-name)))
+;; The silly `(when t' test stops performing the `require' during
+;; compilation where `load-file-name' is nil and things would go wrong.
+(when t
+  (require 'tex-site
+           (expand-file-name "tex-site.el"
+                             (file-name-directory load-file-name))))
 
 (defconst AUCTeX-version (package-get-version)
   "AUCTeX version.")
 
 (provide 'auctex)
-
-;; Local Variables:
-;; no-byte-compile: t
-;; End:
 
 ;;; auctex.el ends here
