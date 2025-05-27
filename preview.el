@@ -1,6 +1,6 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2001-2024  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2025  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, text, convenience
@@ -1204,12 +1204,6 @@ is located."
 
   (cons 'image (cdr icon)))
 
-(defsubst preview-replace-active-icon (ov replacement)
-  "Replace the active Icon in OV by REPLACEMENT, another icon."
-  (let ((img (overlay-get ov 'preview-image)))
-    (setcdr (car img) (cdar replacement))
-    (setcdr img (cdr replacement))))
-
 (defcustom preview-leave-open-previews-visible nil
   "Whether to leave previews visible when they are opened.
 If nil, then the TeX preview icon is used when the preview is opened.
@@ -1222,6 +1216,16 @@ and regenerate the preview; it is just replaced by updated image when
 ready.  This behavior suppresses flicker in the appearance."
   :group 'preview-appearance
   :type 'boolean)
+
+(defsubst preview-replace-active-icon (ov replacement)
+  "Replace the active Icon in OV by REPLACEMENT, another icon."
+  (let ((img (overlay-get ov 'preview-image)))
+    (when (and preview-leave-open-previews-visible
+               (consp img))
+      ;; No "TeX icon" has been shown, so we flush manually.
+      (image-flush (car img) t))
+    (setcdr (car img) (cdar replacement))
+    (setcdr img (cdr replacement))))
 
 (defun preview-gs-place (ov snippet box run-buffer tempdir ps-file _imagetype)
   "Generate an image placeholder rendered over by Ghostscript.
