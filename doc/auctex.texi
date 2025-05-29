@@ -484,6 +484,17 @@ to prevent unmatched dollar.
 Note that Texinfo mode does nothing special for @kbd{$}.  It inserts
 dollar sign(s) just in the same way as the other normal keys do.
 
+@AUCTeX{} provides the command @code{LaTeX-make-inline} which converts the
+display math environment at point to inline math.
+
+@deffn Command LaTeX-make-inline
+Convert @LaTeX{} display math environment at point to inline math.  This
+command replaces the enclosing math environment such as @samp{\[...\]} or
+@samp{\begin@{equation@}...\end@{equation@}} with the value of
+@code{TeX-electric-math} or @samp{$...$} by default.  (It may not work
+correctly in docTeX.)
+@end deffn
+
 @subheading Braces
 
 To avoid unbalanced braces, it is useful to insert them pairwise.  You
@@ -1289,6 +1300,109 @@ Input method matching this regular expression is turned off when @kbd{$}
 is typed to begin math mode or a math environment is inserted by
 @kbd{C-c C-e} (@code{LaTeX-environment}).
 @end defopt
+
+@subheading Modifying Math Delimiters and Environments
+@cindex LaTeX-modify-math
+@cindex Inline math, converting
+@cindex Display math, converting
+@cindex Math environment, converting
+
+@AUCTeX{} offers the command @code{LaTeX-modify-math} to convert the
+mathematical construct at point---whether it is inline math such as
+@samp{$...$} or @samp{\(...\)}, a display construct such as @samp{$$...$$}
+or @samp{\[...\]}, or an environment such as @samp{\begin@{equation@}
+... \end@{equation@}}---into a different kind of delimiter or environment.
+
+@deffn Command LaTeX-modify-math
+Interactively, prompt for the target delimiter or environment.  The
+completion table contains the inline delimiters @samp{$} and @samp{\(},
+the display delimiters @samp{$$} and @samp{\[}, and every math environment
+known to @code{texmathp}, such as @samp{equation}, @samp{align*}, or
+anything in the user option @code{texmathp-tex-commands}.  The current
+construct is then rewritten using the chosen form, taking care to
+@itemize @bullet
+@item keep any trailing punctuation outside inline math,
+@item put display constructs on their own lines, and
+@item strip any @code{\label@{@}} commands when converting to inline math.
+@end itemize
+
+When called from Lisp, @var{new-type} may be a string naming a delimiter
+or environment, or a cons @code{((@var{open} . @var{close})
+. @var{inline})} specifying custom delimiters, where @var{inline} is
+non-@code{nil} for inline math.
+
+This command does @emph{not} understand macro-based math wrappers such as
+@code{\ensuremath}.  It may also fail in docTeX buffers.
+@end deffn
+
+A related command, invoked with a prefix argument, is @kbd{C-u C-c C-e}
+(@code{LaTeX-environment}) (@pxref{Environments}).  This modifies the
+current @LaTeX{} environment, while @code{LaTeX-modify-math} also handles
+inline/display constructs.
+
+You can define commands that convert to a particular form, e.g.@: by
+adding the following to your init file::
+
+@lisp
+(defun my-LaTeX-make-brackets ()
+  "Convert math construct at point to \"\\=\\[..\\]\"."
+  (interactive)
+  (LaTeX-modify-math "\\["))
+@end lisp
+
+@lisp
+(defun my-LaTeX-make-equation* ()
+  "Convert math construct at point to \"equation*\"."
+  (interactive)
+  (LaTeX-modify-math "equation*"))
+@end lisp
+
+You can use @code{LaTeX-modify-math} to build higher‑level toggles.  The
+following modifies any math construct to an @samp{equation*} environment,
+then toggles the numbered status:
+
+@lisp
+(defun my-LaTeX-toggle-numbered ()
+  "Convert math construct at point to \"equation*\".
+If the math construct is already \"equation*\", then toggle with the
+numbered variant \"equation\"."
+  (interactive)
+  (unless (texmathp) (user-error "Not inside math"))
+  (let ((current (car texmathp-why)))
+    (LaTeX-modify-math
+     (pcase current
+       ("equation*" "equation")
+       ("equation" "equation*")
+       (_ "equation*")))))
+@end lisp
+
+A further example toggles between @samp{equation}, @samp{align} and their
+starred forms:
+
+@lisp
+(defun my-LaTeX-toggle-align ()
+  "Toggle math environment at point between \"equation\" and \"align\"."
+  (interactive)
+  (unless (texmathp) (user-error "Not inside math"))
+  (let ((current (car texmathp-why)))
+    (LaTeX-modify-math
+     (pcase current
+       ("align*" "equation*")
+       ("equation*" "align*")
+       ("align" "equation")
+       ("equation" "align")
+       (_ "align*")))))
+@end lisp
+
+Such helper commands can be bound in @code{LaTeX-mode-map} as you see fit,
+e.g.@: by adding the following to your init file:
+
+@lisp
+(keymap-set LaTeX-mode-map "C-c e" #'my-LaTeX-make-equation*)
+@end lisp
+
+@xref{Quotes,,LaTeX-make-inline}, for a built-in convenience wrapper that
+converts display constructs to inline math.
 
 @node Completion
 @section Completion

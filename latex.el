@@ -9554,6 +9554,213 @@ no caption key is found, an error is issued.  See also the docstring of
                           "LARGE" "huge" "Huge")
   "List of LaTeX font size declarations.")
 
+(defun LaTeX--strip-labels ()
+  "Remove label commands between point and end of buffer."
+  (let ((re (concat
+             "\\(?:"
+             (if (bound-and-true-p reftex-label-regexps)
+                 (mapconcat #'identity reftex-label-regexps "\\|")
+               (format "%slabel%s%s%s"
+                       (regexp-quote TeX-esc)
+                       TeX-grop "[^}]*" TeX-grcl))
+             "\\)")))
+    (save-excursion
+      (while (re-search-forward re nil t)
+        (replace-match "")))))
+
+(defun LaTeX--modify-math-1 (open close inline new-open new-close new-inline pos)
+  "Helper function for `LaTeX-modify-math'.
+OPEN and CLOSE are the current delimiters, NEW-OPEN and NEW-CLOSE are
+the new delimiters.  INLINE and NEW-INLINE are booleans indicating
+whether the current and new delimiters are inline or display math.
+Assume point is at the start of the current OPEN delimiter.  POS is a
+marker that keeps track of cursor position."
+  (let ((converting-to-inline (and (not inline) new-inline)))
+    (when converting-to-inline
+      ;; Join with previous line if non-blank.
+      (when (save-excursion
+              (skip-chars-backward "[:blank:]")
+              (and
+               (bolp) (not (bobp))
+               (progn
+                 (forward-char -1)
+                 (skip-chars-backward "[:blank:]")
+                 (not (bolp)))))
+        ;; The following dance gets around the slightly counterintuitive
+        ;; behavior of (save-excursion (join-line)) with point at bol.
+        (forward-char (length open))
+        (save-excursion (join-line))
+        (forward-char (- (length open)))))
+    (unless new-inline
+      ;; Ensure non-inline delimiters start on a blank line.
+      (unless (save-excursion
+                (skip-chars-backward "[:blank:]")
+                (and
+                 (bolp) (not (bobp))))
+        (delete-horizontal-space)
+        (insert "\n")))
+    ;; Delete opening delimiter.
+    (delete-char (length open))
+    (let ((start (point)))
+      (search-forward close)
+      (when converting-to-inline
+        ;; Join with next line if non-blank.
+        (when (and (looking-at-p "[[:blank:]]*\n")
+                   (save-excursion
+                     (forward-line 1)
+                     (not (looking-at-p "^[[:blank:]]*$"))))
+          (join-line 'next)))
+      (unless new-inline
+        (unless (looking-at-p "[[:blank:]]*\n")
+          (save-excursion
+            (insert "\n"))))
+      ;; Delete closing delimiter.
+      (delete-char (- (length close)))
+      (save-restriction
+        (narrow-to-region start (point))
+        ;; Clear labels.
+        (goto-char (point-min))
+        (LaTeX--strip-labels)
+        ;; Delete leading and trailing whitespace.
+        (dolist (re '("\\`[ \t\n\r]+" "[ \t\n\r]+\\'"))
+          (goto-char (point-min))
+          (when (re-search-forward re nil t)
+            (replace-match "")))
+        (unless new-inline
+          (goto-char (point-min))
+          (insert "\n")
+          (goto-char (point-max))
+          (insert "\n"))
+        ;; Insert new opening delimiter.
+        (goto-char (point-min))
+        (insert new-open)
+        ;; Insert new closing delimiter
+        (goto-char (point-max))
+        (when (= (point) pos)
+          (set-marker-insertion-type pos (not 'advance)))
+        (when converting-to-inline
+          (skip-chars-backward ".,;:!?"))
+        (insert new-close)
+        ;; Indent, including one line past the modified region.
+        (widen)
+        (end-of-line 2)
+        (indent-region start (point))))))
+
+(defun LaTeX--math-environment-list ()
+  "Return list of defined math environments.
+This combines the env-on entries from `texmathp' and any user additions."
+  (texmathp-compile)
+  (mapcar #'car
+          (cl-remove-if-not
+           (lambda (entry)
+             (eq (nth 1 entry) 'env-on))
+           texmathp-tex-commands1)))
+
+(defun LaTeX--closing (type)
+  "Return closing delimiter corresponding to given `texmathp' TYPE.
+TYPE must be one of the (La)TeX symbols $, $$, \\( or \\=\\[, or a valid
+environment name.  Macros such as \\ensuremath are not supported."
+  (pcase type
+    ((or "$" "$$") type)
+    ("\\[" "\\]")
+    ("\\(" "\\)")
+    (_ (unless (member type (LaTeX--math-environment-list))
+         (error "Invalid or unsupported opening delimiter: %s" type))
+       (concat TeX-esc "end" TeX-grop type TeX-grcl))))
+
+(defun LaTeX-modify-math (new-type)
+  "Modify the current math construct to NEW-TYPE.
+
+Interactively, prompt for NEW-TYPE from a list of inline math
+delimiters (\"$\", \"\\(\"), display math delimiters (\"$$\",
+\"\\=\\[\") and valid LaTeX environments (\"equation\", ...).
+
+Non-interactively, NEW-TYPE must be either
+- a string specifying the target delimiter or environment name, or
+- a cons cell ((OPEN . CLOSE) . INLINE), where OPEN and CLOSE are
+  delimiters and INLINE is non-nil if the math construct is to be
+  understood as inline.
+
+The function converts the math construct at point (inline, display, or
+environment) to the specified NEW-TYPE, preserving the content.  If
+point is not in a math construct, signal an error.  Clears any active
+previews at point before modification.
+
+Does not support modifying macro-based constructs such as \\ensuremath."
+  ;; FIXME: this function may not work correctly in docTeX
+  (interactive
+   (let ((type (progn (texmathp) (car texmathp-why)))
+         (tbl (append '("$" "\\(" "$$" "\\[")
+                      (LaTeX--math-environment-list))))
+     (barf-if-buffer-read-only)
+     (unless type (user-error "Not inside math"))
+     (LaTeX--closing type) ;; Check for errors.
+     (list (completing-read
+            (format "Convert %s → " type) tbl nil t nil nil
+            type))))
+  (let ((new-open (if (stringp new-type)
+                      new-type
+                    (caar new-type)))
+        (new-close (if (stringp new-type)
+                       (LaTeX--closing new-type)
+                     (cdar new-type)))
+        (new-inline (if (stringp new-type)
+                        (member new-type '("$" "\\("))
+                      (cdr new-type))))
+    (when (fboundp 'preview-clearout-at-point)
+      (preview-clearout-at-point))
+    (unless (called-interactively-p 'any)
+      (unless (texmathp) (error "Not inside math")))
+    (let ((type (car texmathp-why))
+          (math-start (cdr texmathp-why))
+          (pos (point-marker)))
+      (set-marker-insertion-type pos
+                                 (not
+                                  (and
+                                   (< (point) (point-max))
+                                   (save-excursion
+                                     (forward-char)
+                                     (not (texmathp))))))
+      (goto-char math-start)
+      (let ((open (if (member type '("\\(" "$" "\\[" "$$"))
+                      type
+                    (concat TeX-esc "begin" TeX-grop type TeX-grcl)))
+            (close (LaTeX--closing type)))
+        (if (or (not (stringp new-type))
+                (member new-open '("$" "\\(" "\\[" "$$")))
+            ;; Conversion to inline or non-environment display.
+            (let ((inline (member type '("$" "\\("))))
+              (LaTeX--modify-math-1 open close inline new-open new-close new-inline pos))
+          ;; Conversion to an environment.
+          (delete-char (length open))
+          (push-mark (save-excursion
+                       (search-forward close)
+                       (delete-region (match-beginning 0) (match-end 0))
+                       (when (= (point) pos)
+                         (set-marker pos nil)
+                         (setq pos nil))
+                       (when (member type '("$" "\\("))
+                         (skip-chars-forward ".,;:!?"))
+                       (point)))
+          (activate-mark)
+          (LaTeX-insert-environment new-type)))
+      (when pos
+        (goto-char pos)
+        (set-marker pos nil)))))
+
+(defun LaTeX-make-inline ()
+  "Convert LaTeX display math construct at point to inline math.
+Remove the enclosing math construct (such as \\=\\[...\\] or
+\\begin{equation}...\\end{equation}) and replace it with inline math
+surrounded by `TeX-electric-math' if non-nil, or \"$...$\".  Leave any
+trailing punctuation outside the math delimiters."
+  ;; FIXME: this function may not work correctly in docTeX
+  (interactive "*")
+  (LaTeX-modify-math
+   (if TeX-electric-math
+       (cons TeX-electric-math 'inline)
+     "$")))
+
 (provide 'latex)
 
 ;;; latex.el ends here
