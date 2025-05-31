@@ -6449,6 +6449,7 @@ With prefix argument FORCE, always inserts \" characters."
           (texmathp)
           (and (TeX-in-comment) (not (eq major-mode 'docTeX-mode))))
       (self-insert-command (prefix-numeric-value force))
+    (expand-abbrev)
     (TeX-update-style)
     (pcase-let ((`(,open-quote ,close-quote ,q-after-q)
                  (TeX-get-quote-characters)))
