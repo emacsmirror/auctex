@@ -1406,6 +1406,35 @@ e.g.@: by adding the following to your init file:
 @xref{Quotes,,LaTeX-make-inline}, for a built-in convenience wrapper that
 converts display constructs to inline math.
 
+@subheading Repeating recent math
+
+@cindex LaTeX-repeat-recent-math
+@cindex Math, repeating
+@cindex Environments, repeating
+
+Sometimes you want the next equation to be a slight modification of a
+previous one.  The command @code{LaTeX-repeat-recent-math} looks backward
+for a recent top-level display math construct and inserts a copy.
+
+@deffn Command LaTeX-repeat-recent-math @var{n}
+Search backward for the @var{n}th most recent outer-level math construct
+(@samp{\[...\]}, @samp{$$...$$}, or any math environment recognized by
+@code{texmathp}, such as @code{equation}, @code{align*}, @dots{}).  Copy
+that construct to the current line, indent it, and strip any labels.
+
+With no prefix argument, @var{n} defaults to @code{1} (the most recent
+construct).
+@end deffn
+
+We can bind this command to a key, as follows:
+
+@lisp
+(keymap-set LaTeX-mode-map "C-c r" #'LaTeX-repeat-recent-math)
+@end lisp
+
+Then @kbd{C-c r} duplicates the last equation, @kbd{C-2 C-c r} duplicates
+the second-to-last equation, and so on.
+
 @node Completion
 @section Completion
 @cindex Completion
