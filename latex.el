@@ -1999,11 +1999,11 @@ TYPE is one of the symbols mac or env."
         (set-syntax-table LaTeX-mode-syntax-table)
         (insert (replace-regexp-in-string "[ \t\r\n%]" "" spec))
         (goto-char (point-min))
-        (while (looking-at-p "[+!>=bmrRvodODsteE]")
-          (cond ((looking-at-p "[+!b]")
+        (while (looking-at-p "[+!>=bcmrRvodODsteE]")
+          (cond ((looking-at-p "[+!bc]")
                  ;; + or !: Long argument or space aware: Move over
                  ;; them.  b is special; only available for
-                 ;; enviroments
+                 ;; enviroments as well as c.
                  (forward-char 1))
                 ;; Argument processors and key-val modifier: Move
                 ;; over [>=] and a balanced {}
