@@ -1,6 +1,6 @@
-;;; algpseudocodex.el --- AUCTeX style for `algpseudocodex.sty' (v1.0.2)  -*- lexical-binding: t; -*-
+;;; algpseudocodex.el --- AUCTeX style for `algpseudocodex.sty' (v1.2.0)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Created: 2022-10-10
@@ -23,8 +23,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for the `algpseudocodex.sty' (v1.0.2) from
-;; 2022-10-07.  `algpseudocodex.sty' is part of TeXLive.
+;; This file adds support for the `algpseudocodex.sty' (v1.2.0) from
+;; 2025-04-16.  `algpseudocodex.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -32,9 +32,7 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (defun LaTeX-arg-algpseudocodex-block (_optional block &optional num)
   "Insert the arguments of blocks from algpseudocodex package.
@@ -120,6 +118,22 @@ the number of arguments."
     '("Function" (LaTeX-arg-algpseudocodex-block "Function" 2))
     '("EndFunction" 0)
 
+    ;; 1.3.9 Structure
+    '("Structure" (LaTeX-arg-algpseudocodex-block "Structure" 1))
+    '("EndStructure" 0)
+
+    ;; 1.3.10 Class
+    '("Class" (LaTeX-arg-algpseudocodex-block "Class" 1))
+    '("EndClass" 0)
+
+    ;; 1.3.11 Properties
+    '("Properties" (LaTeX-arg-algpseudocodex-block "Properties"))
+    '("EndProperties" 0)
+
+    ;; 1.3.12 Methods
+    '("Methods" (LaTeX-arg-algpseudocodex-block "Methods"))
+    '("EndMethods" 0)
+
     ;; 1.4 Require and Ensure
     '("Require" (TeX-arg-literal " "))
     '("Ensure"  (TeX-arg-literal " "))
@@ -183,6 +197,10 @@ the number of arguments."
                   "If"
                   "Procedure"
                   "Function"
+                  "Structure"
+                  "Class"
+                  "Properties"
+                  "Methods"
                   "Loop"
                   "BeginBox"))
            (mid '("ElsIf" "Else"))
@@ -192,6 +210,10 @@ the number of arguments."
                   "EndIf"
                   "EndProcedure"
                   "EndFunction"
+                  "EndStructure"
+                  "EndClass"
+                  "EndProperties"
+                  "EndMethods"
                   "EndLoop"
                   "EndBox")))
        (dolist (elt beg)
