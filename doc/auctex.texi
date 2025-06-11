@@ -492,7 +492,7 @@ Convert @LaTeX{} display math environment at point to inline math.  This
 command replaces the enclosing math environment such as @samp{\[...\]} or
 @samp{\begin@{equation@}...\end@{equation@}} with the value of
 @code{TeX-electric-math} or @samp{$...$} by default.  (It may not work
-correctly in docTeX.)
+correctly in doc@TeX{}.)
 @end deffn
 
 @subheading Braces
@@ -1334,7 +1334,7 @@ or environment, or a cons @code{((@var{open} . @var{close})
 non-@code{nil} for inline math.
 
 This command does @emph{not} understand macro-based math wrappers such as
-@code{\ensuremath}.  It may also fail in docTeX buffers.
+@code{\ensuremath}.  It may also fail in doc@TeX{} buffers.
 @end deffn
 
 A related command, invoked with a prefix argument, is @kbd{C-u C-c C-e}
@@ -1994,7 +1994,7 @@ behavior can be controlled by setting the variable
 @code{docTeX-indent-across-comments}.
 
 @defopt docTeX-indent-across-comments
-If non-@code{nil}, indentation in docTeX is done across comments.  This
+If non-@code{nil}, indentation in doc@TeX{} is done across comments.  This
 option is disabled by default.
 @end defopt
 
@@ -2691,7 +2691,7 @@ finds a closing dollar sign or till the end of the buffer.
 As a remedy you can make the verbatim construct known to @fontlatex{}
 (@pxref{Verbatim content}).  If this is not possible, you can insert a
 commented dollar sign (@samp{%$}) at the next suitable end of line as a
-quick workaround.  In docTeX documents, @samp{^^A$} is also available
+quick workaround.  In doc@TeX{} documents, @samp{^^A$} is also available
 for similar purpose.
 
 @node Folding

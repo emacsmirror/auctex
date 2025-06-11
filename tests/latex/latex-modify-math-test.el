@@ -37,7 +37,7 @@ This macro is used to set up a test environment for `LaTeX-modify-math'."
        ,@body)))
 
 (ert-deftest LaTeX-modify-math-inline-bracket-period ()
-  "Convert \\=\\[...\\=\\] to $..$ and keep trailing period."
+  "Convert \\=\\[...\\] to $..$ and keep trailing period."
   (latex-modify-test--with-temp-buffer
       "We have\n\\[ a+b = c. \\]"
     (search-forward "b")
@@ -128,7 +128,7 @@ This macro is used to set up a test environment for `LaTeX-modify-math'."
     (should (equal (buffer-string) "$x = y$"))))
 
 (ert-deftest LaTeX-modify-math-dollar-to-bracket ()
-  "Convert $...$ to \\=\\[...\\=\\]."
+  "Convert $...$ to \\=\\[...\\]."
   (latex-modify-test--with-temp-buffer
       "Text $x + y$ more."
     (search-forward "+")
@@ -144,7 +144,7 @@ This macro is used to set up a test environment for `LaTeX-modify-math'."
     (should (equal (buffer-string) "Text\n$$\na = b\n$$\nend."))))
 
 (ert-deftest LaTeX-modify-math-bracket-to-equation ()
-  "Convert \\=\\[...\\=\\] to equation environment."
+  "Convert \\=\\[...\\] to equation environment."
   (latex-modify-test--with-temp-buffer
       "\\[ f(x) = x^2 \\]"
     (search-forward "f")
