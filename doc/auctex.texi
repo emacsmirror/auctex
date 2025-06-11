@@ -1302,7 +1302,6 @@ is typed to begin math mode or a math environment is inserted by
 @end defopt
 
 @subheading Modifying Math Delimiters and Environments
-@cindex LaTeX-modify-math
 @cindex Inline math, converting
 @cindex Display math, converting
 @cindex Math environment, converting
@@ -1321,9 +1320,12 @@ known to @code{texmathp}, such as @samp{equation}, @samp{align*}, or
 anything in the user option @code{texmathp-tex-commands}.  The current
 construct is then rewritten using the chosen form, taking care to
 @itemize @bullet
-@item keep any trailing punctuation outside inline math,
-@item put display constructs on their own lines, and
-@item strip any @code{\label@{@}} commands when converting to inline math.
+@item
+keep any trailing punctuation outside inline math,
+@item
+put display constructs on their own lines, and
+@item
+strip any @code{\label@{@}} commands when converting to inline math.
 @end itemize
 
 When called from Lisp, @var{new-type} may be a string naming a delimiter
