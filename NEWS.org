@@ -11,7 +11,11 @@
 
 ** Added
 
-- Add new support filse =style/embedfile.el= and =style/needspace.el=.
+- Add new commands ~LaTeX-make-inline~ which converts the display math
+  environment at point to inline math and the more general
+  ~LaTeX-modify-math~ which converts the mathematical construct at point
+  into one with different kind of delimiter or another environment.
+- Add new support files =style/embedfile.el= and =style/needspace.el=.
 
 ** Changed
 
