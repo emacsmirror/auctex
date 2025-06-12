@@ -1,6 +1,6 @@
-;;; fontaxes.el --- AUCTeX style for `fontaxes.sty' version v1.0d  -*- lexical-binding: t; -*-
+;;; fontaxes.el --- AUCTeX style for `fontaxes.sty' v2.0.1  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,82 +24,28 @@
 
 ;;; Commentary:
 
-;; This file adds support for `fontaxes.sty' version v1.0d from
-;; 2014/03/23.  `fontaxes.sty' is part of TeXLive.
-
-;; Thanks to Mosè Giordano for his perceptive comments on
-;; implementation of "figureversion".
+;; This file adds support for `fontaxes.sty' v2.0.1 from 2025-05-24.
+;; `fontaxes.sty' is deprecated in favor of `figureversions.sty'.  This
+;; style reflects this change and loads `figureversions.el', adding the
+;; remaining compatibility macros to AUCTeX.
 
 ;;; Code:
 
 (require 'tex)
 
-;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
-
 (TeX-add-style-hook
  "fontaxes"
  (lambda ()
+
+   (TeX-run-style-hooks "figureversions")
+
    (TeX-add-symbols
-    ;; Various font shapes:
-    ;; These macros are now part of LaTeX kernel 2020-02-02
-    ;; '("swshape"           -1)  ; swash shape
-    ;; '("sscshape"          -1)  ; spaced small caps
-    ;; '("swdefault"          0)
-    ;; '("sscdefault"         0)
-    ;; '("ulcdefault"         0)
     '("fontprimaryshape"   t)
-    '("fontsecondaryshape" t)
+    '("fontsecondaryshape" t))
 
-    ;; Figure versions
-    '("figureversion"
-      (TeX-arg-completing-read-multiple ("text"         "osf"
-                                         "lining"       "lf"
-                                         "tabular"      "tab"
-                                         "proportional" "prop")
-                                        "Style, alignment"))
-    '("txfigures" -1)  ; style: text figures (osf)
-    '("lnfigures" -1)  ; style: lining figures
-    '("tbfigures" -1)  ; alignment: tabular figures
-    '("prfigures" -1)  ; alignment: proportional figures
-    '("fontfigurestyle"
-      (TeX-arg-completing-read ("text" "lining") "Style"))
-    '("fontfigurealignment"
-      (TeX-arg-completing-read ("tabular" "proportional") "Alignment"))
-    '("fontbasefamily" t)
-
-    ;; Math versions
-    '("boldmath"         -1)  ; math weight
-    '("unboldmath"       -1)  ;
-    '("tabularmath"      -1)  ; math figure alignment
-    '("proportionalmath" -1)  ;
-    '("mathweight"
-      (TeX-arg-completing-read ("bold" "normal") "Math weight"))
-    '("mathfigurealignment"
-      (TeX-arg-completing-read ("tabular" "proportional") "Math figure alignment"))
-
-    ;; Additional commands
-    ;; These macros are now part of LaTeX kernel 2020-02-02
-    ;; '("textsw"              t)
-    ;; '("textssc"             t)
-    ;; '("textulc"             t)
-    '("textfigures"         t)
-    '("liningfigures"       t)
-    '("tabularfigures"      t)
-    '("proportionalfigures" t))
-
-   ;; Fontification
-   (when (and (featurep 'font-latex)
-              (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("textfigures"         "{")
-                                ("liningfigures"       "{")
-                                ("tabularfigures"      "{")
-                                ("proportionalfigures" "{"))
-                              'type-command)
-     (font-latex-add-keywords '(("figureversion"       "{"))
-                              'variable)))
+   (when (derived-mode-p 'docTeX-mode)
+     (TeX-add-symbols
+      '("fa@naming@exception" 3))))
  TeX-dialect)
 
 (defvar LaTeX-fontaxes-package-options nil
