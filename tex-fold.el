@@ -72,65 +72,86 @@ macros, `math' for math macros and `comment' for comments."
               (const :tag "Math Macros" math)
               (const :tag "Comments" comment)))
 
+(defconst TeX-fold--spec-type
+  '(choice
+    (string :tag "Display String")
+    (integer :tag "Number of argument" :value 1)
+    (function :tag "Function to execute")
+    (cons :tag "Spec with signature"
+          (choice (string :tag "Display String")
+                  (integer :tag "Number of argument" :value 1)
+                  (function :tag "Function to execute"))
+          (choice (const :tag "No restriction" nil)
+                  (integer :tag "Max total arguments")
+                  (cons :tag "Max optional and mandatory"
+                        (integer :tag "Max optional arguments")
+                        (integer :tag "Max mandatory arguments"))
+                  (function :tag "Predicate function"))))
+  "Type spec used by TeX-fold defcustoms.")
+
 (defcustom TeX-fold-macro-spec-list
-  '(("[f]" ("footnote" "marginpar"))
-    (TeX-fold-cite-display ("cite" "Cite"))
-    (TeX-fold-textcite-display ("textcite" "Textcite"))
-    (TeX-fold-parencite-display ("parencite" "Parencite"))
-    (TeX-fold-footcite-display ("footcite" "footcitetext"))
-    ("[l]" ("label"))
-    ("[r]" ("ref" "pageref" "eqref" "footref"))
-    ("[i]" ("index" "glossary"))
-    ("[1]:||*" ("item"))
-    ("..." ("dots"))
-    ("(C)" ("copyright"))
-    ("(R)" ("textregistered"))
-    ("TM"  ("texttrademark"))
-    (TeX-fold-alert-display ("alert"))
-    (TeX-fold-textcolor-display ("textcolor"))
+  '((("[f]" . (1 . 1)) ("footnote" "marginpar"))
+    ((TeX-fold-cite-display . (2 . 1)) ("cite" "Cite"))
+    ((TeX-fold-textcite-display . (2 . 1)) ("textcite" "Textcite"))
+    ((TeX-fold-parencite-display . (2 . 1)) ("parencite" "Parencite"))
+    ((TeX-fold-footcite-display . (2 . 1)) ("footcite" "footcitetext"))
+    (("[l]" . TeX-fold-stop-after-first-mandatory) ("label"))
+    (("[r]" . 1) ("ref" "pageref" "eqref" "footref"))
+    (("[i]" . (1 . 1)) ("index" "glossary"))
+    (("[1]:||*" . (1 . 0)) ("item"))
+    (("..." . 0) ("dots"))
+    (("(C)" . 0) ("copyright"))
+    (("(R)" . 0) ("textregistered"))
+    (("TM" . 0)  ("texttrademark"))
+    ((TeX-fold-alert-display . 1) ("alert"))
+    ((TeX-fold-textcolor-display . (1 . 2)) ("textcolor"))
     (TeX-fold-begin-display ("begin"))
-    (TeX-fold-end-display ("end"))
+    ((TeX-fold-end-display . 1) ("end"))
     (1 ("part" "chapter" "section" "subsection" "subsubsection"
         "paragraph" "subparagraph"
         "part*" "chapter*" "section*" "subsection*" "subsubsection*"
-        "paragraph*" "subparagraph*"
-        "emph" "textit" "textsl" "textmd" "textrm" "textsf" "texttt"
-        "textbf" "textsc" "textup")))
+        "paragraph*" "subparagraph*"))
+    ((1 . (0 . 1)) ("emph" "textit" "textsl" "textmd" "textrm" "textsf" "texttt"
+                    "textbf" "textsc" "textup")))
   "List of replacement specifiers and macros to fold.
 
-The first element of each item can be a string, an integer or a
-function symbol.  The second element is a list of macros to fold
-without the leading backslash.
+The first element is of the form SPEC or (SPEC . SIG), where SPEC can be
+a string, an integer or a function symbol and SIG is described below.
+The second element is a list of macros to fold without the leading
+backslash.
 
-If the first element is a string, it will be used as a display
-replacement for the whole macro.  Numbers in braces, brackets,
-parens or angle brackets will be replaced by the respective macro
-argument.  For example \"{1}\" will be replaced by the first
-mandatory argument of the macro.  One can also define
-alternatives within the specifier which are used if an argument
-is not found.  Alternatives are separated by \"||\".  They are
-most useful with optional arguments.  As an example, the default
-specifier for \\item is \"[1]:||*\" which means that if there is
-an optional argument, its value is shown followed by a colon.  If
-there is no optional argument, only an asterisk is used as the
-display string.
+If SPEC is a string, it will be used as a display replacement for the
+whole macro.  Numbers in braces, brackets, parens or angle brackets will
+be replaced by the respective macro argument.  For example \"{1}\" will
+be replaced by the first mandatory argument of the macro.  One can also
+define alternatives within the specifier which are used if an argument
+is not found.  Alternatives are separated by \"||\".  They are most
+useful with optional arguments.  As an example, the default specifier
+for \\item is \"[1]:||*\" which means that if there is an optional
+argument, its value is shown followed by a colon.  If there is no
+optional argument, only an asterisk is used as the display string.
 
-If the first element is an integer, the macro will be replaced by
-the respective macro argument.
+If SPEC is an integer, the macro will be replaced by the respective
+macro argument.
 
-If the first element is a function symbol, the function will be
-called with all mandatory arguments of the macro and the result
-of the function call will be used as a replacement for the macro.
-Such functions typically return a string, but may also return the
-symbol `abort' to indicate that the macro should not be folded.
+If SPEC is a function symbol, the function will be called with all
+mandatory arguments of the macro and the result of the function call
+will be used as a replacement for the macro.  Such functions typically
+return a string, but may also return the symbol `abort' to indicate that
+the macro should not be folded.
 
-Setting this variable does not take effect immediately.  Use
-Customize or reset the mode."
-  :type '(repeat (group (choice (string :tag "Display String")
-                                (integer :tag "Number of argument" :value 1)
-                                (function :tag "Function to execute"))
+SIG optionally restricts how many macro arguments are consumed.  It
+should be of the form required by the SIGNATURE argument of
+`TeX-find-macro-boundaries'.  For example, if SIGNATURE is an integer n,
+then at most n total arguments are consumed, while if it is a cons
+cell (p . q), then at most p optional and q mandatory arguments are
+allowed.
+
+Setting this variable does not take effect immediately.  Use Customize
+or reset the mode."
+  :type `(repeat (group ,TeX-fold--spec-type
                         (repeat :tag "Macros" (string))))
-  :package-version '(auctex . "14.0.8"))
+  :package-version '(auctex . "14.1.1"))
 
 (defvar-local TeX-fold-macro-spec-list-internal nil
   "Internal list of display strings and macros to fold.
@@ -156,9 +177,7 @@ and <mode-prefix>-fold-env-spec-list.")
 
 (defcustom TeX-fold-math-spec-list nil
   "List of display strings and math macros to fold."
-  :type '(repeat (group (choice (string :tag "Display String")
-                                (integer :tag "Number of argument" :value 1)
-                                (function :tag "Function to execute"))
+  :type `(repeat (group ,TeX-fold--spec-type
                         (repeat :tag "Math Macros" (string)))))
 
 (defvar-local TeX-fold-math-spec-list-internal nil
@@ -440,9 +459,14 @@ for macros and `math' for math macros."
                                                (string (char-after
                                                         (match-end 0)))))))
                 (let* ((item-start (match-beginning 0))
-                       (display-string-spec (cadr (assoc item-name
-                                                         fold-list)))
-                       (item-end (TeX-fold-item-end item-start type))
+                       (spec-sig? (cadr (assoc item-name fold-list)))
+                       ;; spec-sig? is of the form SPEC or (SPEC . SIG).
+                       (display-string-spec (if (consp spec-sig?)
+                                                (car spec-sig?)
+                                              spec-sig?))
+                       (sig (when (consp spec-sig?)
+                              (cdr spec-sig?)))
+                       (item-end (TeX-fold-item-end item-start type sig))
                        (ov (TeX-fold-make-overlay item-start item-end type
                                                   display-string-spec)))
                   (TeX-fold-hide-item ov))))))))))
@@ -539,7 +563,7 @@ Return non-nil if an item was found and folded, nil otherwise."
                                  TeX-fold-math-spec-list-internal)
                                 (t TeX-fold-macro-spec-list-internal)))
                fold-item
-               (display-string-spec
+               (spec-sig?
                 (or (catch 'found
                       (while fold-list
                         (setq fold-item (car fold-list))
@@ -552,7 +576,13 @@ Return non-nil if an item was found and folded, nil otherwise."
                       (if (eq type 'env)
                           TeX-fold-unspec-env-display-string
                         TeX-fold-unspec-macro-display-string))))
-               (item-end (TeX-fold-item-end item-start type))
+               ;; spec-sig? is of the form SPEC or (SPEC . SIG).
+               (display-string-spec (if (consp spec-sig?)
+                                        (car spec-sig?)
+                                      spec-sig?))
+               (sig (when (consp spec-sig?)
+                      (cdr spec-sig?)))
+               (item-end (TeX-fold-item-end item-start type sig))
                (ov (TeX-fold-make-overlay item-start item-end type
                                           display-string-spec)))
           (TeX-fold-hide-item ov))))))
@@ -907,10 +937,12 @@ display property."
       (overlay-put ov 'display display-string))
     ov))
 
-(defun TeX-fold-item-end (start type)
+(defun TeX-fold-item-end (start type &optional signature)
   "Return the end of an item of type TYPE starting at START.
 TYPE can be either `env' for environments, `macro' for macros or
-`math' for math macros."
+`math' for math macros.
+Optional SIGNATURE, as in `TeX-find-macro-boundaries', restricts the
+allowed arguments of LaTeX macros."
   (save-excursion
     (cond ((and (eq type 'env)
                 (eq major-mode 'ConTeXt-mode))
@@ -926,15 +958,9 @@ TYPE can be either `env' for environments, `macro' for macros or
            (goto-char (1+ start))
            (LaTeX-find-matching-end)
            (point))
-          ((eq type 'math)
-           (goto-char (1+ start))
-           (if (zerop (skip-chars-forward "A-Za-z@"))
-               (forward-char)
-             (skip-chars-forward "*"))
-           (point))
           (t
            (goto-char start)
-           (TeX-find-macro-end)))))
+           (TeX-find-macro-end signature)))))
 
 (defun TeX-fold-overfull-p (ov-start ov-end display-string)
   "Return t if an overfull line will result after adding an overlay.
@@ -1095,6 +1121,9 @@ breaks will be replaced by spaces."
       (dolist (ov overlays)
         (TeX-fold-hide-item ov)))))
 
+(defun TeX-fold-stop-after-first-mandatory (args)
+  "Return nil when final element of ARGS starts with \"{\"."
+  (and args (string-prefix-p "{" (car (last args)))))
 
 ;;; Removal
 

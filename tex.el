@@ -5790,11 +5790,23 @@ If LIMIT is non-nil, do not search further up than this position
 in the buffer."
   (TeX-find-balanced-brace -1 depth limit))
 
-(defun TeX-find-macro-boundaries (&optional lower-bound)
+(defun TeX-find-macro-boundaries (&optional lower-bound signature)
   "Return a cons containing the start and end of a macro.
 If LOWER-BOUND is given, do not search backward further than this
 point in buffer.  Arguments enclosed in brackets or braces are
-considered part of the macro."
+considered part of the macro.
+
+If SIGNATURE is given, restrict the total number of arguments.  If
+SIGNATURE is an integer N, allow at most N total arguments.  If
+SIGNATURE is a cons cell (P . Q), allow at most P optional and Q
+mandatory arguments.
+
+Finally, SIGNATURE may be a function, called before each new argument is
+consumed with a single list argument consisting of the argument blocks
+encountered thus far.  For example, with point before
+\"\\begin{equation}\", it is called first with the empty list () and
+then with the single element list (\"{equation}\").  If SIGNATURE
+returns non-nil, then no further macro arguments are consumed."
   ;; FIXME: Pay attention to `texmathp-allow-detached-args' and
   ;; `reftex-allow-detached-macro-args'.
   ;; Should we handle cases like \"{o} and \\[3mm] (that is, a macro
@@ -5839,16 +5851,17 @@ considered part of the macro."
       ;; Search forward for the end of the macro.
       (when start-point
         (save-excursion
-          (goto-char (TeX-find-macro-end-helper start-point))
+          (goto-char (TeX-find-macro-end-helper start-point signature))
           (if (< orig-point (point))
               (cons start-point (point))
             nil))))))
 
-(defun TeX-find-macro-end-helper (start)
+(defun TeX-find-macro-end-helper (start &optional signature)
   "Find the end of a macro given its START.
 START is the position just before the starting token of the macro.
 If the macro is followed by square brackets or curly braces,
-those will be considered part of it."
+those will be considered part of it.  SIGNATURE, as in
+`TeX-find-macro-boundaries', restricts how many arguments are allowed."
   (save-excursion
     (save-match-data
       (catch 'found
@@ -5856,43 +5869,67 @@ those will be considered part of it."
         (if (zerop (skip-chars-forward "A-Za-z@"))
             (forward-char)
           (skip-chars-forward "*"))
-        (while (not (eobp))
-          (cond
-           ;; Skip over pairs of square brackets
-           ((or (looking-at "[ \t]*\n?[ \t]*\\(\\[\\)") ; Be conservative: Consider
+        (let* ((max-tot (and (integerp signature) signature))
+               (max-opt (and (consp signature) (car signature)))
+               (max-req (and (consp signature) (cdr signature)))
+               (num-opt 0)
+               (num-req 0)
+               (sig-pred (when (functionp signature) signature))
+               last-arg-start last-args)
+          (while (not (eobp))
+            (when (or (and max-tot (>= (+ num-opt num-req) max-tot))
+                      (and sig-pred
+                           (progn
+                             (when last-arg-start
+                               (let ((arg (buffer-substring-no-properties
+                                           last-arg-start (point))))
+                                 (setq last-args (nconc last-args (list arg)))))
+                             (funcall sig-pred last-args))))
+              (throw 'found (point)))
+            (cond
+             ;; Skip over pairs of square brackets
+             ((or (looking-at "[ \t]*\n?[ \t]*\\(\\[\\)") ; Be conservative: Consider
                                         ; only consecutive lines.
-                (and (looking-at (concat "[ \t]*" TeX-comment-start-regexp))
-                     (save-excursion
-                       (forward-line 1)
-                       (looking-at "[ \t]*\\(\\[\\)"))))
-            (goto-char (match-beginning 1))
-            ;; Imitate `font-latex-find-matching-close', motivated by
-            ;; examples like \begin{enumerate}[a{]}].
-            (let ((syntax (TeX-search-syntax-table ?\[ ?\]))
-                  (parse-sexp-ignore-comments
-                   (not (derived-mode-p 'docTeX-mode))))
-              (modify-syntax-entry ?\{ "|" syntax)
-              (modify-syntax-entry ?\} "|" syntax)
-              (modify-syntax-entry ?\\ "/" syntax)
-              (condition-case nil
-                  (with-syntax-table syntax
-                    (forward-sexp))
-                (scan-error (throw 'found (point))))))
-           ;; Skip over pairs of curly braces
-           ((or (looking-at "[ \t]*\n?[ \t]*{") ; Be conservative: Consider
+                  (and (looking-at (concat "[ \t]*" TeX-comment-start-regexp))
+                       (save-excursion
+                         (forward-line 1)
+                         (looking-at "[ \t]*\\(\\[\\)"))))
+              (when (and max-opt (>= num-opt max-opt))
+                (throw 'found (point)))
+              (cl-incf num-opt)
+              (goto-char (match-beginning 1))
+              (setq last-arg-start (point))
+              ;; Imitate `font-latex-find-matching-close', motivated by
+              ;; examples like \begin{enumerate}[a{]}].
+              (let ((syntax (TeX-search-syntax-table ?\[ ?\]))
+                    (parse-sexp-ignore-comments
+                     (not (derived-mode-p 'docTeX-mode))))
+                (modify-syntax-entry ?\{ "|" syntax)
+                (modify-syntax-entry ?\} "|" syntax)
+                (modify-syntax-entry ?\\ "/" syntax)
+                (condition-case nil
+                    (with-syntax-table syntax
+                      (forward-sexp))
+                  (scan-error (throw 'found (point))))))
+             ;; Skip over pairs of curly braces
+             ((or (looking-at "[ \t]*\n?[ \t]*{") ; Be conservative: Consider
                                         ; only consecutive lines.
-                (and (looking-at (concat "[ \t]*" TeX-comment-start-regexp))
-                     (save-excursion
-                       (forward-line 1)
-                       (looking-at "[ \t]*{"))))
-            (goto-char (match-end 0))
-            (goto-char (or (TeX-find-closing-brace)
-                           ;; If we cannot find a regular end, use the
-                           ;; next whitespace.
-                           (save-excursion (skip-chars-forward "^ \t\n")
-                                           (point)))))
-           (t
-            (throw 'found (point)))))
+                  (and (looking-at (concat "[ \t]*" TeX-comment-start-regexp))
+                       (save-excursion
+                         (forward-line 1)
+                         (looking-at "[ \t]*{"))))
+              (when (and max-req (>= num-req max-req))
+                (throw 'found (point)))
+              (cl-incf num-req)
+              (goto-char (match-end 0))
+              (setq last-arg-start (1- (point)))
+              (goto-char (or (TeX-find-closing-brace)
+                             ;; If we cannot find a regular end, use the
+                             ;; next whitespace.
+                             (save-excursion (skip-chars-forward "^ \t\n")
+                                             (point)))))
+             (t
+              (throw 'found (point))))))
         ;; Make sure that this function does not return nil, even
         ;; when the above `while' loop is totally skipped. (bug#35638)
         (throw 'found (point))))))
@@ -5904,11 +5941,12 @@ in buffer.  Arguments enclosed in brackets or braces are
 considered part of the macro."
   (car (TeX-find-macro-boundaries limit)))
 
-(defun TeX-find-macro-end ()
+(defun TeX-find-macro-end (&optional signature)
   "Return the end of a macro.
-Arguments enclosed in brackets or braces are considered part of
-the macro."
-  (cdr (TeX-find-macro-boundaries)))
+Arguments enclosed in brackets or braces are considered part of the
+macro.  SIGNATURE, as in `TeX-find-macro-boundaries', restricts how many
+arguments are allowed."
+  (cdr (TeX-find-macro-boundaries nil signature)))
 
 (defun TeX-search-forward-unescaped (string &optional bound noerror)
   "Search forward from point for unescaped STRING.

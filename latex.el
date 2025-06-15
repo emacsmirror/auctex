@@ -6729,7 +6729,8 @@ char."
                                                             "Accents")))
                                   submenu)))
                       (when (and (stringp tex-token) (integerp uchar) noargp)
-                        `(,(char-to-string uchar) (,tex-token)))))
+                        ;; Each of these macros accepts 0 total arguments.
+                        `((,(char-to-string uchar) . 0) (,tex-token)))))
                   `((nil "to" "" 8594)
                     (nil "gets" "" 8592)
                     ,@LaTeX-math-default)))
