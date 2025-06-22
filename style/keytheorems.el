@@ -1,4 +1,4 @@
-;;; keytheorems.el --- AUCTeX style for `keytheorems.sty' (v0.2.6)  -*- lexical-binding: t; -*-
+;;; keytheorems.el --- AUCTeX style for `keytheorems.sty' (v0.3.0)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Free Software Foundation, Inc.
 
@@ -24,8 +24,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `keytheorems.sty' (v0.2.6) from
-;; 2025-04-23.  `keytheorems.sty' is part of TeXLive.
+;; This file adds support for `keytheorems.sty' (v0.3.0) from
+;; 2025-06-20.  `keytheorems.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -39,6 +39,7 @@
   '(("overload")
     ("thmtools-compat")
     ("auto-translate" ("true" "false"))
+    ("predefined")
     ("qed-symbol")
     ("restate-counters")
     ("store-all")
