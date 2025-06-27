@@ -1943,6 +1943,8 @@ For example, its value will be
    ...)
 See also `LaTeX-provided-package-options'.")
 
+(add-to-list 'TeX-normal-mode-reset-list 'LaTeX-provided-class-options)
+
 (defun LaTeX-provided-class-options-member (class option)
   "Return non-nil if OPTION has been given to CLASS at load time.
 The value is actually the tail of the list of options given to CLASS."
@@ -1965,6 +1967,8 @@ For example, its value will be
    (\"geometry\" \"a4paper\" \"top=2cm\" \"bottom=2cm\" \"left=2.5cm\" \"right=2.5cm\")
    ...)
 See also `LaTeX-provided-class-options'.")
+
+(add-to-list 'TeX-normal-mode-reset-list 'LaTeX-provided-package-options)
 
 (defun LaTeX-provided-package-options-member (package option)
   "Return non-nil if OPTION has been given to PACKAGE at load time.
@@ -2135,10 +2139,6 @@ TYPE is one of the symbols mac or env."
         (apply #'append (mapcar (lambda (arg)
                                   (split-string arg ","))
                                 LaTeX-auto-bibliography)))
-
-  ;; Reset class and packages options for the current buffer
-  (setq LaTeX-provided-class-options nil)
-  (setq LaTeX-provided-package-options nil)
 
   ;; Cleanup document classes and packages
   (unless (null LaTeX-auto-style)
