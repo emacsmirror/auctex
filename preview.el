@@ -1220,12 +1220,12 @@ ready.  This behavior suppresses flicker in the appearance."
 (defsubst preview-replace-active-icon (ov replacement)
   "Replace the active Icon in OV by REPLACEMENT, another icon."
   (let ((img (overlay-get ov 'preview-image)))
+    (setcdr (car img) (cdar replacement))
+    (setcdr img (cdr replacement))
     (when (and preview-leave-open-previews-visible
                (consp img))
       ;; No "TeX icon" has been shown, so we flush manually.
-      (image-flush (car img) t))
-    (setcdr (car img) (cdar replacement))
-    (setcdr img (cdr replacement))))
+      (image-flush (car img) t))))
 
 (defun preview-gs-place (ov snippet box run-buffer tempdir ps-file _imagetype)
   "Generate an image placeholder rendered over by Ghostscript.
