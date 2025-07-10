@@ -7779,7 +7779,7 @@ KEY-VALS is an alist of key-values pairs."
           ;; doesn't travel enough, so we have to use
           ;; `skip-chars-backward' and limit the search to the
           ;; beginning of the previous line:
-          (skip-chars-backward "^,[{" (line-beginning-position 0))
+          (skip-chars-backward "^,[{<" (line-beginning-position 0))
           ;; Make sure we're not looking at a comment:
           (when (looking-at-p (concat "[ \t]*" TeX-comment-start-regexp))
             (forward-line))
@@ -7795,7 +7795,7 @@ KEY-VALS is an alist of key-values pairs."
       ;; We have to look for a key:
       (save-excursion
         ;; Find the beginning
-        (skip-chars-backward "^,[{" (line-beginning-position 0))
+        (skip-chars-backward "^,[{<" (line-beginning-position 0))
         ;; Make sure we're not looking at a comment:
         (when (looking-at-p (concat "[ \t]*" TeX-comment-start-regexp))
           (forward-line))
