@@ -16,7 +16,7 @@
   ~LaTeX-modify-math~ which converts the mathematical construct at point
   into one with different kind of delimiter or another environment.
 - Add new support files =style/embedfile.el=, =style/figureversions.el=,
-  =style/needspace.el= and =style/wrapstuff.el=.
+  =style/needspace.el=, =style/tablericons.el= and =style/wrapstuff.el=.
 
 ** Changed
 
