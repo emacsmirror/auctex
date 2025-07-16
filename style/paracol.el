@@ -1,6 +1,6 @@
-;;; paracol.el --- AUCTeX style for `paracol.sty' (v1.35)  -*- lexical-binding: t; -*-
+;;; paracol.el --- AUCTeX style for `paracol.sty' (v1.37)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2024 Free Software Foundation, Inc.
+;; Copyright (C) 2016--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `paracol.sty' (v1.35) from 2018/12/31.
+;; This file adds support for `paracol.sty' (v1.37) from 2025-07-14.
 ;; `paracol.sty' is part of TeXLive.
 
 ;; `paracol.sty' provides an environment (paracol) and a command
@@ -48,9 +48,7 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (defun TeX-arg-paracol-switchcolumn* (optional)
   "Query and insert the column argument of \\switchcolum macro.
@@ -191,8 +189,6 @@ If XCOLOR is non-nil, store the returned value in the variable
     ;; 7.7 Commands for Coloring Texts and Column-Separating Rules
     ;; \normalcolumncolor[col]
     '("normalcolumncolor" [ "Column" ] )
-    '("coloredwordhyphenated" 0)
-    '("nocoloredwordhyphenated" 0)
 
     ;; \normalcolseprulecolor[col]
     '("normalcolseprulecolor" [ "Column" ] )
@@ -229,9 +225,9 @@ If XCOLOR is non-nil, store the returned value in the variable
                                           "Color model"
                                           nil nil "/" "/"]
         (TeX-arg-conditional (LaTeX-xcolor-cmd-requires-spec-p 'col)
-                             (TeX-arg-xcolor)
-                             ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
-                                                       "Color name")))
+            (TeX-arg-xcolor)
+          ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                    "Color name")))
         [ "Column" ] )
 
       ;; \colseprulecolor[model]{color}[col]
@@ -240,9 +236,9 @@ If XCOLOR is non-nil, store the returned value in the variable
                                           "Color model"
                                           nil nil "/" "/"]
         (TeX-arg-conditional (LaTeX-xcolor-cmd-requires-spec-p 'col)
-                             (TeX-arg-xcolor)
-                             ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
-                                                       "Color name")))
+            (TeX-arg-xcolor)
+          ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                    "Color name")))
         [ "Column" ] )
 
       ;; 7.8 Commands for Background Painting
@@ -257,9 +253,9 @@ If XCOLOR is non-nil, store the returned value in the variable
                                           "Color model"
                                           nil nil "/" "/"]
         (TeX-arg-conditional (LaTeX-paracol--used-model t)
-                             (TeX-arg-xcolor)
-                             ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
-                                                       "Color name"))))))
+            (TeX-arg-xcolor)
+          ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                    "Color name"))))))
 
    ;; color.el: Always prefer xcolor.sty over color.sty
    (when (and (member "color" (TeX-style-list))
@@ -269,9 +265,9 @@ If XCOLOR is non-nil, store the returned value in the variable
         [TeX-arg-completing-read (LaTeX-color-available-models)
                                  "Color model"]
         (TeX-arg-conditional (LaTeX-color-used-model-requires-spec-p)
-                             (TeX-arg-color)
-                             ((TeX-arg-completing-read (LaTeX-color-available-colors)
-                                                       "Color name")))
+            (TeX-arg-color)
+          ((TeX-arg-completing-read (LaTeX-color-available-colors)
+                                    "Color name")))
         [ "Column" ] )
 
       ;; \colseprulecolor[mode]{color}[col]
@@ -279,9 +275,9 @@ If XCOLOR is non-nil, store the returned value in the variable
         [TeX-arg-completing-read (LaTeX-color-available-models)
                                  "Color model"]
         (TeX-arg-conditional (LaTeX-color-used-model-requires-spec-p)
-                             (TeX-arg-color)
-                             ((TeX-arg-completing-read (LaTeX-color-available-colors)
-                                                       "Color name")))
+            (TeX-arg-color)
+          ((TeX-arg-completing-read (LaTeX-color-available-colors)
+                                    "Color name")))
         [ "Column" ] )
 
       ;; 7.8 Commands for Background Painting
@@ -295,9 +291,9 @@ If XCOLOR is non-nil, store the returned value in the variable
         [TeX-arg-completing-read (LaTeX-color-available-models)
                                  "Color model"]
         (TeX-arg-conditional (LaTeX-paracol--used-model)
-                             (TeX-arg-color)
-                             ((TeX-arg-completing-read (LaTeX-color-available-colors)
-                                                       "Color name"))))))
+            (TeX-arg-color)
+          ((TeX-arg-completing-read (LaTeX-color-available-colors)
+                                    "Color name"))))))
 
    ;; \belowfootnoteskip is a length:
    (LaTeX-add-lengths "belowfootnoteskip")
@@ -341,8 +337,6 @@ If XCOLOR is non-nil, store the returned value in the variable
                                 ("fncounteradjustment"          "")
                                 ("nofncounteradjustment"        "")
                                 ("normalcolumncolor"            "[")
-                                ("coloredwordhyphenated"        "")
-                                ("nocoloredwordhyphenated"      "")
                                 ("colseprulecolor"              "[{[")
                                 ("normalcolseprulecolor"        "[")
                                 ("backgroundcolor"              "{[{")
