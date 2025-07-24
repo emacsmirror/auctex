@@ -229,12 +229,12 @@ variable `font-latex-fontify-sectioning'." ',num)
 (eval-and-compile
 (defconst font-latex-built-in-keyword-classes
   '(("warning"
-     ("nopagebreak" "pagebreak" "newpage" "clearpage" "cleardoublepage"
-      "enlargethispage" "nolinebreak" "linebreak" "newline" "-" "\\" "\\*"
-      "appendix" "displaybreak" "allowdisplaybreaks" "tabularnewline"
-      "backmatter" "frontmatter" "mainmatter"
-      "makeatletter" "makeatother" "newblock" "suppressfloats" "endinput"
-      "reversemarginpar")
+     ("-" "\\" "\\*" "allowdisplaybreaks" "appendix" "backmatter"
+      "cleardoublepage" "clearpage" "displaybreak" "endinput"
+      "enlargethispage" "frontmatter" "linebreak" "mainmatter"
+      "makeatletter" "makeatother" "newblock" "newline" "newpage"
+      "nolinebreak" "nopagebreak" "onecolumn" "pagebreak"
+      "reversemarginpar" "suppressfloats" "tabularnewline" "twocolumn")
      font-latex-warning-face 1 noarg)
     ("variable"
      (("setlength" "|{\\|{\\") ("addtolength" "|{\\|{\\")
