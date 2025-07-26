@@ -786,7 +786,14 @@ publication year, or nil if author/year not found."
   (when-let* ((case-fold-search t)
               (entry (bibtex-parse-entry))
               (author (bibtex-text-in-field "author" entry))
-              (year (bibtex-text-in-field "year" entry))
+              (year (seq-some
+                     (lambda (field)
+                       (when-let* ((value (bibtex-text-in-field field entry)))
+                         (save-match-data
+                           (when (string-match "[[:digit:]]\\{4\\}" value)
+                             (match-string 0 value)))))
+                     '("year" "date")))
+              (year-XX (substring year -2))
               (last-names
                (mapcar #'TeX-fold--last-name (string-split author " and ")))
               (last-names (seq-filter (lambda (name) (> (length name) 0))
@@ -797,8 +804,7 @@ publication year, or nil if author/year not found."
                    (substring (car last-names) 0 2)
                  (mapconcat (lambda (name)
                               (substring name 0 1))
-                            last-names)))
-              (year-XX (when year (substring year -2))))
+                            last-names))))
     (concat initials year-XX)))
 
 (defun TeX-fold--bib-entry (key files)
