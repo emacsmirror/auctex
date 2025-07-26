@@ -74,7 +74,10 @@ macros, `math' for math macros and `comment' for comments."
 
 (defcustom TeX-fold-macro-spec-list
   '(("[f]" ("footnote" "marginpar"))
-    (TeX-fold-cite-display ("cite"))
+    (TeX-fold-cite-display ("cite" "Cite"))
+    (TeX-fold-textcite-display ("textcite" "Textcite"))
+    (TeX-fold-parencite-display ("parencite" "Parencite"))
+    (TeX-fold-footcite-display ("footcite" "footcitetext"))
     ("[l]" ("label"))
     ("[r]" ("ref" "pageref" "eqref" "footref"))
     ("[i]" ("index" "glossary"))
@@ -842,11 +845,12 @@ contain the required information."
       (goto-char (point-min))
       (TeX-fold--bib-abbrev-entry-at-point))))
 
-(defun TeX-fold-cite-display (keys &rest _args)
-  "Fold display for a \\cite{KEYS} macro.
-KEYS are the citation key(s), as a comma-delimited list.  Return string
-of the form \"[XYZ99]\" or \"[XYZ99, Optional Citation Text]\", formed
-using authors' last names and the the publication year."
+(defun TeX-fold-citation-raw (keys default)
+  "Helper function for fold displays for citation macros.
+KEYS are the citation key(s), as a comma-delimited list.  Return DEFAULT
+unless we can find some of the citation keys, in which case return
+string of the form \"XYZ99\", or a comma-delimited list of such,
+followed by any optional citation string."
   (let* ((citation (car (TeX-fold-macro-nth-arg
                          1 (point)
                          (TeX-fold-item-end (point) 'macro)
@@ -854,12 +858,27 @@ using authors' last names and the the publication year."
          (key-list (split-string keys "[ \f\t\n\r\v,]+"))
          (references (delq nil (mapcar #'TeX-fold--bib-abbrev key-list)))
          (joined-references (string-join references ", ")))
-    (concat "["
-            (if (string-empty-p joined-references)
-                "c" joined-references)
+    (concat (if (string-empty-p joined-references)
+                default
+              joined-references)
             (when citation
-              (format ", %s" citation))
-            "]")))
+              (format ", %s" citation)))))
+
+(defun TeX-fold-cite-display (keys &rest _args)
+  "Fold display for \\cite{KEYS} macro."
+  (concat "[" (TeX-fold-citation-raw keys "c") "]"))
+
+(defun TeX-fold-textcite-display (keys &rest _args)
+  "Fold display for \\textcite{KEYS} macro."
+  (TeX-fold-citation-raw keys "c"))
+
+(defun TeX-fold-parencite-display (keys &rest _args)
+  "Fold display for \\parencite{KEYS} macro."
+  (concat "(" (TeX-fold-citation-raw keys "c") ")" ))
+
+(defun TeX-fold-footcite-display (keys &rest _args)
+  "Fold display for \\footcite{KEYS} macro."
+  (concat "^" (TeX-fold-citation-raw keys "c")))
 
 ;;; Utilities
 
