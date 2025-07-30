@@ -6449,7 +6449,8 @@ With prefix argument FORCE, always inserts \" characters."
           (texmathp)
           (and (TeX-in-comment) (not (eq major-mode 'docTeX-mode))))
       (self-insert-command (prefix-numeric-value force))
-    (expand-abbrev)
+    (when abbrev-mode
+      (expand-abbrev))
     (TeX-update-style)
     (pcase-let ((`(,open-quote ,close-quote ,q-after-q)
                  (TeX-get-quote-characters)))
@@ -6529,7 +6530,8 @@ With prefix argument FORCE, always inserts \" characters."
 (defun TeX-insert-punctuation ()
   "Insert point or comma, cleaning up preceding space."
   (interactive)
-  (expand-abbrev)
+  (when abbrev-mode
+    (expand-abbrev))
   (if (TeX-looking-at-backward "\\\\/\\(}+\\)" 50)
       (replace-match "\\1" t))
   (call-interactively #'self-insert-command))
