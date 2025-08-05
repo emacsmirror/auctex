@@ -521,7 +521,8 @@ overwrite the value already set locally."
 (defun japanese-TeX-insert-punctuation ()
   "Insert point or comma, cleaning up preceding space."
   (interactive)
-  (expand-abbrev)
+  (when abbrev-mode
+    (expand-abbrev))
   (if (TeX-looking-at-backward "\\\\/\\(}+\\)" 50)
       (replace-match "\\1" t))
   (call-interactively #'japanese-TeX-self-insert-command))
