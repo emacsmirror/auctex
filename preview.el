@@ -133,8 +133,7 @@ considerable time under XEmacs, it should come after the `:min'
 spec to avoid unnecessary evaluation time."
   :group 'preview-appearance
   :type preview-specs-type
-  :set #'preview-specs-setter
-)
+  :set #'preview-specs-setter)
 
 (defvar preview-error-icon nil
   "The icon used for PostScript errors.
@@ -892,10 +891,10 @@ Pure borderless black-on-white will return an empty string."
                                         (cdr preview-resolution)))))
   (if preview-parsed-pdfoutput
       (preview-pdf2dsc-process-setup)
-    (let ((process (preview-start-dvips preview-fast-conversion)))
       (setq TeX-sentinel-function #'preview-gs-dvips-sentinel)
-      (list process (current-buffer) TeX-active-tempdir preview-ps-file
-            preview-gs-image-type))))
+    (list (preview-start-dvips preview-fast-conversion) (current-buffer)
+          TeX-active-tempdir preview-ps-file
+          preview-gs-image-type)))
 
 (defun preview-dvipng-process-setup ()
   "Set up dvipng process for conversion."
@@ -913,17 +912,15 @@ Pure borderless black-on-white will return an empty string."
     (unless (preview-supports-image-type preview-dvipng-image-type)
       (error "preview-dvipng-image-type setting '%s unsupported by this Emacs"
              preview-dvipng-image-type))
-    (let ((process (preview-start-dvipng)))
       (setq TeX-sentinel-function #'preview-dvipng-sentinel)
-      (list process (current-buffer) TeX-active-tempdir t
-          preview-dvipng-image-type))))
+    (list (preview-start-dvipng) (current-buffer) TeX-active-tempdir t
+          preview-dvipng-image-type)))
 
 
 (defun preview-pdf2dsc-process-setup ()
-  (let ((process (preview-start-pdf2dsc)))
     (setq TeX-sentinel-function #'preview-pdf2dsc-sentinel)
-    (list process (current-buffer) TeX-active-tempdir preview-ps-file
-          preview-gs-image-type)))
+  (list (preview-start-pdf2dsc) (current-buffer) TeX-active-tempdir
+        preview-ps-file preview-gs-image-type))
 
 (defun preview-dvips-abort ()
   "Abort a Dvips run."
@@ -2528,12 +2525,12 @@ Deletes the dvi file when finished."
           (push ov preview-gs-queue))))
     (if (setq preview-gs-queue (nreverse preview-gs-queue))
         (progn
-          (preview-start-dvips preview-fast-conversion)
           (setq TeX-sentinel-function (lambda (process command)
                                         (preview-gs-dvips-sentinel
                                          process
                                          command
                                          t)))
+          (preview-start-dvips preview-fast-conversion)
           (dolist (ov preview-gs-queue)
             (setq snippet (aref (overlay-get ov 'queued) 2))
             (overlay-put ov 'filenames
@@ -3809,8 +3806,6 @@ The fourth value is the transparent border thickness."
     (goto-char (point-max))
     (insert-before-markers "Running `" name "' with ``" command "''\n")
     (setq mode-name name)
-    (setq TeX-sentinel-function
-          (lambda (_process name) (message "%s: done." name)))
     (if TeX-process-asynchronous
         (let ((process (start-process name (current-buffer) TeX-shell
                                       TeX-shell-command-option
@@ -3851,8 +3846,6 @@ If FAST is set, do a fast conversion."
     (goto-char (point-max))
     (insert-before-markers "Running `" name "' with ``" command "''\n")
     (setq mode-name name)
-    (setq TeX-sentinel-function
-          (lambda (_process name) (message "%s: done." name)))
     (if TeX-process-asynchronous
         (let ((process (start-process name (current-buffer) TeX-shell
                                       TeX-shell-command-option
@@ -3893,8 +3886,6 @@ If FAST is set, do a fast conversion."
     (goto-char (point-max))
     (insert-before-markers "Running `" name "' with ``" command "''\n")
     (setq mode-name name)
-    (setq TeX-sentinel-function
-          (lambda (_process name) (message "%s: done." name)))
     (if TeX-process-asynchronous
         (let ((process (start-process name (current-buffer) TeX-shell
                                       TeX-shell-command-option
