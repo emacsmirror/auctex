@@ -637,7 +637,8 @@ Emacs color well."
 Gets the default PROCESS and STRING arguments
 and tries to restart Ghostscript if necessary."
   (condition-case err
-      (let ((status (process-status process)))
+      (let ((status (process-status process))
+            keep-preview-ps)
         (when (memq status '(exit signal))
           (setq compilation-in-progress (delq process compilation-in-progress)))
         (when (buffer-name (process-buffer process))
@@ -662,18 +663,12 @@ and tries to restart Ghostscript if necessary."
                                  (point-max)))
                     (insert-before-markers err)))
                 (delete-process process)
-                (if (or (null ov)
-                        (eq status 'signal))
-                    ;; if process was killed explicitly by signal, or if nothing
-                    ;; was processed, we give up on the matter altogether.
-                    (progn
-                      (when preview-ps-file
-                        (condition-case nil
-                            (preview-delete-file preview-ps-file)
-                          (file-error nil)))
-                      (preview-gs-queue-empty))
-
-                  ;; restart only if we made progress since last call
+                (unless (or (null ov)
+                            (eq status 'signal))
+                  ;; If process was killed explicitly by signal, or if
+                  ;; nothing was processed, we give up on the matter
+                  ;; altogether, otherwise restart only if we made
+                  ;; progress since last call.
                   (let (filenames)
                     (dolist (ov preview-gs-outstanding)
                       (setq filenames (overlay-get ov 'filenames))
@@ -684,7 +679,14 @@ and tries to restart Ghostscript if necessary."
                   (setq preview-gs-queue (nconc preview-gs-outstanding
                                                 preview-gs-queue))
                   (setq preview-gs-outstanding nil)
-                  (preview-gs-restart)))))))
+                  ;; Keep preview-ps if another GS process is started.
+                  (setq keep-preview-ps (preview-gs-restart)))
+                (unless keep-preview-ps
+                  (when preview-ps-file
+                    (condition-case nil
+                        (preview-delete-file preview-ps-file)
+                      (file-error nil)))
+                  (preview-gs-queue-empty)))))))
     (error (preview-log-error err "Ghostscript" process)))
   (preview-reraise-error process))
 
@@ -935,7 +937,15 @@ Pure borderless black-on-white will return an empty string."
     (condition-case nil
         (preview-delete-file preview-ps-file)
       (file-error nil)))
-  (setq TeX-sentinel-function nil))
+  (setq TeX-sentinel-function nil)
+
+  ;; When a command is aborted, there is a chance that this happens
+  ;; before the previews are generated but after a temp directory is
+  ;; created, in this case an empty folder is left behind.  Make sure
+  ;; here that's not the case.
+  (when TeX-active-tempdir
+    (unless (>= (nth 2 TeX-active-tempdir) 1)
+      (delete-directory (nth 0 TeX-active-tempdir)))))
 
 (defalias 'preview-dvipng-abort #'preview-dvips-abort)
 ;  "Abort a DviPNG run.")
@@ -1235,6 +1245,8 @@ RUN-BUFFER is the buffer of the TeX process,
 TEMPDIR is the correct copy of `TeX-active-tempdir',
 PS-FILE is a copy of `preview-ps-file', IMAGETYPE is the image type
 for the file extension."
+  ;; Delete files before overwriting property.
+  (preview--delete-overlay-files ov)
   (overlay-put ov 'filenames
                (unless (eq ps-file t)
                  (list
@@ -1244,22 +1256,38 @@ for the file extension."
                    tempdir))))
   (overlay-put ov 'queued
                (vector box nil snippet))
-  (overlay-put ov 'preview-image
-               (let ((default (list (preview-icon-copy preview-nonready-icon))))
-                 (if preview-leave-open-previews-visible
-                     (if-let* ((img
-                                (car
-                                 (delq
-                                  nil
-                                  (mapcar
-                                   (lambda (ovr)
-                                     (and
-                                      (eq (overlay-start ovr) (overlay-start ov))
-                                      (overlay-get ovr 'preview-image)))
-                                   (overlays-at (overlay-start ov)))))))
-                         img
-                       default)
-                   default)))
+
+  (if-let* ((old-ov
+             (and preview-leave-open-previews-visible
+                  (car
+                   (delq
+                    nil
+                    (mapcar
+                     (lambda (ovr)
+                       (and
+                        (eq (overlay-start ovr) (overlay-start ov))
+                        (overlay-get ovr 'preview-image)
+                        ovr))
+                     (overlays-at (overlay-start ov))))))))
+      (let* ((img (overlay-get old-ov 'preview-image))
+             (filename (cadr img))
+             (files-oov (overlay-get old-ov 'filenames))
+             (files-ov  (overlay-get ov  'filenames)))
+        (when img
+          (overlay-put ov 'preview-image img)
+          ;; Transfer filename ownership to new overlay.  The old one
+          ;; will be cleared out and its files deleted.
+          (when-let* ((entry (assoc filename files-oov)))
+            (overlay-put old-ov 'filenames
+                         (assq-delete-all filename files-oov))
+            ;; Add the filename to the current overlay instead
+            ;; if it's not already there
+            (unless (assoc filename files-ov)
+              (overlay-put ov 'filenames
+                           (cons entry files-ov))))))
+    (overlay-put ov 'preview-image
+                 (list (preview-icon-copy preview-nonready-icon))))
+
   (preview-add-urgentization #'preview-gs-urgentize ov run-buffer)
   (list ov))
 
@@ -2238,7 +2266,11 @@ active (`transient-mark-mode'), it is run through `preview-region'."
 
 (defun preview-disable (ovr)
   "Change overlay behaviour of OVR after source edits."
-  (overlay-put ovr 'queued nil)
+  ;; Do not reset queued, a disabled image will be shown anyways.
+  ;; More importantly, resetting queued will orphan files if a conversion
+  ;; process is underway.
+  ;;(overlay-put ovr 'queued nil)
+
   (preview-remove-urgentization ovr)
   (unless preview-leave-open-previews-visible
     (overlay-put ovr 'preview-image nil))
@@ -2247,23 +2279,23 @@ active (`transient-mark-mode'), it is run through `preview-region'."
   (unless preview-leave-open-previews-visible
     (preview-toggle ovr))
   (overlay-put ovr 'preview-state 'disabled)
-  (dolist (filename (overlay-get ovr 'filenames))
-    (condition-case nil
-        (preview-delete-file filename)
-      (file-error nil))
-    (overlay-put ovr 'filenames nil)))
+  (preview--delete-overlay-files ovr))
 
-(defun preview-delete (ovr &rest _ignored)
-  "Delete preview overlay OVR, taking any associated file along.
-IGNORED arguments are ignored, making this function usable as
-a hook in some cases"
+(defun preview--delete-overlay-files (ovr)
+  "Delete files owned by OVR."
   (let ((filenames (overlay-get ovr 'filenames)))
     (overlay-put ovr 'filenames nil)
-    (delete-overlay ovr)
     (dolist (filename filenames)
       (condition-case nil
           (preview-delete-file filename)
         (file-error nil)))))
+
+(defun preview-delete (ovr &rest _ignored)
+  "Delete preview overlay OVR, taking any associated file along.
+IGNORED arguments are ignored, making this function usable as a hook in
+some cases."
+  (preview--delete-overlay-files ovr)
+  (delete-overlay ovr))
 
 (defun preview-clearout (&optional start end timestamp exception)
   "Clear out all previews in the current region.
@@ -2511,6 +2543,9 @@ Deletes the dvi file when finished."
                                  TeX-active-tempdir)))
         (if (file-exists-p (car filename))
             (progn
+              ;; Delete previous filenames here before overwriting the
+              ;; property `'filenames', potentially orphaning files.
+              (preview--delete-overlay-files ov)
               (overlay-put ov 'filenames (list filename))
               (preview-replace-active-icon
                ov
@@ -2521,7 +2556,10 @@ Deletes the dvi file when finished."
                                     (aref preview-colors 2)))
               (overlay-put ov 'queued nil))
           (push filename oldfiles)
-          (overlay-put ov 'filenames nil)
+          ;; Do note modify `filenames' if we are not replacing
+          ;; it, to avoid orphaning files. The filenames will be
+          ;; eventually deleted when the property is overwritten.
+          ;; (overlay-put ov 'filenames nil)
           (push ov preview-gs-queue))))
     (if (setq preview-gs-queue (nreverse preview-gs-queue))
         (progn
@@ -2533,21 +2571,32 @@ Deletes the dvi file when finished."
           (preview-start-dvips preview-fast-conversion)
           (dolist (ov preview-gs-queue)
             (setq snippet (aref (overlay-get ov 'queued) 2))
-            (overlay-put ov 'filenames
-                         (list
-                          (preview-make-filename
-                           (or preview-ps-file
-                               (format "preview.%03d" snippet))
-                           TeX-active-tempdir))))
-          (while (setq filename (pop oldfiles))
-            (condition-case nil
-                (preview-delete-file filename)
-              (file-error nil))))
+            ;; Only add `preview-ps-file' if it doesn't exist.  Also,
+            ;; delete any files before overwriting 'filenames.
+            (if preview-ps-file
+                (unless (memq preview-ps-file (overlay-get ov 'filenames))
+                  (preview--delete-overlay-files ov)
+                  (overlay-put ov 'filenames
+                               (list
+                                (preview-make-filename preview-ps-file
+                                                       TeX-active-tempdir))))
+              (preview--delete-overlay-files ov)
+              (overlay-put ov 'filenames
+                           (list
+                            (preview-make-filename
+                             (format "preview.%03d" snippet)
+                             TeX-active-tempdir))))))
       (condition-case nil
           (let ((gsfile preview-gs-file))
             (delete-file
              (with-current-buffer TeX-command-buffer
                (funcall (car gsfile) "dvi" t))))
+        (file-error nil)))
+
+    ;; Always delete oldfiles
+    (while (setq filename (pop oldfiles))
+      (condition-case nil
+          (preview-delete-file filename)
         (file-error nil)))))
 
 (defun preview-active-string (ov)
