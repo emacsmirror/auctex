@@ -1,4 +1,4 @@
-;;; marginalia.el --- AUCTeX style for `marginalia.sty' (v0.80.1)  -*- lexical-binding: t; -*-
+;;; marginalia.el --- AUCTeX style for `marginalia.sty' (v0.81.5)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Free Software Foundation, Inc.
 
@@ -24,8 +24,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `marginalia.sty' (v0.80.1) from
-;; 2025-02-17.  `marginalia.sty' is part of TeXLive.
+;; This file adds support for `marginalia.sty' (v0.81.5) from
+;; 2025-09-11.  `marginalia.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -43,8 +43,8 @@
                 "xsep recto outer"  "xsep recto inner"
                 "xsep verso outer" "xsep verso inner"
                 "xsep right between" "xsep left between"
-                "yshift" "ysep" "ysep above" "ysep below" "ysep page top"
-                "ysep page top"
+                "yshift" "ysep" "ysep above" "ysep below"
+                "ysep page top" "ysep page bottom"
                 "width" "width outer" "width inner" "width between"
                 "width recto outer" "width recto inner"
                 "width verso outer" "width verso inner"
