@@ -43,7 +43,6 @@ latex/prshowlabels.def
 latex/prtightpage.def
 latex/prtracingall.def
 preview-latex.el
-/preview.el
 PROBLEMS.preview
 # Files generated when installing/compiling the package in place.
 auctex-pkg.el
