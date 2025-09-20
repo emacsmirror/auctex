@@ -11,6 +11,10 @@
 
 ** Added
 
+- Add new command ~LaTeX-repeat-recent-math~ which looks backward for a
+  recent top-level display math construct and inserts a copy to the
+  current line.
+
 - Add new support file =style/fontawesome7.el=.
 
 * [14.1.0] - 2025-07-11
