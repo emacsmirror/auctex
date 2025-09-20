@@ -9648,11 +9648,11 @@ marker that keeps track of cursor position."
         (insert new-close)
         ;; Indent, including one line past the modified region.
         (widen)
-        (when sentence-end-double-space
-          (when (looking-at-p "[.?!]")
-            (save-excursion
-              (forward-char)
-              (insert " "))))
+        (and sentence-end-double-space
+             (looking-at-p "[.?!]")
+             (save-excursion
+               (forward-char)
+               (insert " ")))
         (end-of-line 2)
         (indent-region start (point))))))
 
