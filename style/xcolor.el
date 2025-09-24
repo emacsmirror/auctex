@@ -290,6 +290,8 @@ xcolor package.")
                         ;; paracol.el also provides a columncolor which
                         ;; we don't repeat:
                         "colseprulecolor"))
+          ;; beamer.cls and ltx-talk.cls add an optional overlay spec:
+          "\\(?:<[^>]*>\\)?"
           "\\(?:\\[\\([^]]*\\)\\]\\)?")
   "Regexp for matching the optional argument of color macros.")
 
