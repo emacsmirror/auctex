@@ -9652,7 +9652,8 @@ marker that keeps track of cursor position."
              (looking-at-p "[.?!]")
              (save-excursion
                (forward-char)
-               (insert " ")))
+               (when (looking-at-p " [^ ]")
+                 (insert " "))))
         (end-of-line 2)
         (indent-region start (point))))))
 
