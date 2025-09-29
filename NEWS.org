@@ -17,6 +17,11 @@
 
 - Add new support file =style/fontawesome7.el=.
 
+** Changed
+
+- Change the format of the value stored in ~preview-dumped-alist~.  Add
+  a new optional argument to the function ~preview-watch-preamble~.
+
 * [14.1.0] - 2025-07-11
 
 ** Added

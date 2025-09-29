@@ -1902,8 +1902,8 @@ definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
   "Set up a watch on master file FILE.
 FILE can be an associated buffer instead of a filename.
 COMMAND is the command that generated the format.
-FORMAT-CONS contains the format info for the main
-format dump handler."
+FORMAT-CONS contains the format info for the main format dump handler.
+OUT-FILE replaces FILE to determine the dump-files, if non-nil."
   (let ((buffer (if (bufferp file)
                     file
                   (find-buffer-visiting file)))
