@@ -1,6 +1,6 @@
 ;;; tex-style.el --- Customizable variables for AUCTeX style files  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2024  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2025  Free Software Foundation, Inc.
 
 ;; Author: Reiner Steib <Reiner.Steib@gmx.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -384,6 +384,12 @@ Inserting the subdirectory in the filename (as
                                          (read-file-name "Image file: ")
                                          (TeX-master-directory))))
                  (function :tag "other")))
+
+;; style/ltx-talk.el
+
+(defcustom LaTeX-ltx-talk-item-overlay-flag t
+  "If non-nil, prompt for an overlay in itemize-like environments."
+  :type 'boolean)
 
 ;; style/revtex4-2.el
 

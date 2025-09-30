@@ -15,7 +15,7 @@
   recent top-level display math construct and inserts a copy to the
   current line.
 
-- Add new support file =style/fontawesome7.el=.
+- Add new support files =style/fontawesome7.el= and =style/ltx-talk.el=.
 
 ** Changed
 
