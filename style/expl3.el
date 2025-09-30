@@ -43,10 +43,6 @@
     (modify-syntax-entry ?\: "w" st)
     st))
 
-(defun LaTeX-expl3--set-TeX-exit-mark (_optional &optional pos)
-  "Ignore OPTIONAL and set `TeX-exit-mark' to POS or current point."
-  (set-marker TeX-exit-mark (or pos (point))))
-
 (defun TeX-arg-expl3-macro (_optional &optional prompt definition no-param)
   "Read and insert an expl3 macro.
 OPTIONAL is ignored.  PROMPT replaces the standard one only when asking
@@ -277,260 +273,260 @@ Pass OPTIONAL, PROMPT and NO-PARAM to `TeX-arg-expl3-macro', which see."
     '("cs_gset_protected_nopar:ce" (TeX-arg-expl3-define-macro nil t) t)
 
     '("cs_generate_from_arg_count:NNnn"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") "Number of arguments" t)
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space "Number of arguments" t)
 
     ;; 4.3.4 Copying control sequences
     '("cs_new_eq:NN"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_new_eq:Nc"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_new_eq:NN"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_new_eq:cN"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_new_eq:cc"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
 
     '("cs_set_eq:NN"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_set_eq:Nc"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_set_eq:cN"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_set_eq:cc"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_gset_eq:NN"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_gset_eq:Nc"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_gset_eq:cN"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_gset_eq:cc"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-define-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-define-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
 
     ;; 4.3.5 Deleting control sequences
     '("cs_undefine:N"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_undefine:c"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
 
     ;; 4.3.6 Showing control sequences
     '("cs_meaning:N"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_meaning:c"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_show:N"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_show:c"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_log:N"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_log:c"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
 
     ;; 4.3.7 Converting to and from control sequences
     '("use:c" t)
     '("cs_if_exist_use:N"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_if_exist_use:c"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_if_exist_use:NTF"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") t (TeX-arg-literal " ") nil)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space t TeX-arg-space nil)
     '("cs_if_exist_use:cTF"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") t (TeX-arg-literal " ") nil)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space t TeX-arg-space nil)
 
     '("cs:w"
-      (TeX-arg-literal " ")
-      LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space
+      TeX-arg-set-exit-mark
       (TeX-arg-literal " \\cs_end:"))
 
     '("cs_to_str:N"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
 
     ;; 4.4 Analysing control sequences
     '("cs_split_function:N"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_prefix_spec:N"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_parameter_spec:N"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_replacement_spec:N"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_replacement_spec:c"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
 
     ;; 4.5 Using or removing tokens and arguments
-    '("use:n" (TeX-arg-literal " ") t)
+    '("use:n" TeX-arg-space t)
     '("use:nn"
-      (TeX-arg-literal " ")  t (TeX-arg-literal " {}"))
+      TeX-arg-space  t (TeX-arg-literal " {}"))
     '("use:nnn"
-      (TeX-arg-literal " ")  t (TeX-arg-literal " {} {}"))
+      TeX-arg-space  t (TeX-arg-literal " {} {}"))
     '("use:nnnn"
-      (TeX-arg-literal " ")  t  (TeX-arg-literal " {} {} {}"))
+      TeX-arg-space  t  (TeX-arg-literal " {} {} {}"))
 
     ;; \use_i:nn et al. missing here.
 
     '("use_i_ii:nnn"
-      (TeX-arg-literal " ")  t (TeX-arg-literal " {} {}"))
+      TeX-arg-space  t (TeX-arg-literal " {} {}"))
     '("use_ii_i:nn"
-      (TeX-arg-literal " ")  t (TeX-arg-literal " {}"))
+      TeX-arg-space  t (TeX-arg-literal " {}"))
 
     '("use_none:n"
-      (TeX-arg-literal " ")  t)
+      TeX-arg-space  t)
     '("use_none:nn"
-      (TeX-arg-literal " ")  t (TeX-arg-literal " {}"))
+      TeX-arg-space  t (TeX-arg-literal " {}"))
     '("use_none:nnn"
-      (TeX-arg-literal " ")  t (TeX-arg-literal " {} {}"))
+      TeX-arg-space  t (TeX-arg-literal " {} {}"))
     '("use_none:nnnn"
-      (TeX-arg-literal " ")  t (TeX-arg-literal " {} {} {}"))
+      TeX-arg-space  t (TeX-arg-literal " {} {} {}"))
     '("use_none:nnnnn"
-      (TeX-arg-literal " ")  t (TeX-arg-literal " {} {} {} {}"))
+      TeX-arg-space  t (TeX-arg-literal " {} {} {} {}"))
     '("use_none:nnnnnn"
-      (TeX-arg-literal " ")  t (TeX-arg-literal " {} {} {} {} {}"))
+      TeX-arg-space  t (TeX-arg-literal " {} {} {} {} {}"))
     '("use_none:nnnnnnn"
-      (TeX-arg-literal " ")  t (TeX-arg-literal " {} {} {} {} {} {}"))
+      TeX-arg-space  t (TeX-arg-literal " {} {} {} {} {} {}"))
     '("use_none:nnnnnnnn"
-      (TeX-arg-literal " ")  t (TeX-arg-literal " {} {} {} {} {} {} {}"))
+      TeX-arg-space  t (TeX-arg-literal " {} {} {} {} {} {} {}"))
     '("use_none:nnnnnnnnn"
-      (TeX-arg-literal " ")  t (TeX-arg-literal " {} {} {} {} {} {} {} {}"))
+      TeX-arg-space  t (TeX-arg-literal " {} {} {} {} {} {} {} {}"))
 
     '("use_:e"
-      (TeX-arg-literal " ")  t)
+      TeX-arg-space  t)
 
     ;; 4.5.1 Selecting tokens from delimited arguments
     '("use_none_delimit_by_q_nil:w"
-      (TeX-arg-literal " ")
-      LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space
+      TeX-arg-set-exit-mark
       (TeX-arg-literal " \\q_nil"))
     '("use_none_delimit_by_q_stop:w"
-      (TeX-arg-literal " ")
-      LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space
+      TeX-arg-set-exit-mark
       (TeX-arg-literal " \\q_stop"))
     '("use_none_delimit_by_q_recursion_stop:w"
-      (TeX-arg-literal " ")
-      LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space
+      TeX-arg-set-exit-mark
       (TeX-arg-literal " \\q_recursion_stop"))
 
     '("use_i_delimit_by_q_nil:nw"
-      (TeX-arg-literal " ") t (TeX-arg-literal " \\q_nil"))
+      TeX-arg-space t (TeX-arg-literal " \\q_nil"))
     '("use_i_delimit_by_q_stop:nw"
-      (TeX-arg-literal " ") t (TeX-arg-literal " \\q_stop"))
+      TeX-arg-space t (TeX-arg-literal " \\q_stop"))
     '("use_i_delimit_by_q_recursion_stop:nw"
-      (TeX-arg-literal " ") t (TeX-arg-literal " \\q_recursion_stop"))
+      TeX-arg-space t (TeX-arg-literal " \\q_recursion_stop"))
 
     ;; 4.6.1 Tests on control sequences
     '("cs_if_eq_p:NN"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_if_eq_p:Nc"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_if_eq_p:cN"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_if_eq_p:cc"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
 
     '("cs_if_eq:NNTF"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") t (TeX-arg-literal " {}"))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space t (TeX-arg-literal " {}"))
     '("cs_if_eq:NcTF"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") t (TeX-arg-literal " {}"))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space t (TeX-arg-literal " {}"))
     '("cs_if_eq:cNTF"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") t (TeX-arg-literal " {}"))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space t (TeX-arg-literal " {}"))
     '("cs_if_eq:ccTF"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") t (TeX-arg-literal " {}"))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space t (TeX-arg-literal " {}"))
 
     '("cs_if_exist_p:N"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_if_exist_p:c"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_if_exist:NTF"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") t (TeX-arg-literal " {}"))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space t (TeX-arg-literal " {}"))
     '("cs_if_exist:cTF"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") t (TeX-arg-literal " {}"))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space t (TeX-arg-literal " {}"))
 
     '("cs_if_free_p:N"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_if_free_p:c"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro))
     '("cs_if_free:NTF"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") t (TeX-arg-literal " {}"))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space t (TeX-arg-literal " {}"))
     '("cs_if_free:cTF"
-      (TeX-arg-literal " ") (TeX-arg-free TeX-arg-macro)
-      (TeX-arg-literal " ") t (TeX-arg-literal " {}"))
+      TeX-arg-space (TeX-arg-free TeX-arg-macro)
+      TeX-arg-space t (TeX-arg-literal " {}"))
 
     ;; 4.6.2 Primitive conditionals
     '("if_true:"
-      (TeX-arg-literal " ") LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space TeX-arg-set-exit-mark
       (TeX-arg-literal " \\else: \\fi:"))
     '("if_false:"
-      (TeX-arg-literal " ") LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space TeX-arg-set-exit-mark
       (TeX-arg-literal " \\else: \\fi:"))
 
     "else:" "fi:" "reverse_if:N"
 
     '("if_meaning:w"
-      (TeX-arg-literal " ") LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space TeX-arg-set-exit-mark
       (TeX-arg-literal " \\else: \\fi:"))
 
     '("if:w"
-      (TeX-arg-literal " ") LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space TeX-arg-set-exit-mark
       (TeX-arg-literal " \\else: \\fi:"))
     '("if_charcode:w"
-      (TeX-arg-literal " ") LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space TeX-arg-set-exit-mark
       (TeX-arg-literal " \\else: \\fi:"))
     '("if_catcode:w"
-      (TeX-arg-literal " ") LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space TeX-arg-set-exit-mark
       (TeX-arg-literal " \\else: \\fi:"))
 
     '("if_cs_exist:N"
-      (TeX-arg-literal " ") LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space TeX-arg-set-exit-mark
       (TeX-arg-free TeX-arg-macro)
       (TeX-arg-literal " \\else: \\fi:"))
     '("if_cs_exist:w"
-      (TeX-arg-literal " ") LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space TeX-arg-set-exit-mark
       (TeX-arg-literal " \\cs_end: \\else: \\fi:"))
 
     '("if_mode_horizontal:"
-      (TeX-arg-literal " ") LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space TeX-arg-set-exit-mark
       (TeX-arg-literal " \\else: \\fi:"))
     '("if_mode_vertical:"
-      (TeX-arg-literal " ") LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space TeX-arg-set-exit-mark
       (TeX-arg-literal " \\else: \\fi:"))
     '("if_mode_math:"
-      (TeX-arg-literal " ") LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space TeX-arg-set-exit-mark
       (TeX-arg-literal " \\else: \\fi:"))
     '("if_mode_inner:"
-      (TeX-arg-literal " ") LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space TeX-arg-set-exit-mark
       (TeX-arg-literal " \\else: \\fi:"))
 
     ;; 4.7 Starting a paragraph
@@ -538,18 +534,18 @@ Pass OPTIONAL, PROMPT and NO-PARAM to `TeX-arg-expl3-macro', which see."
 
     ;; 4.8 Debugging support
     '("debug_on:n"
-      (TeX-arg-literal " ")
+      TeX-arg-space
       (TeX-arg-completing-read-multiple ("check-declarations" "check-expressions"
                                          "deprecation" "log-functions" "all")
                                         "Debug option(s)"))
     '("debug_off:n"
-      (TeX-arg-literal " ")
+      TeX-arg-space
       (TeX-arg-completing-read-multiple ("check-declarations" "check-expressions"
                                          "deprecation" "log-functions" "all")
                                         "Debug option(s)"))
 
     '("debug_suspend:"
-      (TeX-arg-literal " ") LaTeX-expl3--set-TeX-exit-mark
+      TeX-arg-space TeX-arg-set-exit-mark
       (TeX-arg-literal " \\debug_resume:"))
     "debug_resume:"
 
