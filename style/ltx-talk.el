@@ -88,9 +88,9 @@ Optional MACRO can be a string, for example, \"bibitem\"."
                                         "Color model"
                                         nil nil "/" "/"]
       (TeX-arg-conditional (LaTeX-xcolor-cmd-requires-spec-p 'col)
-                           (TeX-arg-xcolor)
-                           ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
-                                                     "Color name"))))
+          (TeX-arg-xcolor)
+        ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                  "Color name"))))
 
     ;; \textcolor<overlay>{<name>}{<text>} or
     ;; \textcolor<overlay>[<model>]{<color spec>}{<text>}
@@ -100,9 +100,9 @@ Optional MACRO can be a string, for example, \"bibitem\"."
                                         "Color model"
                                         nil nil "/" "/"]
       (TeX-arg-conditional (LaTeX-xcolor-cmd-requires-spec-p 'col)
-                           (TeX-arg-xcolor)
-                           ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
-                                                     "Color name")))
+          (TeX-arg-xcolor)
+        ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                  "Color name")))
       "Text")
 
     ;; \mathcolor<overlay>{<name>}{<math>} or
@@ -113,9 +113,9 @@ Optional MACRO can be a string, for example, \"bibitem\"."
                                         "Color model"
                                         nil nil "/" "/"]
       (TeX-arg-conditional (LaTeX-xcolor-cmd-requires-spec-p 'col)
-                           (TeX-arg-xcolor)
-                           ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
-                                                     "Color name")))
+          (TeX-arg-xcolor)
+        ((TeX-arg-completing-read (LaTeX-xcolor-definecolor-list)
+                                  "Color name")))
       "Math")
 
     ;; \includegraphics<overlay>[<options>]{<file>}
@@ -140,13 +140,13 @@ Optional MACRO can be a string, for example, \"bibitem\"."
     ;; 9.1 Itemizations, enumerations and descriptions
     '("item"
       (TeX-arg-conditional LaTeX-ltx-talk-item-overlay-flag
-                           ([TeX-arg-ltx-talk-overlay-spec "Action spec"])
-                           ())
+          ([TeX-arg-ltx-talk-overlay-spec "Action spec"])
+        ())
       (TeX-arg-conditional (or TeX-arg-item-label-p
                                (string= (LaTeX-current-environment)
                                         "description"))
-                           (["Item label"])
-                           ())
+          (["Item label"])
+        ())
       TeX-arg-space)
 
     ;; 9.2 Highlighting
