@@ -431,7 +431,11 @@ variable `font-latex-fontify-sectioning'." ',num)
          'font-lock-type-face
        'font-latex-sectioning-5-face)
      2 command)
-    ("slide-title" () font-latex-slide-title-face 2 command)
+    ("slide-title" ()
+     (if (eq font-latex-fontify-sectioning 'color)
+         'font-lock-type-face
+       'font-latex-slide-title-face)
+     2 command)
     ("textual"
      (("item" "[") ("bibitem" "[{") ("title" "{") ("author" "{") ("date" "{")
       ("thanks" "{") ("address" "{") ("caption" "[{")

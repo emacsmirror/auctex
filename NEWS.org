@@ -22,6 +22,10 @@
 - Change the format of the value stored in ~preview-dumped-alist~.  Add
   a new optional argument to the function ~preview-watch-preamble~.
 
+- Respect the value of ~font-latex-fontify-sectioning~ when fontifying
+  macros as =slide-title=.  This affects macros provided by
+  =style/beamer.el= and =style/ltx-talk.el=.
+
 * [14.1.0] - 2025-07-11
 
 ** Added
