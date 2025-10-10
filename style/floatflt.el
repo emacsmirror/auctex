@@ -60,6 +60,15 @@
      (setq-local LaTeX-item-regexp
                  (concat LaTeX-item-regexp "\\|fltd?item\\b")))
 
+   ;; Tell RefTeX: `reftex-label-alist-builtin' has an entry for
+   ;; "floatingfigure".  We only add an entry for "floatingtable" when
+   ;; it's missing.  Emacs 31 supports floatflt, floatfig is removed:
+   (when (and (boundp 'reftex-label-alist-builtin)
+              (not (assq 'floatflt reftex-label-alist-builtin))
+              (fboundp 'reftex-add-label-environments))
+     (reftex-add-label-environments
+      '(("floatingtable" ?t nil nil caption))))
+
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
