@@ -1,6 +1,6 @@
-;;; cuted.el --- AUCTeX style for `cuted.sty' (v2.0)  -*- lexical-binding: t; -*-
+;;; cuted.el --- AUCTeX style for `cuted.sty' (v2.7)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021, 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2021--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `cuted.sty' (v2.0) from 2021/10/04.
+;; This file adds support for `cuted.sty' (v2.7) from 2025/10/13.
 ;; `cuted.sty' is part of TeXLive.
 
 ;;; Code:
@@ -33,9 +33,7 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (TeX-add-style-hook
  "cuted"
@@ -51,7 +49,12 @@
    (TeX-add-symbols
     '("preCutedStrip"  t)
     '("postCutedStrip" t)
-    '("oldcolsbreak"   t))
+    '("oldcolsbreak"   t)
+    "switchonecolumn" "switchtwocolumn")
+
+   ;; Let them stay in their own lines:
+   (LaTeX-paragraph-commands-add-locally '("switchonecolumn"
+                                           "switchtwocolumn"))
 
    ;; Fontification
    (when (and (featurep 'font-latex)
@@ -59,7 +62,10 @@
      (font-latex-add-keywords '(("preCutedStrip"  "{")
                                 ("postCutedStrip" "{")
                                 ("oldcolsbreak"   "{"))
-                              'function)))
+                              'function)
+     (font-latex-add-keywords '("switchonecolumn"
+                                "switchtwocolumn")
+                              'warning)))
  TeX-dialect)
 
 (defvar LaTeX-cuted-package-options
