@@ -1286,9 +1286,14 @@ have changed."
 ;;; Setup
 
 (defvar font-latex-syntax-alist
-  ;; Use word syntax for @ because we use \> for matching macros and
-  ;; we don't want \foo@bar to be found if we search for \foo.
-  '((?\( . ".") (?\) . ".") (?@ . "w"))
+  '((?\( . ".") (?\) . ".")
+    ;; Use word syntax for @ because we use \> for matching macros and
+    ;; we don't want \foo@bar to be found if we search for \foo.
+    (?@ . "w")
+    ;; Use punctuation syntax for numbers for the same reason, so things
+    ;; like \LaTeX3 are fontified correctly.  (Bug#79587)
+    (?0 . ".") (?1 . ".") (?2 . ".") (?3 . ".") (?4 . ".")
+    (?5 . ".") (?6 . ".") (?7 . ".") (?8 . ".") (?9 . "."))
   "List of specifiers for the syntax alist of `font-lock-defaults'.")
 
 (defun font-latex-add-to-syntax-alist (list)
