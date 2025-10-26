@@ -82,6 +82,7 @@ outcommented, like in dtx files."
 (defun LaTeX-newline ()
   "Start a new line potentially staying within comments.
 This depends on `LaTeX-insert-into-comments'."
+  (declare (modes LaTeX-mode))
   (interactive)
   (if LaTeX-insert-into-comments
       (cond ((and (save-excursion (skip-chars-backward " \t") (bolp))
@@ -154,6 +155,7 @@ The following variables can be set to customize:
 `LaTeX-section-hook'    Hooks to run when inserting a section.
 `LaTeX-section-label'   Prefix to all section labels."
 
+  (declare (modes LaTeX-mode))
   (interactive "*P")
   (let* ((val (prefix-numeric-value arg))
          (LaTeX-level (cond ((null arg)
@@ -591,6 +593,7 @@ It may be customized with the following variables:
 `LaTeX-default-width'             Width for minipage and tabular*.
 `LaTeX-default-position'          Position for array and tabular."
 
+  (declare (modes LaTeX-mode))
   (interactive "*P")
   (let* ((default (cond
                    ((TeX-near-bobp) "document")
@@ -646,6 +649,7 @@ It may be customized with the following variables:
 (defun LaTeX-close-environment (&optional reopen)
   "Create an \\end{...} to match the current environment.
 With prefix argument REOPEN, reopen environment afterwards."
+  (declare (modes LaTeX-mode))
   (interactive "*P")
   (if (> (point)
          (save-excursion
@@ -1522,6 +1526,7 @@ The cdr is the name of the function, used to insert this kind of items.")
 (defun LaTeX-insert-item ()
   "Insert a new item in an environment.
 You may use `LaTeX-item-list' to change the routines used to insert the item."
+  (declare (modes LaTeX-mode))
   (interactive "*")
   (let ((environment (LaTeX-current-environment)))
     (when (and (TeX-active-mark)
@@ -3327,7 +3332,8 @@ allowed BRACE values."
   "Insert typed left brace ARG times and possibly a corresponding right brace.
 Automatic right brace insertion is done only if no prefix ARG is given and
 `LaTeX-electric-left-right-brace' is non-nil.
-Normally bound to keys \(, { and [."
+Normally bound to keys (, { and [."
+  (declare (modes LaTeX-mode))
   (interactive "*P")
   (if (and LaTeX-electric-left-right-brace (not arg))
       (LaTeX-insert-left-brace-electric last-command-event)
@@ -4419,6 +4425,7 @@ macros are added to the regexp's.  This function is called in
 Add `LaTeX-indent-level' indentation in each \\begin{ - \\end{ block.
 Lines starting with an item is given an extra indentation of
 `LaTeX-item-indent'."
+  (declare (modes LaTeX-mode))
   (interactive)
   (let* ((case-fold-search nil)
          ;; Compute a fill prefix.  Whitespace after the comment
@@ -4857,6 +4864,7 @@ pass args FROM, TO and JUSTIFY-FLAG.
 You can disable filling inside a specific environment by adding
 it to `LaTeX-indent-environment-list', only indentation is
 performed in that case."
+  (declare (modes LaTeX-mode))
   (interactive "*r\nP")
   (let ((end-marker (copy-marker to)) has-code-comment has-regexp-match)
     (if (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
@@ -4980,6 +4988,7 @@ Return the `fill-prefix' used for filling.
 
 If `sentence-end-double-space' is non-nil, then period followed by one
 space does not end a sentence, so don't break a line there."
+  (declare (modes LaTeX-mode))
   (interactive (progn
                  (barf-if-buffer-read-only)
                  (list (region-beginning) (region-end)
@@ -5341,6 +5350,7 @@ code comment.
 
 If LaTeX syntax is taken into consideration during filling
 depends on the value of `LaTeX-syntactic-comments'."
+  (declare (modes LaTeX-mode))
   (interactive "*P")
   (if (save-excursion
         (beginning-of-line)
@@ -5423,7 +5433,7 @@ depends on the value of `LaTeX-syntactic-comments'."
                         (forward-line))
                       (point))))
               (LaTeX-fill-region-as-paragraph start end justify)))))
-        ;; Non-syntax-aware filling.
+       ;; Non-syntax-aware filling.
        (t
         (save-excursion
           (save-restriction
@@ -5512,6 +5522,7 @@ depends on the value of `LaTeX-syntactic-comments'."
 Prefix arg (non-nil third arg JUSTIFY, if called from program)
 means justify as well.  Fourth arg WHAT is a word to be displayed when
 formatting."
+  (declare (modes LaTeX-mode))
   (interactive "*r\nP")
   (save-excursion
     (let ((to (set-marker (make-marker) to))
@@ -5547,6 +5558,7 @@ formatting."
 If function is called inside a comment and
 `LaTeX-syntactic-comments' is enabled, try to find the
 environment in commented regions with the same comment prefix."
+  (declare (modes LaTeX-mode))
   (interactive)
   (let* ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)\\b"))
          (level 1)
@@ -5595,6 +5607,7 @@ environment in commented regions with the same comment prefix."
 If function is called inside a comment and
 `LaTeX-syntactic-comments' is enabled, try to find the
 environment in commented regions with the same comment prefix."
+  (declare (modes LaTeX-mode))
   (interactive)
   (let (done)
     ;; The following code until `or' handles exceptional cases that
@@ -5615,6 +5628,7 @@ If prefix argument COUNT is given, mark the respective number of
 enclosing environments.  The command will not work properly if
 there are unbalanced begin-end pairs in comments and verbatim
 environments."
+  (declare (modes LaTeX-mode))
   (interactive "p")
   (setq count (if count (abs count) 1))
   (let ((cur (point)) beg end)
@@ -5634,6 +5648,7 @@ environments."
   "Fill and indent current environment as LaTeX text.
 
 With prefix argument JUSTIFY, justify as well."
+  (declare (modes LaTeX-mode))
   (interactive "*P")
   (save-excursion
     (LaTeX-mark-environment)
@@ -5645,6 +5660,7 @@ With prefix argument JUSTIFY, justify as well."
   "Fill and indent current logical section as LaTeX text.
 
 With prefix argument JUSTIFY, justify as well."
+  (declare (modes LaTeX-mode))
   (interactive "*P")
   (save-excursion
     (LaTeX-mark-section)
@@ -5661,6 +5677,7 @@ command.  Thereby subsections are not being marked.
 If the function `outline-mark-subtree' is not available,
 `LaTeX-mark-section' always behaves like this regardless of the
 value of NO-SUBSECTIONS."
+  (declare (modes LaTeX-mode))
   (interactive "P")
   (if (or no-subsections
           (not (fboundp 'outline-mark-subtree)))
@@ -5682,6 +5699,7 @@ value of NO-SUBSECTIONS."
   "Fill and indent current buffer as LaTeX text.
 
 With prefix argument JUSTIFY, justify as well."
+  (declare (modes LaTeX-mode))
   (interactive "*P")
   (save-excursion
     (LaTeX-fill-region
@@ -6687,6 +6705,7 @@ string."
   "Insert a {\\cal CHAR}.  If DOLLAR is non-nil, put $'s around it.
 If `TeX-electric-math' is non-nil wrap that symbols around the
 char."
+  (declare (modes LaTeX-mode))
   (interactive "*c\nP")
   (if dollar (insert (or (car TeX-electric-math) "$")))
   (if (member "latex2e" (TeX-style-list))
@@ -6747,6 +6766,7 @@ char."
   "Make text outside current environment invisible.
 With optional COUNT keep visible that number of enclosing
 environments."
+  (declare (modes LaTeX-mode))
   (interactive "p")
   (setq count (if count (abs count) 1))
   (save-excursion
@@ -7119,6 +7139,7 @@ in `LaTeX-babel-hyphen'.  Whether one or the other is chosen
 depends on the value of `LaTeX-babel-hyphen-after-hyphen' and
 the buffer context.
 If prefix argument FORCE is non-nil, always insert a regular hyphen."
+  (declare (modes LaTeX-mode))
   (interactive "*P")
   (if (or force
           (zerop (length LaTeX-babel-hyphen))
@@ -9292,6 +9313,7 @@ respected."
 
 (defun LaTeX-209-to-2e ()
   "Make a stab at changing 2.09 doc header to 2e style."
+  (declare (modes LaTeX-mode))
   (interactive)
   (TeX-home-buffer)
   (let (optstr optlist 2eoptlist 2epackages docline docstyle)
@@ -9699,6 +9721,7 @@ previews at point before modification.
 
 Does not support modifying macro-based constructs such as \\ensuremath."
   ;; FIXME: this function may not work correctly in docTeX
+  (declare (modes LaTeX-mode))
   (interactive
    (let ((type (progn (texmathp) (car texmathp-why)))
          (tbl (append '("$" "\\(" "$$" "\\[")
@@ -9766,6 +9789,7 @@ Remove the enclosing math construct (such as \\=\\[...\\] or
 surrounded by `TeX-electric-math' if non-nil, or \"$...$\".  Leave any
 trailing punctuation outside the math delimiters."
   ;; FIXME: this function may not work correctly in docTeX
+  (declare (modes LaTeX-mode))
   (interactive "*")
   (LaTeX-modify-math
    (if TeX-electric-math
@@ -9778,6 +9802,7 @@ N should be a positive integer.  The recognized constructs are
 \"\\=\\[ ... \\]\", \"$$ ... $$\" and \"\\begin{ENV} ... \\end{ENV}\"
 with ENV a math environment detected by `texmathp'.  Any
 \"\\label{...}\" macros inside the copied region are stripped."
+  (declare (modes LaTeX-mode))
   (interactive "*p")
   (setq n (or n 1))
   (unless (> n 0) (user-error "N must be positive"))
