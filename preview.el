@@ -931,8 +931,8 @@ Pure borderless black-on-white will return an empty string."
 
 (defun preview-dvi*-process-setup-1 (img-type start sentinel)
   "Setup process of a DVI converter to IMG-TYPE.
-START is the function that actually starts the process and SENTINEL is
-the used `TeX-sentinel-function'."
+START is the function that actually starts the process with
+`TeX-sentinel-function' set to SENTINEL."
   (setq preview-gs-command-line (append
                                  preview-gs-command-line
                                  (list (preview-gs-resolution
