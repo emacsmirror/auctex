@@ -382,12 +382,12 @@ working continuously is higher when Emacs is rather
 busy.  If this number is smaller, redisplay will
 follow changes in the displayed buffer area faster."
   :group 'preview-gs
-  :type '(restricted-sexp
+  :type `(restricted-sexp
           :match-alternatives
-          ((lambda (value) (and
-                            (integerp value)
-                            (> value 0)
-                            (< value 10))))
+          (,(lambda (value)
+              (and (integerp value)
+                   (> value 0)
+                   (< value 10))))
           :tag "small number"))
 
 (defvar-local preview-gs-answer nil
@@ -1373,8 +1373,10 @@ are functions to call on preview's clicks."
             'mouse-face 'highlight
             'help-echo
             ,(if (stringp helpstring)
-                 (format helpstring preview-button-1 preview-button-2)
-               `(format ,helpstring preview-button-1 preview-button-2))
+                 (format helpstring (key-description preview-button-1)
+                         (key-description preview-button-2))
+               `(format ,helpstring (key-description preview-button-1)
+                        (key-description preview-button-2)))
             'keymap resmap)
         'resmap)))
 
@@ -1739,11 +1741,11 @@ This list is consulted by the default value of `preview-auto-reveal'."
                          (sexp :tag "Key binding"))))
 
 (defcustom preview-auto-reveal
-  '(eval . ((apply #'preview-arrived-via
-                   (mapcar (lambda (cmd)
-                             (if (and (listp cmd) (eq (car cmd) 'key-binding))
-                                 (eval cmd t)
-                               cmd))
+  `(eval . ((apply #'preview-arrived-via
+                   (mapcar ,(lambda (cmd)
+                              (if (and (listp cmd) (eq (car cmd) 'key-binding))
+                                  (eval cmd t)
+                                cmd))
                            preview-auto-reveal-commands))
             t))
   "Cause previews to open automatically when entered.
