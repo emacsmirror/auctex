@@ -18,6 +18,9 @@
 - Add new support files =style/floatflt.el=, =style/fontawesome7.el= and
   =style/ltx-talk.el=.
 
+- Add new function ~preview-dvisvgm-command~ to generate SVG images in
+  preview.
+
 ** Changed
 
 - Change the format of the value stored in ~preview-dumped-alist~.  Add
@@ -26,6 +29,15 @@
 - Respect the value of ~font-latex-fontify-sectioning~ when fontifying
   macros as =slide-title=.  This affects macros provided by
   =style/beamer.el= and =style/ltx-talk.el=.
+
+- Change the name of ~preview-dvipng-command~ to ~preview-dvi*-command~.
+  Also make it accept a function symbol returning the full command.
+
+- Change the name of ~preview-dvipng-image-type~ to
+  ~preview-dvi*-image-type~.
+
+- Change the setting of ~preview-image-creators~ and
+  ~preview-gs-image-type-alist~ to use ~dvi*~ instead of ~dvipng~.
 
 * [14.1.0] - 2025-07-11
 

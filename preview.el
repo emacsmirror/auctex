@@ -178,8 +178,8 @@ Suitable spec is chosen from `preview-icon-specs'.")
           (place preview-gs-place)
           (close preview-gs-close))
     (pnm (open preview-gs-open)
-          (place preview-gs-place)
-          (close preview-gs-close))
+         (place preview-gs-place)
+         (close preview-gs-close))
     (tiff (open preview-gs-open)
           (place preview-gs-place)
           (close preview-gs-close)))
@@ -205,7 +205,8 @@ of Ghostscript, or by your copy of Emacs."
                                          (function :tag "Handler function")
                                          (repeat :tag "Additional \
 function args" :inline t sexp))
-                       :options (open place close))))
+                       :options (open place close)))
+  :package-version '(auctex . "14.2.0"))
 
 (defcustom preview-gs-image-type-alist
   '((png png "-sDEVICE=png16m")
@@ -220,7 +221,8 @@ method, like when PDFTeX was used."
   :group 'preview-gs
   :type '(repeat (list :tag nil (symbol :tag "preview image-type")
                        (symbol :tag "Emacs image-type")
-                       (repeat :inline t :tag "Ghostscript options" string))))
+                       (repeat :inline t :tag "Ghostscript options" string)))
+  :package-version '(auctex . "14.2.0"))
 
 (defcustom preview-image-type 'png
   "Image type to be used in images."
@@ -514,7 +516,7 @@ an explicit list of elements in the CDR, or a symbol to
 be consulted recursively.")
 
 (define-obsolete-variable-alias
-  'preview-dvipng-command 'preview-dvi*-command "14.2")
+  'preview-dvipng-command 'preview-dvi*-command "14.2.0")
 (defcustom preview-dvi*-command
   "dvipng -picky -noghostscript %d -o %m/prev%%03d.png"
   "Command used for converting to separate PNG images.
@@ -525,10 +527,11 @@ expected to be a function that returns the command as a string.
 You might specify options for converting to other image types,
 but then you'll need to adapt `preview-dvi*-image-type'."
   :group 'preview-latex
-  :type '(choice string function))
+  :type '(choice string function)
+  :package-version '(auctex . "14.2.0"))
 
 (define-obsolete-variable-alias
-  'preview-dvipng-image-type 'preview-dvi*-image-type "14.2")
+  'preview-dvipng-image-type 'preview-dvi*-image-type "14.2.0")
 (defcustom preview-dvi*-image-type
   'png
   "Image type that dvi conversion produces.
@@ -538,7 +541,8 @@ customize this."
   :group 'preview-latex
   :type '(choice (const png)
                  (const gif)
-                 (symbol :tag "Other" :value png)))
+                 (symbol :tag "Other" :value png))
+  :package-version '(auctex . "14.2.0"))
 
 (defun preview-dvipng-command (&optional cmd)
   "Return a shell command for running dvipng.
@@ -967,7 +971,7 @@ START is the function that actually starts the process with
    #'preview-start-dvi*
    #'preview-dvi*-sentinel))
 (define-obsolete-function-alias
-  'preview-dvipng-process-setup #'preview-dvi*-process-setup "14.2")
+  'preview-dvipng-process-setup #'preview-dvi*-process-setup "14.2.0")
 
 (defun preview-pdf2dsc-process-setup ()
   (setq TeX-sentinel-function #'preview-pdf2dsc-sentinel)
@@ -1000,7 +1004,7 @@ START is the function that actually starts the process with
 (defalias 'preview-dvi*-abort #'preview-dvips-abort)
 ;  "Abort a dvi conversion run.")
 (define-obsolete-function-alias
-  'preview-dvipng-abort #'preview-dvi*-abort "14.2")
+  'preview-dvipng-abort #'preview-dvi*-abort "14.2.0")
 
 (defun preview-gs-dvips-sentinel (process _command &optional gsstart)
   "Sentinel function for indirect rendering DviPS process.
@@ -1110,7 +1114,7 @@ The usual PROCESS and COMMAND arguments for
     (error (preview-log-error err "Dvi conversion sentinel" process)))
   (preview-reraise-error process))
 (define-obsolete-function-alias
-  'preview-dvipng-sentinel #'preview-dvi*-sentinel "14.2")
+  'preview-dvipng-sentinel #'preview-dvi*-sentinel "14.2.0")
 
 (defun preview-dvi*-close (process closedata)
   "Clean up after PROCESS and set up queue accumulated in CLOSEDATA."
@@ -1136,7 +1140,7 @@ The usual PROCESS and COMMAND arguments for
           (unless (eq (process-status process) 'signal)
             (preview-dvi*-abort))))))
 (define-obsolete-function-alias
-  'preview-dvipng-close #'preview-dvi*-close "14.2")
+  'preview-dvipng-close #'preview-dvi*-close "14.2.0")
 
 (defun preview-dsc-parse (file)
   "Parse DSC comments of FILE.
@@ -2659,7 +2663,7 @@ Deletes the dvi file when finished."
           (preview-delete-file filename)
         (file-error nil)))))
 (define-obsolete-function-alias
-  'preview-dvipng-place-all #'preview-dvi*-place-all "14.2")
+  'preview-dvipng-place-all #'preview-dvi*-place-all "14.2.0")
 
 (defun preview-active-string (ov)
   "Generate before-string for active image overlay OV."
@@ -3932,7 +3936,7 @@ The fourth value is the transparent border thickness."
        (preview-dvipng-command preview-dvi*-command)
      (funcall preview-dvi*-command))))
 (define-obsolete-function-alias
-  'preview-start-dvipng #'preview-start-dvi* "14.2")
+  'preview-start-dvipng #'preview-start-dvi* "14.2.0")
 
 (defun preview-start-dvips (&optional fast)
   "Start a DviPS process.

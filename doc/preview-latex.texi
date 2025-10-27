@@ -74,7 +74,7 @@ This manual may be copied under the conditions spelled out in
 @iftex
 @unnumbered @previewlatex{}
 @end iftex
- 
+
 @previewlatex{} is a package embedding preview fragments into Emacs
 source buffers under the @AUCTeX{} editing environment for @LaTeX{}.  It
 uses @file{preview.sty} for the extraction of certain environments (most
@@ -96,7 +96,7 @@ sans-serif font to visually offset it.
 * ToDo::                        Future development.
 * Frequently Asked Questions::  All about @previewlatex{}
 * Copying this Manual::         GNU Free Documentation License
-* Index::                       A menu of many topics.             
+* Index::                       A menu of many topics.
 @end menu
 
 @node Copying, Introduction, top, top
@@ -131,7 +131,7 @@ Installation is now being covered in
 @ref{Installation,,,auctex,the @AUCTeX{} manual}.
 
 @node Keys and lisp, Simple customization, Installation, top
-@chapter Key bindings and user-level lisp functions 
+@chapter Key bindings and user-level lisp functions
 
 @cindex Menu entries
 @previewlatex{} adds key bindings starting with @kbd{C-c C-p} to the
@@ -213,7 +213,7 @@ levels.
 @findex preview-environment
 
 @item @kbd{C-c C-p C-s}
-@itemx @code{preview-section} 
+@itemx @code{preview-section}
 @itemx Preview/Generate previews for section
 Run preview on this @LaTeX{} section.
 @kindex @kbd{C-c C-p C-s}
@@ -227,14 +227,14 @@ Run preview on current region.
 @findex preview-region
 
 @item @kbd{C-c C-p C-b}
-@itemx @code{preview-buffer} 
+@itemx @code{preview-buffer}
 @itemx Preview/Generate previews for buffer
 Run preview on the current buffer.
 @kindex @kbd{C-c C-p C-b}
 @findex preview-buffer
 
 @item @kbd{C-c C-p C-d}
-@itemx @code{preview-document} 
+@itemx @code{preview-document}
 @itemx Preview/Generate previews for document
 Run preview on the current document.
 @kindex @kbd{C-c C-p C-d}
@@ -321,7 +321,7 @@ current document.  If the caching gives you problems, use this.
 Read
 @ifinfo
 this
-@end ifinfo 
+@end ifinfo
 @ifnotinfo
 the
 @end ifnotinfo
@@ -496,10 +496,10 @@ an Emacs-lisp part integrating the thing into Emacs (aided by
 @AUCTeX{}).
 
 @menu
-* The LaTeX style file::        
-* The Emacs interface::         
-* The preview images::             
-* Misplaced previews::          
+* The LaTeX style file::
+* The Emacs interface::
+* The preview images::
+* Misplaced previews::
 @end menu
 
 @node The LaTeX style file, The Emacs interface, For advanced users, For advanced users
@@ -535,9 +535,10 @@ configured command.  One possibility is to have @samp{\pdfoutput=0 }
 appended to every command starting with @samp{pdf}.  This particular
 setting is available as the shortcut
 @code{preview-LaTeX-disable-pdfoutput}.  Since @previewlatex{} can work
-with @acronym{PDF} files by now, there is little incentive for using
-this option, anymore (for projects not requiring @acronym{PDF} output,
-the added speed of @command{dvipng} might make this somewhat attractive).
+with @acronym{PDF} files by now, there is little incentive for using this
+option, anymore (for projects not requiring @acronym{PDF} output, the
+added speed of @command{dvipng} or @command{dvisvgm} might make this
+somewhat attractive).
 
 @item preview-required-option-list
 @code{preview-LaTeX-command} uses @code{preview-required-option-list} in
@@ -718,32 +719,35 @@ cater for the images that are displayed.  There are various options
 customizable concerning aspects of that operation, see the customization
 group @samp{Preview Gs} for this.
 
-Another noteworthy setting of @code{preview-image-type} is
-@samp{dvipng}: in this case, the @command{dvipng}
-@pindex dvipng 
-program will get run on @acronym{DVI} output (see below for @acronym{PDF}).
-This is in general much faster than Dvips and Ghostscript.  In that
-case, the option
+Another noteworthy setting of @code{preview-image-type} is @samp{dvi*}: in
+this case, a @acronym{DVI} conversion process will be run (for example
+@command{dvipng}
+@pindex dvipng
+or @command{dvisvgm}) on the @acronym{DVI} output (see below for
+@acronym{PDF}).  This is in general much faster than Dvips and
+Ghostscript.  In that case, the option
 
-@item preview-dvipng-command
-will get run for doing the conversion, and it is expected that
+@item preview-dvi*-command
+will determine the command to run for the conversion, and it is expected that
 
-@item preview-dvipng-image-type
-images get produced (@samp{dvipng} might be configured for other image
-types as well).  You will notice that @code{preview-gs-image-type-alist}
-contains an entry for @code{dvipng}: this actually has nothing to with
-@samp{dvipng} itself but specifies the image type and Ghostscript device
-option to use when @samp{dvipng} can't be used.  This will obviously be
-the case for @acronym{PDF} output by PDF@LaTeX{}, but it will also happen
-if the @acronym{DVI} file contains PostScript specials in which case the
-affected images will get run through Dvips and Ghostscript once
-@samp{dvipng} finishes.
+@item preview-dvi*-image-type
+images get produced (@samp{dvipng} might be configured for PNG or other
+image and @samp{dvisvgm} produces SVG images that you can use if your
+Emacs supports them).  You will notice that
+@code{preview-gs-image-type-alist} contains an entry for @code{dvi*}: this
+actually has nothing to do with the @acronym{DVI} conversion itself but
+specifies the image type and Ghostscript device option to use when such
+conversion can't be done.  This will obviously be the case for
+@acronym{PDF} output by PDF@LaTeX{}, but it will also happen if the
+@acronym{DVI} file contains PostScript specials in which case the affected
+images will get run through Dvips and Ghostscript once the @acronym{DVI}
+conversion process finishes.
 
 Note for p@LaTeX{} and up@LaTeX{} users: It is known that @command{dvipng}
-is not compatible with p@LaTeX{} and up@LaTeX{}.  If
-@code{preview-image-type} is set to @samp{dvipng} and (u)p@LaTeX{} is
-used, @samp{dvipng} just fails and @previewlatex{} falls back on Dvips
-and Ghostscript.
+and @command{dvisvgm} are not compatible with p@LaTeX{} and up@LaTeX{}.
+If @code{preview-image-type} is set to @samp{dvi*} and (u)p@LaTeX{} is
+used, the @acronym{DVI} conversion process just fails and @previewlatex{}
+falls back on Dvips and Ghostscript.
 
 @item preview-gs-options
 Most interesting to the user perhaps is the setting of this variable.
@@ -854,7 +858,7 @@ The full license text can be read here:
 @include fdl.texi
 
 @c @node Credits, Index, Internals, top
-@c @appendix Credits 
+@c @appendix Credits
 
 @node Index,  , Copying this Manual, top
 @unnumbered Index

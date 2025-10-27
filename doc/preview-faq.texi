@@ -42,8 +42,9 @@ got it from.
 
 @subsection I have trouble with the display format...
 We recommend keeping the variable @code{preview-image-type} set to
-@code{dvipng} (if you have it installed) or @code{png}.  This is the
-default and can be set via the @samp{Preview/Customize} menu.
+@code{dvi*} (if you have @command{dvipng} or @command{dvisvgm} installed)
+or @code{png}.  This is the default and can be set via the
+@samp{Preview/Customize} menu.
 
 All other formats are known to have inconveniences, either in file size
 or quality.  There are some Emacs versions around not supporting
