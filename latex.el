@@ -7622,19 +7622,22 @@ See its doc string for detail.")
 ;; completion at point when inside a macro or environment argument.
 ;; The general idea is:
 ;;
-;; - Find out in which argument of macro/env the point is; this is
-;; done by the function `LaTeX-what-macro'.
+;; - Find out in which argument of macro/env point is; this is done by
+;; the function `LaTeX-what-macro'.
 ;;
 ;; - Match the result against the information available in
 ;; `TeX-symbol-list' or `LaTeX-environment-list' by the function
 ;; `LaTeX-completion-parse-args'.
 ;;
-;; - If there is a match, pass it to `LaTeX-completion-parse-arg'
-;; (note the missing `s') which parses the match and runs the
-;; corresponding function to calculate the candidates.  These are the
-;; functions `LaTeX-completion-candidates-key-val',
+;; - If there is a match, pass it to `LaTeX-completion-parse-arg' (note
+;; the missing `s') which parses the match and runs the corresponding
+;; function to calculate the candidates.  These are the functions
+;; `LaTeX-completion-candidates-key-val',
 ;; `LaTeX-completion-candidates-completing-read-multiple', and
-;; `LaTeX-completion-candidates-completing-read'.
+;; `LaTeX-completion-candidates-completing-read'.  These functions have
+;; the property ":exclusive 'no" because they might fail easily, so they
+;; let the next function in `completion-at-point-functions' take over
+;; and have a try.
 ;;
 ;; Two mapping variables `LaTeX-completion-function-map-alist-keyval'
 ;; and `LaTeX-completion-function-map-alist-cr' are provided in order
@@ -7656,14 +7659,11 @@ If the optional WHICH is the symbol `open', return the car's of
 each element in the variable `LaTeX-completion-macro-delimiters'.
 If it is the symbol `close', return the cdr's.  If omitted or
 nil, return all elements."
-  (cond ((eq which 'open)
-         (mapcar #'car LaTeX-completion-macro-delimiters))
-        ((eq which 'close)
-         (mapcar #'cdr LaTeX-completion-macro-delimiters))
-        (t
-         (append
-          (mapcar #'car LaTeX-completion-macro-delimiters)
-          (mapcar #'cdr LaTeX-completion-macro-delimiters)))))
+  (pcase which
+    ('open  (mapcar #'car LaTeX-completion-macro-delimiters))
+    ('close (mapcar #'cdr LaTeX-completion-macro-delimiters))
+    (_      (append (mapcar #'car LaTeX-completion-macro-delimiters)
+                    (mapcar #'cdr LaTeX-completion-macro-delimiters)))))
 
 (defun LaTeX-move-to-previous-arg (&optional bound)
   "Move backward to the closing parenthesis of the previous argument.
@@ -7777,7 +7777,7 @@ this point.  If nil, limit to the previous 15 lines."
 
 (defun LaTeX-completion-candidates-key-val (key-vals)
   "Return completion candidates from KEY-VALS based on buffer position.
-KEY-VALS is an alist of key-values pairs."
+KEY-VALS is an alist of key-value pairs."
   (let ((end (point))
         (func (lambda (kv &optional k)
                 (if k
@@ -7813,7 +7813,8 @@ KEY-VALS is an alist of key-values pairs."
           ;; This caters also for the case where nothing is typed yet:
           (list beg end (completion-table-dynamic
                          (lambda (_)
-                           (funcall func key-vals key)))))
+                           (funcall func key-vals key)))
+                :exclusive 'no))
       ;; We have to look for a key:
       (save-excursion
         ;; Find the beginning
@@ -7828,11 +7829,12 @@ KEY-VALS is an alist of key-values pairs."
         ;; This caters also for the case where nothing is typed yet:
         (list beg end (completion-table-dynamic
                        (lambda (_)
-                         (funcall func key-vals))))))))
+                         (funcall func key-vals)))
+              :exclusive 'no)))))
 
 (defun LaTeX-completion-candidates-completing-read-multiple (collection)
   "Return completion candidates from COLLECTION based on buffer position.
-COLLECTION is an list of strings."
+COLLECTION is a list of strings."
   (let ((end (point))
         beg list-beg)
     (save-excursion
@@ -7843,15 +7845,13 @@ COLLECTION is an list of strings."
     (save-excursion
       (unless (search-backward "," list-beg t)
         (goto-char list-beg))
-      (skip-chars-forward "^a-zA-Z0-9" end)
+      (skip-chars-forward "^a-zA-Z0-9\\\\" end)
       (setq beg (point)))
-    (list beg end (completion-table-dynamic
-                   (lambda (_)
-                     collection)))))
+    (list beg end collection :exclusive 'no)))
 
 (defun LaTeX-completion-candidates-completing-read (collection)
   "Return completion candidates from COLLECTION based on buffer position.
-COLLECTION is an list of strings."
+COLLECTION is a list of strings."
   (let ((end (point))
         beg)
     (save-excursion
@@ -7859,11 +7859,9 @@ COLLECTION is an list of strings."
                                 (LaTeX-completion-macro-delimiters))
         (up-list -1))
       (forward-char)
-      (skip-chars-forward "^a-zA-Z0-9" end)
+      (skip-chars-forward "^a-zA-Z0-9\\\\" end)
       (setq beg (point)))
-    (list beg end (completion-table-dynamic
-                   (lambda (_)
-                     collection)))))
+    (list beg end collection :exclusive 'no)))
 
 (defun LaTeX-completion-documentclass-usepackage (entry)
   "Return completion candidates for \\usepackage and \\documentclass arguments.
@@ -8163,7 +8161,7 @@ taken."
 (defun LaTeX--arguments-completion-at-point ()
   "Capf for arguments of LaTeX macros and environments.
 Completion for macros starting with `\\' is provided by the
-function `TeX--completion-at-point' which should come first in
+function `TeX--completion-at-point' which should come later in
 `completion-at-point-functions'."
   ;; Exit if not inside an argument or in a comment:
   (when (and (LaTeX-completion-find-argument-boundaries)
@@ -8539,10 +8537,12 @@ function would return non-nil and `(match-string 1)' would return
   ;; Moved after `run-mode-hooks'. (bug#65750)
   ;; (LaTeX-indent-commands-regexp-make)
 
-  ;; Standard Emacs completion-at-point support.  We append the entry
-  ;; in order to let `TeX--completion-at-point' be first in the list:
+  ;; Standard Emacs completion-at-point support.  We prepend the entry
+  ;; in order to let `TeX--completion-at-point' be next in the list.
+  ;; See discussion in this thread:
+  ;; https://lists.gnu.org/archive/html/auctex-devel/2025-10/msg00013.html
   (add-hook 'completion-at-point-functions
-            #'LaTeX--arguments-completion-at-point 5 t)
+            #'LaTeX--arguments-completion-at-point nil t)
 
   (setq-local LaTeX-item-list '(("description" . LaTeX-item-argument)
                                 ("thebibliography" . LaTeX-item-bib)
