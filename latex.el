@@ -9111,6 +9111,12 @@ function would return non-nil and `(match-string 1)' would return
      '("MakeTitlecase" [TeX-arg-key-val (("lang") ("locale")
                                          ("words" ("first" "all")))]
        t)
+     '("DeclareLowercaseExclusions" t)
+     '("DeclareTitlecaseExclusions" t)
+     '("DeclareUppercaseExclusions" t)
+     '("DeclareLowercaseMapping" ["Locale"] "Codepoint" "Output")
+     '("DeclareTitlecaseMapping" ["Locale"] "Codepoint" "Output")
+     '("DeclareUppercaseMapping" ["Locale"] "Codepoint" "Output")
 
      ;; Support for problem solving
      '("listfiles"

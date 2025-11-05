@@ -1,6 +1,6 @@
 ;;; ltx-base.el --- AUCTeX style for basic LaTeX commands.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004--2024 Free Software Foundation, Inc.
+;; Copyright (C) 2004--2025 Free Software Foundation, Inc.
 
 ;; Author: Frank Küster <frank@kuesterei.ch>
 ;; Maintainer: auctex-devel@gnu.org
@@ -227,6 +227,9 @@
     ;; 3.7 Declaring math sizes
     '("DeclareMathSizes" 4)
 
+    ;; 3.8 Declaring math script fonts
+    '("DeclareMathScriptfontMapping" 6)
+
     ;; 4.2 Font definition file commands
     '("DeclareFontFamily"
       (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
@@ -366,6 +369,8 @@
                                 ("DeclareMathRadical"   "|{\\{{{{")
 
                                 ("DeclareMathSizes"     "{{{{")
+
+                                ("DeclareMathScriptfontMapping" "{{{{{{")
 
                                 ("DeclareFontFamily"  "{{{")
                                 ("DeclareFontShape"   "{{{{{{")
