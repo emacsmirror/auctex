@@ -1,4 +1,4 @@
-;;; ltx-talk.el --- AUCTeX style for `ltx-talk.cls' (v0.2.2)  -*- lexical-binding: t; -*-
+;;; ltx-talk.el --- AUCTeX style for `ltx-talk.cls' (v0.3.0)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Free Software Foundation, Inc.
 
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `ltx-talk.sty' (v0.2.2) from 2025-09-30.
+;; This file adds support for `ltx-talk.sty' (v0.3.0) from 2025-11-10.
 ;; `ltx-talk.sty' is part of TeXLive.
 
 ;;; Code:
@@ -134,8 +134,21 @@ Optional MACRO can be a string, for example, \"bibitem\"."
                                                      "vertical-alignment")
                                                     "Settings"])
 
-    '("subtitle" "Subtitle")
-    '("institute" "Institute")
+    '("author"
+      [TeX-arg-key-val (("short-author")) nil nil ?\s]
+      LaTeX-arg-author)
+    '("date"
+      [TeX-arg-key-val (("short-date")) nil nil ?\s]
+      TeX-arg-date)
+    '("institute"
+      [TeX-arg-key-val (("short-institute")) nil nil ?\s]
+      "Institute")
+    '("subtitle"
+      [TeX-arg-key-val (("short-subtitle")) nil nil ?\s]
+      "Subtitle")
+    '("title"
+      [TeX-arg-key-val (("short-title")) nil nil ?\s]
+      t)
 
     ;; 9.1 Itemizations, enumerations and descriptions
     '("item"
@@ -229,11 +242,11 @@ Optional MACRO can be a string, for example, \"bibitem\"."
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("title"         "[{")
-                                ("subtitle"      "[{")
-                                ("author"        "[{")
+     (font-latex-add-keywords '(("author"        "[{")
                                 ("date"          "[{")
                                 ("institute"     "[{")
+                                ("subtitle"      "[{")
+                                ("title"         "[{")
                                 ("frametitle"    "<[{")
                                 ("framesubtitle" "<[{"))
                               'slide-title)
