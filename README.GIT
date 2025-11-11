@@ -37,12 +37,14 @@ After the successful "make" run, you have to configure Emacs in order to
 run AUCTeX from your local Git repo.  The following forms in your init
 file should suffice:
 
-  (load "~/path/to/auctex/auctex-autoloads.el" nil t t)
-  (with-eval-after-load 'info
-    (add-to-list 'Info-additional-directory-list
-                 "~/path/to/auctex/doc"))
+   (load "~/path/to/auctex/auctex-autoloads.el" nil t t)
+   (with-eval-after-load 'info
+     (add-to-list 'Info-additional-directory-list
+                  "~/path/to/auctex/doc"))
 
 If you're using the command `package-vc-install' to install AUCTeX, you
-can skip the forms above.  Just remember to have the following setting:
+can skip the forms above.  Just remember to add AUCTeX to
+`package-vc-allow-build-commands' with something like this:
 
-  (setq package-vc-allow-build-commands '(auctex))
+   (with-eval-after-load 'package-vc
+     (add-to-list 'package-vc-allow-build-commands 'auctex))
