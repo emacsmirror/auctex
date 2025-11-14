@@ -1,6 +1,6 @@
-;;; hologo.el --- AUCTeX style for `hologo.sty' (v1.10)  -*- lexical-binding: t; -*-
+;;; hologo.el --- AUCTeX style for `hologo.sty' (v1.16)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2025 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `hologo.sty' (v1.10) from 2012/04/26.
+;; This file adds support for `hologo.sty' (v1.16) from 2025-11-11.
 ;;  `hologo.sty' is part of TeXLive.
 
 ;;; Code:
@@ -33,18 +33,19 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (defvar LaTeX-hologo-logo-names
   '("(La)TeX"
     "AmSLaTeX"
     "AmSTeX"
+    "ApLaTeX"
+    "ApTeX"
     "biber"
     "BibTeX"
     "BibTeX8"
     "ConTeXt"
+    "DVIPDFMx"
     "emTeX"
     "eTeX"
     "ExTeX"
@@ -77,13 +78,18 @@
     "PiC"
     "PiCTeX"
     "plainTeX"
+    "pLaTeX"
+    "pTeX"
     "SageTeX"
     "SLiTeX"
     "SliTeX"
     "teTeX"
     "TeX"
     "TeX4ht"
+    "TeXLive"
     "TTH"
+    "upLaTeX"
+    "upTeX"
     "virTeX"
     "VTeX"
     "Xe"
@@ -138,26 +144,23 @@ OPTIONAL is ignored."
 
     `("hologoLogoSetup"
       (TeX-arg-completing-read LaTeX-hologo-logo-names "Logo name")
-      (TeX-arg-key-val ,(lambda ()
-                          (save-excursion
-                            (re-search-backward "\\\\hologoLogoSetup{\\([^}]+\\)}"
-                                                (line-beginning-position) t))
-                          (let ((logo (match-string-no-properties 1)))
-                            (cond ((string= logo "BibTeX")
-                                   (append '(("variant" ("sf" "sc")))
-                                           LaTeX-hologo-key-val-options-global))
-                                  ((string= logo "ConTeXt")
-                                   (append '(("variant" ("narrow" "simple")))
-                                           LaTeX-hologo-key-val-options-global))
-                                  ((string= logo "plainTeX")
-                                   (append '(("variant" ("space" "hyphen" "runtogether")))
-                                           LaTeX-hologo-key-val-options-global))
-                                  ((or (string= logo "SLiTeX")
-                                       (string= logo "SliTeX"))
-                                   (append '(("variant" ("lift" "narrow" "lift")))
-                                           LaTeX-hologo-key-val-options-global))
-                                  (t
-                                   LaTeX-hologo-key-val-options-global))))))
+      (TeX-arg-key-val
+       ,(lambda ()
+          (save-excursion
+            (re-search-backward "\\\\hologoLogoSetup{\\([^}]+\\)}"
+                                (line-beginning-position) t))
+          (let ((logo (match-string-no-properties 1)))
+            (pcase logo
+              ("BibTeX"   (append '(("variant" ("sf" "sc")))
+                                  LaTeX-hologo-key-val-options-global))
+              ("ConTeXt"  (append '(("variant" ("narrow" "simple")))
+                                  LaTeX-hologo-key-val-options-global))
+              ("plainTeX" (append '(("variant" ("space" "hyphen" "runtogether")))
+                                  LaTeX-hologo-key-val-options-global))
+              ((pred (member _ '("SLiTeX" "SliTeX")))
+               (append '(("variant" ("lift" "narrow" "simple")))
+                       LaTeX-hologo-key-val-options-global))
+              (_ LaTeX-hologo-key-val-options-global))))))
 
     '("hologoDriverSetup" (TeX-arg-completing-read
                            ("pdftex"  "luatex"
@@ -174,27 +177,21 @@ OPTIONAL is ignored."
       (TeX-arg-completing-read ("BibTeX" "ExTeX" "SliTeX" "AmS" "NTS"
                                 "KOMAScript" "METAFONT" "METAPOST")
                                "Logo name")
-      (TeX-arg-key-val ,(lambda ()
-                          (save-excursion
-                            (re-search-backward "\\\\hologoLogoFontSetup{\\([^}]+\\)}"
-                                                (line-beginning-position) t))
-                          (let ((logo (match-string-no-properties 1)))
-                            (cond ((string= logo "BibTeX")
-                                   '(("bibsf") ("sc")))
-                                  ((string= logo "ExTeX")
-                                   '(("rm") ("sy")))
-                                  ((string= logo "SliTeX")
-                                   '(("rm") ("sc")))
-                                  ((or (string= logo "AmS")
-                                       (string= logo "NTS"))
-                                   '(("sy")))
-                                  ((string= logo "KOMAScript")
-                                   '(("sf")))
-                                  ((or (string= logo "METAFONT")
-                                       (string= logo "METAPOST"))
-                                   '(("logo")))
-                                  (t
-                                   nil))))))
+      (TeX-arg-key-val
+       ,(lambda ()
+          (save-excursion
+            (re-search-backward "\\\\hologoLogoFontSetup{\\([^}]+\\)}"
+                                (line-beginning-position) t))
+          (let ((logo (match-string-no-properties 1)))
+            (pcase logo
+              ("BibTeX"     '(("bibsf") ("sc")))
+              ("ExTeX"      '(("rm") ("sy")))
+              ("KOMAScript" '(("sf")))
+              ("SliTeX"     '(("rm") ("sc")))
+              ((pred (member _ '("AmS" "NTS")))
+               '(("sy")))
+              ((pred (member _ '("METAFONT" "METAPOST")))
+               '(("logo"))))))))
 
     ;; Additional user macros
     `("hologoVariant"
