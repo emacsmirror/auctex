@@ -1,6 +1,6 @@
 ;;; physics.el --- AUCTeX style for `physics' (v1.3).  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2022--2023, 2025 Free Software Foundation, Inc.
 
 ;; Author: Ikumi Keita <ikumikeita@jcom.home.ne.jp>
 ;; Maintainer: auctex-devel@gnu.org
@@ -222,9 +222,9 @@ Function to derive (RET to omit, SPC RET to have empty placeholder): "))
          (var2 (and partial (not paren) (< 0 (length func))
                     (TeX-read-string
                      "Derivative variable 2nd (RET to omit): "))))
-    (unless var2
-      ;; XXX: Should we respect `TeX-insert-macro-default-style'?
-      (TeX-arg-string t "Power" nil nil nil LaTeX-optop LaTeX-optcl))
+    (if (= 0 (length var2))
+        ;; XXX: Should we respect `TeX-insert-macro-default-style'?
+        (TeX-arg-string t "Power" nil nil nil LaTeX-optop LaTeX-optcl))
     (when (and (< 0 (length func))
                (not paren))
       (if (equal func " ")
