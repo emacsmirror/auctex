@@ -53,4 +53,4 @@
 (defvar LaTeX-afterpage-package-options nil
   "Package options for afterpage.")
 
-;; afterpage.el ends here
+;;; afterpage.el ends here

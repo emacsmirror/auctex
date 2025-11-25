@@ -43,5 +43,4 @@
   '("english" "french" "tight" "loose" "commas" "thinspaces" "plain")
   "Package options for fancynum.")
 
-;; fancynum.el ends here
-
+;;; fancynum.el ends here

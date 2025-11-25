@@ -178,4 +178,4 @@
     "doublespacing" "galley" "landscape" "letters" "onecolumn" "referee")
   "Package options for the mn2e package.")
 
-;; mn2e.el ends here
+;;; mn2e.el ends here

@@ -194,4 +194,4 @@ OPTIONAL is ignored."
                                        "longnamesfirst" "nonamebreak")
   "Package options for the natbib package.")
 
-;; natbib.el ends here
+;;; natbib.el ends here

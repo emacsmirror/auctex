@@ -60,4 +60,4 @@
 (defvar LaTeX-nameref-package-options nil
   "Package options for nameref.")
 
-;; nameref.el ends here
+;;; nameref.el ends here

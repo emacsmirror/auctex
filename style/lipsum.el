@@ -43,4 +43,4 @@
   '("nopar")
   "Package options for the lipsum package.")
 
-;; lipsum.el ends here
+;;; lipsum.el ends here

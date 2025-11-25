@@ -59,4 +59,4 @@
 (defvar LaTeX-filecontents-package-options nil
   "Package options for filecontents.")
 
-;; filecontents.el ends here
+;;; filecontents.el ends here

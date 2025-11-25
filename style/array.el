@@ -101,4 +101,4 @@ package.")
 (defvar LaTeX-array-package-options nil
   "Package options for array.")
 
-;; array.el ends here
+;;; array.el ends here

@@ -43,4 +43,4 @@
   '("par" "nopar" "numbers" "index")
   "Package options for the kantlipsum package.")
 
-;; kantlipsum.el ends here
+;;; kantlipsum.el ends here

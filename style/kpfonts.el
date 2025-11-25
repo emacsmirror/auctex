@@ -606,4 +606,4 @@ following commands are defined:
     "nowarning")
   "Package options for the kpfonts package.")
 
-;; kpfonts.el ends here
+;;; kpfonts.el ends here

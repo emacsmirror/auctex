@@ -179,4 +179,4 @@
     "usenatbib" "usegraphicx" "useAMS" "usedcolumn")
   "Package options for the mnras package.")
 
-;; mnras.el ends here
+;;; mnras.el ends here

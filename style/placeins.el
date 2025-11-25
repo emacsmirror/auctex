@@ -40,4 +40,4 @@
   '("section" "above" "below" "verbose")
   "Package options for placeins.")
 
-;; placeins.el ends here
+;;; placeins.el ends here

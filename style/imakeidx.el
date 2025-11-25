@@ -114,4 +114,4 @@
     "original" "splitindex")
   "Package options for the imakeidx package.")
 
-;; imakeidx.el ends here
+;;; imakeidx.el ends here

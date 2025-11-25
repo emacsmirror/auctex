@@ -149,4 +149,4 @@ insert line break macro."
 (defvar LaTeX-longtable-package-options nil
   "Package options for the longtable package.")
 
-;; longtable.el ends here
+;;; longtable.el ends here

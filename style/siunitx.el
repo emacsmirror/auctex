@@ -519,4 +519,4 @@ string."
   "Prompt for package options for the siunitx package."
   (TeX-read-key-val t LaTeX-siunitx-package-options-list))
 
-;; siunitx.el ends here
+;;; siunitx.el ends here

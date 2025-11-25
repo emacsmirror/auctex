@@ -57,4 +57,4 @@
 (defvar LaTeX-bm-package-options nil
   "Package options for the bm package.")
 
-;; bm.el ends here
+;;; bm.el ends here

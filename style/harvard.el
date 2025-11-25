@@ -125,4 +125,4 @@
                                         "curly" "angle" "square" "none")
   "Package options for the harvard package.")
 
-;; harvard.el ends here
+;;; harvard.el ends here
