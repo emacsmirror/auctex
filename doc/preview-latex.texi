@@ -480,6 +480,52 @@ math (@code{$@dots{}$}), or if your usage of @code{$} conflicts with
 @previewlatex{}'s, you can turn off inline math previews.  In the
 @samp{Preview Latex} group, remove @code{textmath} from
 @code{preview-default-option-list} by customizing this variable.
+
+@item Customize where previews are shown
+
+Set @code{preview-visibility-style} to control when previews appear:
+
+@table @code
+
+@item off-point
+Previews replace the source when point is elsewhere.  When a preview is
+opened to show the source, the preview is replaced by an icon.  This is
+the default value.
+
+@item at-point
+Previews never obscure the source.  In this mode, preview visibility is
+inverted: previews are hidden when they would normally be closed and made
+visible when they would normally be opened.  The value of
+@code{preview-auto-reveal} controls when a preview is considered opened
+(e.g., set to @code{t} to open a preview whenever the cursor enters the
+preview's source).
+
+@item always
+Previews are always visible when available.  Away from point they replace
+the source; when opened they remain displayed alongside the source.
+
+@end table
+
+The placement of previews when shown with their source is controlled with
+@code{preview-at-point-placement}, which can take these values:
+
+@table @code
+
+@item before-string
+Show the preview before the source (default).
+
+@item after-string
+Show the preview after the source.
+
+@item buframe
+Show the preview in a side frame adjacent to point.  Requires the
+@code{buframe} package (available on ELPA).  Only one frame is used,
+showing the preview whose source is at point.  If
+@code{preview-visibility-style} is set to @code{off-point} or
+@code{always}, a preview opened away from point is shown only when point
+is on its source.
+
+@end table
 @end itemize
 
 @node Known problems, For advanced users, Simple customization, top
@@ -671,18 +717,11 @@ when this is needed is in
 accordingly @code{split} is one entry in
 @code{preview-inner-environments}.
 
-@item preview-protect-point
-This boolean variable determines whether previews generated on top of the
-current point should be temporarily opened.  Default value is @code{nil}.
-
-@item preview-leave-open-previews-visible
-This boolean variable determines whether to leave preview images visible
-when they are opened.
-
-There is a side effect in enabling this option.  The preview image doesn't
-turn into construction sign temporarily when you edit the underlying
-@LaTeX{} code and regenerate the preview; it is just replaced by updated
-image when ready.  This behavior suppresses flicker in the appearance.
+@item preview-keep-stale-images
+This boolean variable determines whether to retain preview images whose
+source is modified or replace them with icons until regenerated.
+Retaining images is not compatible with @code{preview-visibility-style}
+being set to @code{off-point}.
 
 @end vtable
 
