@@ -1,6 +1,6 @@
 ;;; italian.el --- Setup AUCTeX for editing Italian text.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004, 2005, 2018, 2020, 2022 Free Software Foundation, Inc.
+;; Copyright (C) 2004-2025 Free Software Foundation, Inc.
 
 ;; Author: Davide G. M. Salvetti <salve@debian.org>
 ;; Maintainer: Davide G. M. Salvetti <salve@debian.org>
@@ -32,9 +32,8 @@
 (require 'tex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-quotes
-                  "font-latex"
-                  (quotes))
+(declare-function font-latex-add-quotes "font-latex" (quotes))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (defvar TeX-language-it-hook nil
   "Hook run for Italian texts.")
@@ -42,12 +41,23 @@
 (TeX-add-style-hook
  "italian"
  (lambda ()
+   (TeX-add-symbols
+    '("setactivedoublequote" 0)
+    '("IntelligentComma"     0)
+    '("NoIntelligentComma"   0))
+
    (unless (eq (car TeX-quote-language) 'override)
      (setq TeX-quote-language
            `("italian" "\"<" "\">" ,TeX-quote-after-quote)))
-   ;; Fontification of quotation marks.
-   (when (fboundp 'font-latex-add-quotes)
-     (font-latex-add-quotes '("\"<" "\">" french)))
+
+   ;; Fontification of quotation marks and macros:
+   (when (and (fboundp 'font-latex-add-quotes)
+              (fboundp 'font-latex-add-keywords))
+     (font-latex-add-quotes '("\"<" "\">" french))
+     (font-latex-add-keywords '("setactivedoublequote"
+                                "IntelligentComma"
+                                "NoIntelligentComma")
+                              'function-noarg))
    (run-hooks 'TeX-language-it-hook))
  TeX-dialect)
 
