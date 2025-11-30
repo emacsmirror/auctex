@@ -9524,21 +9524,26 @@ already in an Emacs buffer) and the cursor is placed at the error."
             ;; warnings.
             (while (null (zerop arg))
               (setq TeX-error-last-visited
-                    ;; Increase or decrese `TeX-error-last-visited' depending on
-                    ;; the sign of `arg'.  Note: `signum' is a function from
-                    ;; `cl' library, do not be tempted to use it.
+                    ;; Increase or decrease `TeX-error-last-visited'
+                    ;; depending on the sign of `arg'.  Note: `signum'
+                    ;; is a function from `cl' library, do not be
+                    ;; tempted to use it.
                     (if (> arg 0)
                         (1+ TeX-error-last-visited)
                       (1- TeX-error-last-visited))
                     item (nth TeX-error-last-visited TeX-error-list))
-              ;; Increase or decrease `arg' only if the warning isn't to be
-              ;; skipped.
-              (unless (TeX-error-list-skip-warning-p (nth 0 item) (nth 10 item))
-                ;; Note: `signum' is a function from `cl' library, do not be
-                ;; tempted to use it.
-                (setq arg (if (> arg 0)
-                              (1- arg)
-                            (1+ arg)))))
+              ;; Increase or decrease `arg' only if the warning isn't to
+              ;; be skipped, or `TeX-error-last-visited' has dropped
+              ;; below 0 with a negative `arg'.
+              (if (or (and (< arg 0)
+                           (< TeX-error-last-visited 0))
+                      (not (TeX-error-list-skip-warning-p (nth 0 item)
+                                                          (nth 10 item))))
+                  ;; Note: `signum' is a function from `cl' library, do
+                  ;; not be tempted to use it.
+                  (setq arg (if (> arg 0)
+                                (1- arg)
+                              (1+ arg)))))
             (if (< TeX-error-last-visited -1)
                 (setq TeX-error-last-visited -1))
             (cond ((or (null item)
