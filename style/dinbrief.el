@@ -117,7 +117,7 @@
         (address (LaTeX-dinbrief-recipient))
         (date (TeX-read-string "Datum: " (LaTeX-dinbrief-today)))
         (postremark (TeX-read-string "Postvermerk: "))
-        (fenster (TeX-read-string "Fenster (ja/nein): "))
+        (fenster (y-or-n-p "Fenster: "))
         (vermerk (TeX-read-string "Behandlungsvermerk: "))
         (verteil (TeX-read-string "Verteiler: "))
         (betreff (TeX-read-string "Betreff: "))
@@ -125,7 +125,7 @@
         (closing (TeX-read-string "Schluss: "))
         (signature (TeX-read-string "Unterschrift: "))
         (anlage (TeX-read-string "Anlagen: ")))
-    (if (string= fenster "ja")
+    (if fenster
         (progn
           (LaTeX-dinbrief-insert TeX-esc "enabledraftstandard")
           (newline-and-indent)
