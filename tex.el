@@ -9768,7 +9768,7 @@ value is not used here."
         (TeX-translate-location-offset offset)
         (TeX-translate-location-context context)
         (TeX-translate-location-string string)
-        error-file-buffer start)
+        error-file-buffer)
 
     (run-hooks 'TeX-translate-location-hook)
 
@@ -9788,26 +9788,37 @@ value is not used here."
           (setq-local TeX-command-buffer command-buffer)
 
           ;; Find the location of the error or warning.
-          (when TeX-translate-location-line
-            (goto-char (point-min))
-            (forward-line (+ TeX-translate-location-offset
-                             TeX-translate-location-line -1))
-            (cond
-             ;; Error.
-             ((equal type 'error)
-              (if (not (string= TeX-translate-location-string " "))
-                  (search-forward TeX-translate-location-string nil t)))
-             ;; Warning or bad box.
-             (t
-              (beginning-of-line 0)
-              (setq start (point))
-              (goto-char (point-min))
-              (forward-line (+ TeX-translate-location-offset
-                               line-end -1))
-              (end-of-line)
-              (when TeX-translate-location-string
-                (search-backward TeX-translate-location-string start t)
-                (search-forward TeX-translate-location-string nil t))))))
+          (let ((narrowed (buffer-narrowed-p))
+                (visible-min (point-min))
+                (visible-max (point-max))
+                target-pos)
+            (when TeX-translate-location-line
+              (save-restriction
+                (widen)
+                (goto-char (point-min))
+                (forward-line (+ TeX-translate-location-offset
+                                 TeX-translate-location-line -1))
+                (if (equal type 'error)
+                    ;; Error.
+                    (unless (string= TeX-translate-location-string " ")
+                      (search-forward TeX-translate-location-string nil t))
+                  ;; Warning or bad box.
+                  (beginning-of-line 0)
+                  (let ((start (point)))
+                    (goto-char (point-min))
+                    (forward-line (+ TeX-translate-location-offset
+                                     line-end -1))
+                    (end-of-line)
+                    (when TeX-translate-location-string
+                      (search-backward TeX-translate-location-string start t)
+                      (search-forward TeX-translate-location-string nil t))))
+                (setq target-pos (point))))
+            (when (and target-pos narrowed
+                       (not (<= visible-min target-pos visible-max)))
+              ;; The error lies outside the restriction, so widen first.
+              (widen))
+            (when target-pos
+              (goto-char target-pos))))
       ;; When the file cannot be determined stay here but issue a
       ;; warning.
       (message "Could not determine file for %s"
