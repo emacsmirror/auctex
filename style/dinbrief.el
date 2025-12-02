@@ -1,6 +1,6 @@
 ;;; dinbrief.el --- Special code for LaTeX-Style dinbrief.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1994-2024  Free Software Foundation, Inc.
+;; Copyright (C) 1994-2025 Free Software Foundation, Inc.
 
 ;; Author: Werner Fink <werner@suse.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -31,9 +31,7 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (defvar LaTeX-dinbrief-class-options
   '("10pt" "11pt" "12pt" "norm" "a4paper" "a5paper" "b5paper"
@@ -45,8 +43,8 @@
  "dinbrief"
  (lambda ()
    (LaTeX-add-environments
-    '("letter" LaTeX-dinbrief-env-recipient)
-    "dinquote")
+    '("dinquote")
+    '("letter" LaTeX-dinbrief-env-recipient))
    (add-hook 'LaTeX-document-style-hook
              #'LaTeX-dinbrief-style)
    (setq LaTeX-default-document-environment "letter")
