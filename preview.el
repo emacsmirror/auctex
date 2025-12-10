@@ -1746,10 +1746,12 @@ This list is consulted by the default value of `preview-auto-reveal'."
 
 (defcustom preview-auto-reveal
   `(eval . ((apply #'preview-arrived-via
-                   (mapcar ,(lambda (cmd)
-                              (if (and (listp cmd) (eq (car cmd) 'key-binding))
-                                  (eval cmd t)
-                                cmd))
+                   ;; Quote the function value for interpreted code in
+                   ;; Emacs<30 (bug#79975):
+                   (mapcar #',(lambda (cmd)
+                                (if (and (listp cmd) (eq (car cmd) 'key-binding))
+                                    (eval cmd t)
+                                  cmd))
                            preview-auto-reveal-commands))
             t))
   "Cause previews to open automatically when entered.
