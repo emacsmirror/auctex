@@ -55,7 +55,7 @@
 If OPTIONAL is non-nil, insert the result in square brackets."
   (let ((col (TeX-read-string
               (TeX-argument-prompt optional nil "Column"))))
-    (when (and col (not (string= col "")))
+    (when (and col (not (string-empty-p col)))
       (save-excursion
         (backward-char 1)
         (TeX-argument-insert col optional)))))
@@ -130,7 +130,7 @@ If XCOLOR is non-nil, store the returned value in the variable
     ;; \switchcolumn[col]
     ;; \switchcolumn[col]*[text]
     '("switchcolumn" [ "Column" ] )
-    '("switchcolumn*" [ TeX-arg-paracol-switchcolumn* ] )
+    '("switchcolumn*" [ TeX-arg-paracol-switchcolumn* ])
     '("thecolumn")
     '("definecolumnpreamble" "Column" t)
     '("ensurevspace" TeX-arg-length)
@@ -304,13 +304,7 @@ If XCOLOR is non-nil, store the returned value in the variable
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("switchcolumn"                 "*["))
-                              ;; FIXME: Syntax is
-                              ;; \switchcolumn[num]*[text].
-                              ;; font-latex.el doesn't handle the case
-                              ;; where `*' comes after the first `['.
-                              ;; Therefore, we use this compromise to
-                              ;; get something fontified at least.
+     (font-latex-add-keywords '(("switchcolumn"                 "[*["))
                               'textual)
      (font-latex-add-keywords '(("flushpage"                    "*["))
                               'warning)

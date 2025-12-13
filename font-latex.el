@@ -1617,8 +1617,7 @@ Returns nil if none of KEYWORDS is found."
           ;; Check for starred macro if first spec is an asterisk or a
           ;; plus sign in case of \defaultfontfeatures+ provided by
           ;; fontspec.sty
-          (when (or (eq (car spec-list) ?*)
-                    (eq (car spec-list) ?+))
+          (when (memql (car spec-list) '(?* ?+))
             (setq spec-list (cdr spec-list))
             (skip-chars-forward "*+" (1+ (point))))
           ;; Add current point to match data and use keyword face for
@@ -1669,6 +1668,21 @@ Returns nil if none of KEYWORDS is found."
                     (when (and match-beg (= match-beg (point)))
                       (setq error-indicator-pos match-beg))
                     (throw 'break nil))))
+               ;; Asterisk or plus sign between arguments (sigh!):
+               ((and (memql spec '(?* ?+))
+                     (= (char-after) spec))
+                (setq match-beg (point))
+                (if (= (char-after) spec)
+                    (progn
+                      (nconc match-data
+                             (list (point)
+                                   (progn
+                                     (skip-chars-forward "*+")
+                                     (point))))
+                      (nconc font-latex-matched-faces
+                             (list 'font-lock-keyword-face))
+                      (setq end (max end (point))))
+                  (throw 'break nil)))
                ;; Optional arguments: [...] and others
                ((eq (char-after) spec)
                 (setq match-beg (point))
