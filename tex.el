@@ -8119,6 +8119,23 @@ requires special treatment."
 (defvar TeX-suppress-compilation-message nil
   "If non-nil, suppress \"display results of compilation\" message.")
 
+(defun TeX-process-environment ()
+  "Return a modified copy of `process-environment' with updated TeX paths.
+
+Update the environment variables `BIBINPUTS' and `TEXINPUTS' to include
+`TeX-output-dir' if it's not already present.  Also set `TEXMFOUTPUT' to
+the value of `TeX-output-dir'."
+  (let ((process-environment (copy-sequence process-environment)))
+    (when TeX-output-dir
+      (setenv "TEXMFOUTPUT" TeX-output-dir)
+      (dolist (e '("BIBINPUTS" "TEXINPUTS"))
+        ;; Add `TeX-output-dir' if not already there
+        (let ((parts (split-string (or (getenv e) "") path-separator)))
+          (unless (member TeX-output-dir parts)
+            (push TeX-output-dir parts)
+            (setenv e (mapconcat #'identity parts path-separator))))))
+    process-environment))
+
 (defun TeX-run-command (name command file)
   "Create a process for NAME using COMMAND to process FILE.
 Return the new process."
@@ -8149,22 +8166,23 @@ Return the new process."
     (setq TeX-sentinel-function
           (lambda (_process name)
             (message (concat name ": done."))))
-    (if TeX-process-asynchronous
-        (let ((process (start-process name buffer TeX-shell
-                                      TeX-shell-command-option command)))
-          (if TeX-after-start-process-function
-              (funcall TeX-after-start-process-function process))
-          (TeX-command-mode-line process)
-          (set-process-filter process #'TeX-command-filter)
-          (set-process-sentinel process #'TeX-command-sentinel)
-          (set-marker (process-mark process) (point-max))
-          (require 'compile)
-          (setq compilation-in-progress (cons process compilation-in-progress))
-          process)
-      (setq mode-line-process ": run")
-      (force-mode-line-update)
-      (call-process TeX-shell nil buffer nil
-                    TeX-shell-command-option command))))
+    (let ((process-environment (TeX-process-environment)))
+      (if TeX-process-asynchronous
+          (let ((process (start-process name buffer TeX-shell
+                                        TeX-shell-command-option command)))
+            (if TeX-after-start-process-function
+                (funcall TeX-after-start-process-function process))
+            (TeX-command-mode-line process)
+            (set-process-filter process #'TeX-command-filter)
+            (set-process-sentinel process #'TeX-command-sentinel)
+            (set-marker (process-mark process) (point-max))
+            (require 'compile)
+            (setq compilation-in-progress (cons process compilation-in-progress))
+            process)
+        (setq mode-line-process ": run")
+        (force-mode-line-update)
+        (call-process TeX-shell nil buffer nil
+                      TeX-shell-command-option command)))))
 
 (defun TeX-run-set-command (name command)
   "Remember TeX command to use to NAME and set corresponding output extension."
