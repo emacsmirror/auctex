@@ -1,6 +1,6 @@
 ;;; fancyvrb.el --- AUCTeX style for `fancyvrb.sty' version 4.5.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2014, 2016-2025 Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2014, 2016-2026 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -470,13 +470,13 @@ update only various AUCTeX variables for verbatim environments."
                         (boundp 'reftex-label-regexps))
                (reftex-add-label-environments
                 `((,env
-                   ?l ,LaTeX-listing-label "~\\pageref{%s}"
+                   ?l ,LaTeX-listing-label nil
                    LaTeX-fancyvrb-reftex-label-context-function
                    (regexp "[Ll]isting" "[Vv]erbatim"
                            "[Cc]ode"    "Quell\\(code\\|text\\)"))
 
                   (,(concat env "*")
-                   ?l ,LaTeX-listing-label "~\\pageref{%s}"
+                   ?l ,LaTeX-listing-label nil
                    LaTeX-fancyvrb-reftex-label-context-function
                    (regexp "[Ll]isting" "[Vv]erbatim"
                            "[Cc]ode"    "Quell\\(code\\|text\\)"))))
@@ -781,7 +781,7 @@ a list of strings."
                 (boundp 'reftex-label-regexps))
        (dolist (env envs)
          (reftex-add-label-environments
-          `((,env ?l ,LaTeX-listing-label "~\\pageref{%s}"
+          `((,env ?l ,LaTeX-listing-label nil
                   LaTeX-fancyvrb-reftex-label-context-function
                   (regexp "[Ll]isting" "[Vv]erbatim"
                           "[Cc]ode"    "Quell\\(code\\|text\\)")))))
