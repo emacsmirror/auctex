@@ -8599,7 +8599,8 @@ Return nil only if no errors were found."
                     "dvi")))))))
   (if process (TeX-format-mode-line process))
   (if (catch 'found
-        (while (re-search-forward "^\\(?:!\\|\\(.+?\\):[0-9]+:\\) " nil t)
+        (while (and (re-search-forward "^\\(?:!\\|\\(.+?\\):[0-9]+:\\) " nil t)
+                    (not (looking-at-p "ignored error: ")))
           (if (or (not (match-beginning 1))
                   ;; Ignore non-error warning. (bug#55065)
                   (file-exists-p (TeX-match-buffer 1)))
