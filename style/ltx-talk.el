@@ -1,6 +1,6 @@
-;;; ltx-talk.el --- AUCTeX style for `ltx-talk.cls' (v0.3.0)  -*- lexical-binding: t; -*-
+;;; ltx-talk.el --- AUCTeX style for `ltx-talk.cls' (v0.3.8)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2025 Free Software Foundation, Inc.
+;; Copyright (C) 2025--2026 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `ltx-talk.sty' (v0.3.0) from 2025-11-10.
+;; This file adds support for `ltx-talk.sty' (v0.3.8) from 2026-01-12.
 ;; `ltx-talk.sty' is part of TeXLive.
 
 ;;; Code:
@@ -169,9 +169,21 @@ Optional MACRO can be a string, for example, \"bibitem\"."
     ;; 6.1 The frame environment: The optional [<options>] arg seems to
     ;; be unused, to skip it for now:
     '("frame" LaTeX-env-args
-      [TeX-arg-ltx-talk-overlay-spec])
+      [TeX-arg-ltx-talk-overlay-spec]
+      (TeX-arg-conditional (or (LaTeX-provided-class-options-member
+                                "ltx-talk" "frame-title-arg")
+                               (LaTeX-provided-class-options-member
+                                "ltx-talk" "frame-title-arg=true"))
+          ("Title")
+        ()))
     '("frame*" LaTeX-env-args
-      [TeX-arg-ltx-talk-overlay-spec])
+      [TeX-arg-ltx-talk-overlay-spec]
+      (TeX-arg-conditional (or (LaTeX-provided-class-options-member
+                                "ltx-talk" "frame-title-arg")
+                               (LaTeX-provided-class-options-member
+                                "ltx-talk" "frame-title-arg=true"))
+          ("Title")
+        ()))
 
     ;; 7.5 Dynamically changing text or images
     '("overlayarea" LaTeX-env-args
@@ -290,8 +302,9 @@ Optional MACRO can be a string, for example, \"bibitem\"."
 
 (defvar LaTeX-ltx-talk-class-options-list
   '(("aspect-ratio")
-    ("mode" ("handout"))
-    ("handout"))
+    ("mode" ("handout" "projector"))
+    ("handout")
+    ("frame-title-arg" ("true" "false")))
   "Alist of class options for the ltx-talk class.")
 
 (defun LaTeX-ltx-talk-class-options ()
