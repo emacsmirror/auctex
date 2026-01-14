@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 1985-2025 Free Software Foundation, Inc.
+;; Copyright (C) 1985-2026 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -8618,7 +8618,11 @@ Return nil only if no errors were found."
   (if process (TeX-format-mode-line process))
   (if (catch 'found
         (while (and (re-search-forward "^\\(?:!\\|\\(.+?\\):[0-9]+:\\) " nil t)
-                    (not (looking-at-p "ignored error: ")))
+                    (not (looking-at-p
+                          (mapconcat #'identity
+                                     '("ignored error: "
+                                       "Infinite glue shrinkage found in box being split")
+                                     "\\|"))))
           (if (or (not (match-beginning 1))
                   ;; Ignore non-error warning. (bug#55065)
                   (file-exists-p (TeX-match-buffer 1)))
@@ -8642,10 +8646,10 @@ Return nil only if no errors were found."
     ;; bug#55065, restore point to the initial position.
     (goto-char (point-min))
     (let (dvi2pdf)
-        (if (with-current-buffer TeX-command-buffer
-           (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
-         (setq TeX-command-next dvi2pdf)
-       (setq TeX-command-next TeX-command-Show)))
+      (if (with-current-buffer TeX-command-buffer
+            (and TeX-PDF-mode (setq dvi2pdf (TeX-PDF-from-DVI))))
+          (setq TeX-command-next dvi2pdf)
+        (setq TeX-command-next TeX-command-Show)))
     nil))
 
 ;; This regexp should catch warnings of the type
