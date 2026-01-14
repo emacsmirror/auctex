@@ -7,6 +7,13 @@
 # License: GNU General Public License 3
 # The format is based on [[https://keepachangelog.com/en/1.1.0/][Keep a Changelog]]
 
+* [14.1.2] - 2026-01-14
+
+** Fixed
+
+- Recognize and ignore non-error messages emitted by LuaTeX which are
+  different from what pdfTeX does.
+
 * [14.1.1] - 2026-01-12
 
 ** Added
