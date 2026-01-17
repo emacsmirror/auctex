@@ -8620,7 +8620,7 @@ Return nil only if no errors were found."
         (while (and (re-search-forward "^\\(?:!\\|\\(.+?\\):[0-9]+:\\) " nil t)
                     (not (looking-at-p
                           (mapconcat #'identity
-                                     '("ignored error: "
+                                     '("ignored\\(?: error\\)?: "
                                        "Infinite glue shrinkage found in box being split")
                                      "\\|"))))
           (if (or (not (match-beginning 1))
