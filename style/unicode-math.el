@@ -1,6 +1,6 @@
 ;;; unicode-math.el --- AUCTeX style for `unicode-math.sty' version 0.7e.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013, 2018, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2013--2026 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -31,9 +31,7 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (defvar LaTeX-unicode-math-package-options-list
   '(("math-style" ("ISO" "TeX" "french" "upright" "literal"))
@@ -58,7 +56,7 @@
 (TeX-add-style-hook
  "unicode-math"
  (lambda ()
-   (TeX-run-style-hooks "ifxetex" "ifluatex" "expl3" "xparse" "l3keys2e"
+   (TeX-run-style-hooks "ifxetex" "ifluatex" "l3keys2e"
                         "fontspec" "catchfile" "fix-cm" "filehook")
    (TeX-add-symbols
     '("setmathfont" [TeX-arg-key-val LaTeX-unicode-math-setmathfont-options]

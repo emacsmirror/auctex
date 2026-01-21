@@ -1,6 +1,6 @@
 ;;; fontspec.el --- AUCTeX style for `fontspec.sty' version 2.7i.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2013--2026 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <mose@gnu.org>
@@ -36,10 +36,7 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
-
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 (declare-function LaTeX-color-definecolor-list "color" ())
 (declare-function LaTeX-xcolor-definecolor-list "xcolor" ())
 
@@ -296,7 +293,6 @@ to appropriate keys which are eventually prepended to
  (lambda ()
 
    (TeX-check-engine-add-engines 'luatex 'xetex)
-   (TeX-run-style-hooks "expl3" "xparse")
 
    ;; Add fontspec to the parser.
    (TeX-auto-add-regexp LaTeX-fontspec-newfontcmd-regexp)

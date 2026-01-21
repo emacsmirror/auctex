@@ -1,6 +1,6 @@
 ;;; acro.el --- AUCTeX style for `acro.sty' version v3.8  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013-2025 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2026 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Author: Mosè Giordano <giordano.mose@libero.it>
@@ -760,8 +760,7 @@ string."
     "l3sort"
     "xspace"
     "xtemplate"
-    "l3keys2e"
-    "expl3")
+    "l3keys2e")
 
    ;; Fontification
    (when (and (featurep 'font-latex)
