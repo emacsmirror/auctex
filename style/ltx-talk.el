@@ -1,4 +1,4 @@
-;;; ltx-talk.el --- AUCTeX style for `ltx-talk.cls' (v0.3.8)  -*- lexical-binding: t; -*-
+;;; ltx-talk.el --- AUCTeX style for `ltx-talk.cls' (v0.3.12)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025--2026 Free Software Foundation, Inc.
 
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `ltx-talk.sty' (v0.3.8) from 2026-01-12.
+;; This file adds support for `ltx-talk.sty' (v0.3.12) from 2026-01-21.
 ;; `ltx-talk.sty' is part of TeXLive.
 
 ;;; Code:
@@ -302,9 +302,10 @@ Optional MACRO can be a string, for example, \"bibitem\"."
 
 (defvar LaTeX-ltx-talk-class-options-list
   '(("aspect-ratio")
-    ("mode" ("handout" "projector"))
+    ("font-size" ("10pt" "11pt" "12pt"))
+    ("frame-title-arg" ("true" "false"))
     ("handout")
-    ("frame-title-arg" ("true" "false")))
+    ("mode" ("handout" "projector")))
   "Alist of class options for the ltx-talk class.")
 
 (defun LaTeX-ltx-talk-class-options ()
