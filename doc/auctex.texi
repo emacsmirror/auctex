@@ -5138,7 +5138,20 @@ insert @samp{\og} and @samp{\fg} depending on context.  Note that the
 language name for customizing @code{TeX-quote-language-alist} is
 @samp{french}.
 
-@item german
+@item austrian
+@itemx german-at
+@itemx german-austria
+@itemx german-at-1901
+@itemx german-austria-1901
+@itemx german-ch-1901
+@itemx german-ch
+@itemx german-de
+@itemx german-germany
+@itemx german-de-1901
+@itemx german-germany-1901
+@itemx german-switzerland
+@itemx german-switzerland-1901
+@itemx german
 @itemx ngerman
 Runs style hook @code{TeX-language-de-hook}.  Gives @samp{"} word
 syntax, makes the @key{"} key insert a literal @samp{"}.  Pressing the

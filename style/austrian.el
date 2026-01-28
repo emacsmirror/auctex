@@ -1,6 +1,6 @@
 ;;; austrian.el --- AUCTeX style for the `austrian' babel option.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2009, 2020 Free Software Foundation, Inc.
+;; Copyright (C) 2009--2026 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,17 +24,21 @@
 
 ;;; Commentary:
 
-;; Set up AUCTeX for editing Austrian text in connection with the
-;; `austrian' babel option.
+;; This file contains specific code for `austrian' language option
+;; provided by `babel-german' bundle.
 
 ;;; Code:
 
 (require 'tex)
+(require 'latex)
 
 (TeX-add-style-hook
  "austrian"
  (lambda ()
-   (TeX-run-style-hooks "german"))
+   (TeX-run-style-hooks "babel-german")
+   (unless (eq (car TeX-quote-language) 'override)
+     (setq TeX-quote-language '("austrian" "\"`" "\"'" t)))
+   (setq LaTeX-babel-hyphen-language "austrian"))
  TeX-dialect)
 
 ;;; austrian.el ends here

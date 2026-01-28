@@ -1,4 +1,11 @@
-;;; german.el --- Setup AUCTeX for editing German text.  -*- lexical-binding: t; -*-
+;;; german-switzerland.el --- AUCTeX style for `german-switzerland.ldf' (v2.99)  -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2026 Free Software Foundation, Inc.
+
+;; Author: Arash Esbati <arash@gnu.org>
+;; Maintainer: auctex-devel@gnu.org
+;; Created: 2026-01-31
+;; Keywords: tex
 
 ;; This file is part of AUCTeX.
 
@@ -17,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file contains specific code for `german' language option
+;; This file contains specific code for `german-switzerland' language option
 ;; provided by `babel-german' bundle.
 
 ;;; Code:
@@ -26,12 +33,12 @@
 (require 'latex)
 
 (TeX-add-style-hook
- "german"
+ "german-switzerland"
  (lambda ()
    (TeX-run-style-hooks "babel-german")
    (unless (eq (car TeX-quote-language) 'override)
-     (setq TeX-quote-language '("german" "\"`" "\"'" t)))
-   (setq LaTeX-babel-hyphen-language "german"))
+     (setq TeX-quote-language '("german-switzerland" "\"`" "\"'" t)))
+   (setq LaTeX-babel-hyphen-language "german-switzerland"))
  TeX-dialect)
 
-;;; german.el ends here
+;;; german-switzerland.el ends here

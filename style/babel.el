@@ -1,6 +1,6 @@
 ;;; babel.el --- AUCTeX style for `babel.sty' version 3.88.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2005-2023  Free Software Foundation, Inc.
+;; Copyright (C) 2005-2026 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -32,12 +32,8 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
-(declare-function LaTeX-fontspec-auto-cleanup
-                  "fontspec"
-                  ())
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
+(declare-function LaTeX-fontspec-auto-cleanup "fontspec" ())
 (defvar LaTeX-fontenc-package-options)
 
 (defvar LaTeX-babel-language-list
@@ -59,7 +55,14 @@
     "finnish"
     "french" "francais" "canadien" "acadian"
     "galician"
-    "austrian" "german" "germanb" "ngerman" "naustrian"
+    ;; Current language names in babel-german (v2.99):
+    "german" "german-de" "german-germany" "german-de-1901" "german-germany-1901"
+    "german-at" "german-austria" "german-at-1901" "german-austria-1901"
+    "german-ch" "german-switzerland" "german-ch-1901" "german-switzerland-1901"
+    ;; Deprecated names in babel-german (v2.99):
+    "austrian" "naustrian" "germanb" "ngerman" "ngermanb"
+    "swissgerman" "nswissgerman"
+    ;;
     "greek" "polutonikogreek"
     "hebrew"
     "icelandic"
