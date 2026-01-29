@@ -3,9 +3,15 @@
 #+LANGUAGE: en
 #+OPTIONS: num:nil toc:nil
 #+LINK: ELPA https://elpa.gnu.org/packages/%s
-# Copyright (C) 2024-2025 Free Software Foundation, Inc.
+# Copyright (C) 2024-2026 Free Software Foundation, Inc.
 # License: GNU General Public License 3
 # The format is based on [[https://keepachangelog.com/en/1.1.0/][Keep a Changelog]]
+
+* [Unreleased]
+
+** Changed
+
+- Support new language names provided by babel-german v2.99.
 
 * [14.1.2] - 2026-01-14
 
