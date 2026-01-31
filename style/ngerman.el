@@ -28,6 +28,7 @@
 (TeX-add-style-hook
  "ngerman"
  (lambda ()
+   (TeX-run-style-hooks "babel-german")
    (unless (eq (car TeX-quote-language) 'override)
      (setq TeX-quote-language '("ngerman" "\"`" "\"'" t)))
    (setq LaTeX-babel-hyphen-language "ngerman"))
