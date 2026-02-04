@@ -9,6 +9,10 @@
 
 * [Unreleased]
 
+** Added
+
+- Add new support file =style/lua-unicode-math.el=.
+
 ** Changed
 
 - Support new language names provided by babel-german v2.99.
