@@ -645,7 +645,8 @@ Return non-nil if a comment was found and folded, nil otherwise."
 
 (defcustom TeX-fold-begin-end-spec-list
   '((("↴" . "↲")
-     ("itemize" "enumerate" "description" "frame"))
+     ("itemize" "enumerate" "description" "frame"
+      "itemize*" "enumerate*" "description*"))
     ((TeX-fold-format-titled-block . "◼")
      ("block"))
     ((TeX-fold-format-titled-alertblock . "◼")
