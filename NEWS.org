@@ -11,7 +11,8 @@
 
 ** Added
 
-- Add new support file =style/lua-unicode-math.el=.
+- Add new support files =style/lua-unicode-math.el=,
+  =style/sourcesans.el= and =style/sourceserif.el=.
 
 ** Changed
 
