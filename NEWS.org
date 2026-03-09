@@ -16,6 +16,13 @@
 ** Changed
 
 - Support new language names provided by babel-german v2.99.
+- Remove ~--jobname~ argument from default LuaLaTeX invocation.  If this
+  causes trouble for you, we first recommend to update your (very old)
+  TeX distribution.  But if you can't do that for some reason, add the
+  following entry to the customize option ~TeX-engine-alist~:
+  #+begin_src emacs-lisp
+    (luatex "LuaTeX" "luatex" "lualatex --jobname=%(s-filename-only)" "luatex")
+  #+end_src
 
 * [14.1.2] - 2026-01-14
 

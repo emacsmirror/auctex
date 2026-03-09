@@ -1582,9 +1582,7 @@ Check the `TeX-view-program-selection' variable" viewer)))
 (defvar TeX-engine-alist-builtin
   '((default "Default" TeX-command LaTeX-command ConTeXt-engine)
     (xetex "XeTeX" "xetex" "xelatex" "xetex")
-    ;; Some lualatex versions before 0.71 would use "texput" as file
-    ;; name if --jobname were not supplied
-    (luatex "LuaTeX" "luatex" "lualatex --jobname=%(s-filename-only)" "luatex")
+    (luatex "LuaTeX" "luatex" "lualatex" "luatex")
     (omega "Omega" TeX-Omega-command LaTeX-Omega-command ConTeXt-Omega-engine))
   "Alist of built-in TeX engines and associated commands.
 For a description of the format see `TeX-engine-alist'.")
