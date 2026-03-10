@@ -8574,7 +8574,7 @@ errors or warnings to show."
     (run-hook-with-args 'TeX-after-compilation-finished-functions
                         (with-current-buffer TeX-command-buffer
                           (expand-file-name
-			   (TeX-active-master (TeX-output-extension)))))))
+                           (TeX-active-master (TeX-output-extension)))))))
 
 (defun TeX-current-pages ()
   "Return string indicating the number of pages formatted."
@@ -9652,24 +9652,28 @@ displaying the issue.
 Return non-nil if an error or warning is found."
   (let ((regexp
          (concat
-          ;; TeX error
+          ;; TeX error: grab (1) filename:line-number and (2) filename:
           "^\\(!\\|\\(.+?\\):[0-9]+:\\) \\|"
-          ;; New file
+          ;; New file (or parenthesized comment): match 3
           "(\n?\\([^\n()]+\\)\\|"
-          ;; End of file.
+          ;; End of file (or comment): "match" 4
           "\\()\\)\\|"
-          ;; Hook to change line numbers
+          ;; Hook to change line numbers: match 5
           " !\\(?:offset(\\([---0-9]+\\))\\|"
-          ;; Hook to change file name
+          ;; Hook to change file name: match 6
           "name(\\([^)]+\\))\\)\\|"
-          ;; Start of LaTeX bad box
+          ;; Start of LaTeX bad box: match 7
           "^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\) "
           ;;   Horizontal bad box
           "\\(?:\\\\hbox.* at lines? [0-9]+\\(?:--[0-9]+\\)?$\\|"
           ;;   Vertical bad box.  See also `TeX-warning'.
           "\\\\vbox ([ a-z0-9]+) has occurred while \\\\output is active \\[[^]]+\\]\\)\\)\\|"
-          ;; LaTeX warning
-          "^\\(" LaTeX-warnings-regexp ".*\\)"))
+          ;; LaTeX warning: match 8
+          "^\\(" LaTeX-warnings-regexp ".*\\)"
+          ;; ConTeXt LMTX error; sample output line:
+          ;; tex error       > tex error on line 5 in file ./bbb.tex: ! Undefined control sequence
+          ;; Grab (9) entire line and (10) filename
+          "\\|^\\(tex error .* in file \\([^:]*\\): \\)"))
         (error-found nil))
     (while
         (cond
@@ -9681,18 +9685,21 @@ Return non-nil if an error or warning is found."
             (beep)
             (TeX-pop-to-buffer old))
           nil)
-         ;; TeX error
-         ((match-beginning 1)
-          (if (or (not (match-beginning 2))
-                  ;; Ignore non-error warning. (bug#55065)
-                  (file-exists-p (TeX-match-buffer 2)))
+         ;; TeX/LaTeX (1) or ConTeXt LMTX (9) error:
+         ((or (match-beginning 1) (match-beginning 9))
+          (if (or ;; Ignore non-error warning. (bug#55065)
+                  (file-exists-p (TeX-match-buffer 2))
+                  (file-exists-p (TeX-match-buffer 10)))
               (progn
-                (when (match-beginning 2)
-                  (unless TeX-error-file
-                    (push nil TeX-error-file)
-                    (push nil TeX-error-offset))
-                  (unless (car TeX-error-offset)
-                    (rplaca TeX-error-file (TeX-match-buffer 2))))
+                (unless TeX-error-file
+                  (push nil TeX-error-file)
+                  (push nil TeX-error-offset))
+                (unless (car TeX-error-offset)
+                  ;; match 2 or 10 is the .tex file name.
+                  (rplaca TeX-error-file
+                    (if (match-beginning 2)
+                      (TeX-match-buffer 2)
+                      (TeX-match-buffer 10))))
                 (setq error-found t)
                 (if (looking-at "Preview ")
                     t
@@ -9813,6 +9820,7 @@ value is not used here."
           (setq-local TeX-command-buffer command-buffer)
 
           ;; Find the location of the error or warning.
+          ;; Note: we are searching in the TeX/ConTeXt *source file*.
           (let ((narrowed (buffer-narrowed-p))
                 (visible-min (point-min))
                 (visible-max (point-max))
@@ -9866,6 +9874,21 @@ value is not used here."
           (t
            (message "! %s" TeX-translate-location-error)))))
 
+
+;; TeX and ConTeXt LMTX error messages are formatted differently (and thus
+;; some tweakings are necessary for ConTeXt error messages to be parsed).
+;; E.g., in TeX:
+;; ./file.tex:9: Undefined control sequence.
+;; l.9 blah blah \undefinedINplainTEX
+;;                                       <<< line with many initial spaces
+;; and in ConTeXt:
+;; tex error       > tex error on line 9 in file ./file.tex: Undefined control sequence
+;;                                       <<<--- empty line here
+;; <line 3.9>
+;;    aardvark \undefinedINcontext
+;;                                       <<<--- empty line here
+;; Because of how the parsing is done below, these formatting differences
+;; must be handled.
 (defun TeX-error (&optional store)
   "Display an error.
 
@@ -9892,16 +9915,48 @@ information in `TeX-error-list' instead of displaying the error."
                    (re-search-backward ":\\([0-9]+\\): "
                                        (line-beginning-position) t))
                  (string-to-number (TeX-match-buffer 1)))
+                ;; ConTeXt: ^<line n.[linenum]>\n +[error message]'
+                ((re-search-forward "^<line [^.]+[.]\\([0-9]+\\)>" nil t)
+                 ;; Need this in the ConTeXt case for the 'string' search
+                 ;; (just below here) to work correctly (FWIW):
+                 (forward-line)
+                 (setq context-available t)
+                 ;; ConTeXt has a blank line where pdftex does not; adjust:
+                 (setq context-start (1+ context-start))
+                 (string-to-number (TeX-match-buffer 1)))
                 ;; nothing found
                 (t 1)))
 
-         ;; And a string of the context to search for.
+         ;; Save a string of the error token, used to position the cursor
+         ;; in the source file.
+         ;; plain TeX example of what we are looking at:
+         ;; ((point) is before ' aard...')
+         ;; l.9 aardvark \undefinedINplainTEX
+         ;;                                  \n
+         ;; ConTeXt:
+         ;; ((point) is before '    aard...')
+         ;;     aardvark \undefinedINcontext
+         ;; \n
+         ;; The pdftex error message *always* has a line starting with
+         ;; spaces after the error line.
+         ;; ConTeXt LMTX (V 2026.02.12 anyway) does not have such a thing
+         ;; when the error token is at the end of a line.  Because of the
+         ;; space chars on the line following the pdftex error message, the
+         ;; (following) regexp in the previous version of this function
+         ;; didn't include the \n at the end of the line(s).
+         ;; However, since ConTeXt may have no space chars on the next
+         ;; line, the match includes the \n, which causes TeX-next-error to
+         ;; position the cursor incorrectly.
+         ;; This regexp deals with this problem.
          (string (progn
                    (beginning-of-line)
-                   (re-search-forward " \\(\\([^ \t]*$\\)\\|\\($\\)\\)")
+                   (re-search-forward " \\(\\([^ \t\n\r]*$\\)\\|\\($\\)\\)")
                    (TeX-match-buffer 1)))
 
-         ;; And we have now found to the end of the context.
+         ;; (point) is now positioned at the end of the input line
+         ;; which caused this error (TeX) or the beginning of the next
+         ;; line (ConTeXt).  To find the error context, rather than searching
+         ;; just use (point) and locations we saved above.
          (context (if context-available
                       (buffer-substring context-start (progn (forward-line 1)
                                                              (end-of-line)
@@ -9915,7 +9970,7 @@ information in `TeX-error-list' instead of displaying the error."
          (file (car TeX-error-file))
          info-list)
 
-    ;; Remember where we was.
+    ;; Remember where we were.
     (setq TeX-error-point (point)
           info-list (list 'error file line error offset context string nil nil
                           TeX-error-point nil))
@@ -10202,15 +10257,28 @@ a bad box."
                         (insert-file-contents log-file nil nil nil 'replace)
                         (setq TeX--log-file-readin-modtime modtime)))
                     (goto-char (point-min))
-                    (when (and (search-forward error nil t 1)
+                    (if (and (search-forward error nil t 1)
                                (re-search-forward "^l\\." nil t)
                                (re-search-forward "^ [^\n]+$" nil t))
                       (let ((start (1+ (point))))
                         (forward-char 1)
                         (re-search-forward "^$")
                         (concat "From the .log file...\n\n"
-                                (buffer-substring start (point)))))))
-             help))))
+                                (buffer-substring start (point))))
+                      ;; ConTeXt case: assume just one error per run,
+                      ;; since it requires some ConTeXt wizardry to not
+                      ;; stop on the first error, and, if the run
+                      ;; doesn't stop on the first error, getting
+                      ;; meaningful info from the log file is very
+                      ;; difficult.
+                      (goto-char (point-max))
+                      (when (re-search-backward "^[0-9]+ ")
+                          (end-of-line)
+                          (let ((start (1+ (point))))
+                            (goto-char (point-max))
+                            (concat "From the .log file...\n\n"
+                              (buffer-substring start (point))))))))
+           help))))
     (goto-char (point-min))
     (TeX-special-mode)
     (TeX-pop-to-buffer old-buffer nil t)))

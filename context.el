@@ -567,45 +567,93 @@ for a label to be inserted after the sectioning command."
 
 
 ;; Various
+
+;; This function is called with (current-buffer) = the output buffer.
+(defun TeX-ConTeXt-sentinel-check (process name)
+  "Check ConTeXt (LMTX) output buffer after running TeX.
+Return t if errors were found."
+  ;; Set TeX-current-page to (effectively) match what
+  ;; TeX-TeX-sentinel-check does:
+  ;; -> if no errors, the number of pages shipped out; and
+  ;; -> if errors, the number of pages shipped out + 1.
+  ;; Also determine the extension of the output file.
+  (save-excursion
+    (goto-char (point-max))
+    (if (re-search-backward " > flushing realpage \\([0-9]+\\), " nil t)
+        (setq TeX-current-page (TeX-match-buffer 1))
+      (setq TeX-current-page "0"))
+    ;; If running in "don't quit on error" mode, there will be a
+    ;; '^pages .* > flushing realpage' message after the '^tex error'
+    ;; message.  In this case, no need to add 1.
+    (goto-char (point-min))
+    (if (re-search-forward "^tex error" nil t)
+        (if (re-search-forward "^pages .* > flushing realpage" nil t)
+            nil
+          (setq TeX-current-page (number-to-string
+                                  (1+ (string-to-number TeX-current-page))))))
+    (setq TeX-current-page (concat "{" TeX-current-page "}"))
+    (setq TeX-output-extension "pdf"))   ;; for the last 200 years now, +/-.
+
+  (if process (TeX-format-mode-line process))
+
+  (if (catch 'found
+        (while (re-search-forward
+                "^\\(?:.*tex error on line [0-9]+ in file \\(.+?\\):\\)" nil t)
+          (if (or (not (match-beginning 1))
+                  ;; Ignore non-error warning. (bug#55065)
+                  (file-exists-p (TeX-match-buffer 1)))
+              (throw 'found t))))
+      (progn
+        (if TeX-error-overview-open-after-TeX-run
+            ;; Don't leave inconsistent message.
+            (message nil)
+          (message "%s errors in `%s'. Use %s to display."
+                   name (buffer-name)
+                   (substitute-command-keys
+                    "\\<TeX-mode-map>\\[TeX-next-error]")))
+        (setq TeX-command-next TeX-command-default)
+        ;; error reported to TeX-error-report-switches
+        (setq TeX-error-report-switches
+              (plist-put TeX-error-report-switches
+                         (intern (plist-get TeX-error-report-switches
+                                            'TeX-current-master))
+                         t))
+        t)
+    ;; In case that there were only non-error warnings of type
+    ;; bug#55065, restore point to the initial position.
+    (goto-char (point-min))
+    (setq TeX-command-next TeX-command-Show)
+    nil))
+
+
 (defun TeX-ConTeXt-sentinel (process name)
-  "Cleanup TeX output buffer after running ConTeXt."
-  (cond
-   ;; Mark IV
-   ((with-current-buffer TeX-command-buffer
-      (string= ConTeXt-Mark-version "IV"))
-    (cond ((TeX-TeX-sentinel-check process name))
-          ((re-search-forward "fatal error: " nil t)
-           (message (concat name ": problems after "
-                            (TeX-current-pages)))
-           (setq TeX-command-next TeX-command-default))
-          (t
-           (message (concat name ": successfully formatted "
-                            (TeX-current-pages)))
-           (setq TeX-command-next TeX-command-Show))))
-   ;; Mark II
-   (t
-    (cond ((TeX-TeX-sentinel-check process name))
-          ((save-excursion
-             ;; in a full ConTeXt run there will multiple texutil
-             ;; outputs.  Just looking for "another run needed" would
-             ;; find the first occurence
-             (goto-char (point-max))
-             (re-search-backward "TeXUtil " nil t)
-             (re-search-forward "another run needed" nil t))
-           (message (concat "You should run ConTeXt again "
-                            "to get references right, "
-                            (TeX-current-pages)))
-           (setq TeX-command-next TeX-command-default))
-          ((re-search-forward "removed files :" nil t)
-           (message "sucessfully cleaned up"))
-          ((re-search-forward "^ ?TeX\\(Exec\\|Util\\)" nil t) ;; strange regexp --pg
-           (message (concat name ": successfully formatted "
-                            (TeX-current-pages)))
-           (setq TeX-command-next TeX-command-Show))
-          (t
-           (message (concat name ": problems after "
-                            (TeX-current-pages)))
-           (setq TeX-command-next TeX-command-default)))))
+  "Examine the TeX output buffer after running ConTeXt.
+
+Parse the output buffer to collect errors and warnings if the
+variable `TeX-parse-all-errors' is non-nil.
+
+Open the error overview if
+`TeX-error-overview-open-after-TeX-run' is non-nil and there are
+errors or warnings to show."
+
+  (if (TeX-ConTeXt-sentinel-check process name)
+      (progn
+        ;; ConTeXt LMTX stops after 1 error (unless "heroic" efforts are
+        ;; made by the user to do otherwise) and if such efforts are made
+        ;; the error messages in the log file are not complete (at least
+        ;; as of ConTeXt Version 2026.02.12).  Arguably it might make
+        ;; sense to just call (TeX-parse-error) once (and set the other
+        ;; variables as seen in (TeX-parse-all-errors)).  But for now, ...
+        (if TeX-parse-all-errors
+            (TeX-parse-all-errors))
+        (if (and (with-current-buffer TeX-command-buffer
+                   TeX-error-overview-open-after-TeX-run)
+                 (TeX-error-overview-make-entries
+                  (TeX-master-directory) (TeX-active-buffer)))
+            (TeX-error-overview)))
+
+    (message (concat name ": formatted " (TeX-current-pages)))
+    (setq TeX-command-next TeX-command-Show))
   (unless TeX-error-list
     (run-hook-with-args 'TeX-after-compilation-finished-functions
                         (with-current-buffer TeX-command-buffer
