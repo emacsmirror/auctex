@@ -5,6 +5,7 @@
          (sentence-end-double-space . t)
          (fill-column . 72)
          (emacs-lisp-docstring-fill-column . 72)
+         (lisp-body-indent . 2)
          (bug-reference-url-format . "https://debbugs.gnu.org/%s")
          (diff-add-log-use-relative-names . t)
          (vc-prepare-patches-separately . nil)))
