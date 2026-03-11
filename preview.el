@@ -1347,22 +1347,41 @@ is located."
   (cons 'image (cdr icon)))
 
 (defcustom preview-leave-open-previews-visible nil
-  "Whether to leave previews visible when they are opened.
-If nil, then the TeX preview icon is used when the preview is opened.
-If non-nil, then the preview image remains visible.  In either case, the
-TeX code appears either below or to the right of the displayed graphic.
-
-If you enable this option, the preview image doesn't turn into
-construction sign temporarily when you edit the underlying LaTeX code
-and regenerate the preview; it is just replaced by updated image when
-ready.  This behavior suppresses flicker in the appearance."
+  "Obsolete option; whether to leave previews visible when they are opened.
+This option is obsolete.  When set to non-nil, it configures
+`preview-visibility-style' to \\='always and `preview-keep-stale-images'
+to t.  When set to nil, it does not change those variables."
   :group 'preview-appearance
   :type 'boolean)
+
+(defun preview--obsolete-leave-open-previews-visible-apply (value)
+  "Apply obsolete `preview-leave-open-previews-visible' VALUE.
+When VALUE is non-nil, configure `preview-visibility-style' and
+`preview-keep-stale-images' to match the old behavior."
+  (when value
+    (set-default 'preview-visibility-style 'always)
+    (set-default 'preview-keep-stale-images t)))
+
+(defun preview--obsolete-leave-open-previews-visible-watcher
+    (_symbol newval operation where)
+  (when (and (eq operation 'set)
+             ;; Ignore buffer-local bindings.
+             (null where))
+    (preview--obsolete-leave-open-previews-visible-apply newval)))
 
 (make-obsolete-variable
  'preview-leave-open-previews-visible
  "Use `preview-visibility-style' and `preview-keep-stale-images' instead."
  "14.2.0")
+
+(add-variable-watcher
+ 'preview-leave-open-previews-visible
+ #'preview--obsolete-leave-open-previews-visible-watcher)
+
+;; Handle `setq' from before preview.el is loaded.
+(when (default-value 'preview-leave-open-previews-visible)
+  (preview--obsolete-leave-open-previews-visible-apply
+   (default-value 'preview-leave-open-previews-visible)))
 
 (defsubst preview-replace-active-icon (ov replacement)
   "Replace the active Icon in OV by REPLACEMENT, another icon."
