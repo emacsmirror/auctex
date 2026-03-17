@@ -25,6 +25,11 @@
     (luatex "LuaTeX" "luatex" "lualatex --jobname=%(s-filename-only)" "luatex")
   #+end_src
 
+** Fixed
+
+- Fix parsing of error messages for ConTeXt LMTX.
+- Fix indentation for macros with arguments in ConTeXt mode.
+
 * [14.1.2] - 2026-01-14
 
 ** Fixed
