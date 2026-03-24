@@ -1,4 +1,4 @@
-;;; babel-german.el --- AUCTeX style for `babel-german.def' (v2.99)  -*- lexical-binding: t; -*-
+;;; babel-german.el --- AUCTeX style for `babel-german.def' (v3.1)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2026 Free Software Foundation, Inc.
 
@@ -64,7 +64,11 @@
  (lambda ()
    (TeX-add-symbols
     '("germansetup"
-      (TeX-arg-key-val (LaTeX-babel-german-key-val-options))))
+      (TeX-arg-key-val (LaTeX-babel-german-key-val-options)))
+    ;; 7 Variety-Specific Options
+    "glqq" "grqq" "glq" "grq"
+    "flqq" "frqq" "flq" "frq"
+    "dq")
 
    (set-syntax-table LaTeX-babel-german-mode-syntax-table)
    ;; Fontification
