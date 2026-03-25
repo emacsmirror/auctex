@@ -1,4 +1,4 @@
-;;; babel.el --- AUCTeX style for `babel.sty' version 3.88.  -*- lexical-binding: t; -*-
+;;; babel.el --- AUCTeX style for `babel.sty' v26.4  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2005-2026 Free Software Foundation, Inc.
 
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `babel.sty' version 3.88 from 2023/04/18.
+;; This file adds support for `babel.sty' v26.4 from 2026-03-08.
 
 ;;; Code:
 
@@ -101,7 +101,14 @@
     ("main")
     ("script")
     ("language")
-    ("mapfont")
+    ("alph")
+    ("Alph")
+    ("casing")
+    ("onchar" ("ids" "fonts" "letters"))
+    ("transforms")
+    ("interchar")
+    ("justification" ("unhyphenated" "kashida" "elongated" "padding"))
+    ("linebreaking" ("unhyphenated" "kashida" "elongated" "padding"))
     ("intraspace")
     ("intrapenalty"))
   "Key=value options for `\\babelprovide' macro from `babel' package.")
@@ -249,54 +256,7 @@
    ;; New symbols
    (TeX-add-symbols
 
-    ;; 1.7 Basic language selectors
-    '("selectlanguage"
-      (TeX-arg-completing-read (LaTeX-babel-active-languages)
-                               "Language"))
-    '("foreignlanguage"
-      [TeX-arg-completing-read-multiple ("date" "captions")]
-      (TeX-arg-completing-read (LaTeX-babel-active-languages)
-                               "Language")
-      t)
-
-    ;; 1.9 More on selection
-    '("babeltags" t)
-    '("babelensure"
-      (TeX-arg-key-val
-       (("include") ("exclude")
-        ("fontenc" (;; 128+ glyph encodings (text)
-                    "OT1" "OT2" "OT3" "OT4" "OT6"
-                    ;; 256 glyph encodings (text)
-                    "T1" "T2A" "T2B" "T2C" "T3" "T4" "T5"
-                    ;; 256 glyph encodings (text extended)
-                    "X2"
-                    ;; Other encodings
-                    "LY1" "LV1" "LGR"))))
-      (TeX-arg-completing-read (LaTeX-babel-active-languages)
-                               "Language"))
-    ;; 1.10 Shorthands
-    '("shorthandon"    "Shorthands list")
-    '("shorthandoff"   "Shorthands list")
-    '("shorthandoff*"  "Shorthands list")
-    '("useshorthands"  "Character")
-    '("useshorthands*" "Character")
-    '("defineshorthand"
-      [TeX-arg-completing-read-multiple (LaTeX-babel-active-languages)
-                                        "Language(s)"]
-      t nil)
-    '("languageshorthands"
-      (TeX-arg-completing-read (LaTeX-babel-active-languages)
-                               "Language"))
-    '("babelshorthand"   "Short hand")
-    '("ifbabelshorthand" "Character" t nil)
-    '("aliasshorthand"   "Original" "Alias")
-
-    ;; 1.12 The base option
-    '("AfterBabelLanguage"
-      (TeX-arg-completing-read LaTeX-babel-language-list "Language")
-      t)
-
-    ;; 1.14 Selecting fonts
+    ;; 1.8. Fonts in Unicode engines
     `("babelfont"
       [TeX-arg-completing-read-multiple LaTeX-babel-language-list
                                         "Language(s)"]
@@ -318,37 +278,192 @@
            (LaTeX-add-babel-babelfonts (match-string-no-properties 1))
            (LaTeX-babel-cleanup-babelfont))))
 
-    ;; 1.16 Creating a language
-    '("babelprovide"
-      [TeX-arg-key-val LaTeX-babel-babelprovide-key-val-options]
-      (TeX-arg-completing-read LaTeX-babel-language-list "Language"))
+    ;; 1.9 Basic language selectors
+    '("selectlanguage"
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language"))
+    '("foreignlanguage"
+      [TeX-arg-completing-read-multiple ("date" "captions")]
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language")
+      t)
 
-    ;; 1.19 Accessing language info
-    '("languagename" 0)
+    ;; 2. More on language loading and selection
+    ;; 2.1. A few tools
+    '("babeltags" t)
+    '("babelensure"
+      (TeX-arg-key-val
+       (("include") ("exclude")
+        ("fontenc" (;; 128+ glyph encodings (text)
+                    "OT1" "OT2" "OT3" "OT4" "OT6"
+                    ;; 256 glyph encodings (text)
+                    "T1" "T2A" "T2B" "T2C" "T3" "T4" "T5"
+                    ;; 256 glyph encodings (text extended)
+                    "X2"
+                    ;; Other encodings
+                    "LY1" "LV1" "LGR"))))
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language"))
+    '("AfterBabelLanguage"
+      (TeX-arg-completing-read LaTeX-babel-language-list "Language")
+      t)
+
+    ;; 2.2. Accessing language info
+    '("localename"     0)
+    '("mainlocalename" 0)
+    '("languagename"   0)
     '("iflanguage"
       (TeX-arg-completing-read (LaTeX-babel-active-languages)
                                "Language")
       t nil)
+    '("localeinfo"
+      (TeX-arg-completing-read ("name.english"
+                                "tag.ini"
+                                "tag.bcp47"
+                                "language.tag.bcp47"
+                                "tag.opentype"
+                                "script.name"
+                                "script.tag.bcp47"
+                                "script.tag.opentype"
+                                "region.tag.bcp47"
+                                "variant.tag.bcp47"
+                                "extension.x.tag.bcp47"
+                                "extension.t.tag.bcp47"
+                                "extension.u.tag.bcp47")
+                               "Field"))
+    '("localeinfo*"
+      (TeX-arg-completing-read ("name.english"
+                                "tag.ini"
+                                "tag.bcp47"
+                                "language.tag.bcp47"
+                                "tag.opentype"
+                                "script.name"
+                                "script.tag.bcp47"
+                                "script.tag.opentype"
+                                "region.tag.bcp47"
+                                "variant.tag.bcp47"
+                                "extension.x.tag.bcp47"
+                                "extension.t.tag.bcp47"
+                                "extension.u.tag.bcp47")
+                               "Field"))
+    '("getlocaleproperty"  TeX-arg-define-macro "Locale" t)
+    '("getlocaleproperty*" TeX-arg-define-macro "Locale" t)
+    '("localeid" 0)
+    '("ShowLocaleProperties"
+      (TeX-arg-completing-read LaTeX-babel-language-list "Language"))
+    '("LocaleForEach" t)
 
-    ;; 1.20 Hyphenation and line breaking
-    '("babelhyphen"
-      (TeX-arg-completing-read ("soft" "hard" "repeat" "nobreak" "empty") "Type/Text"))
-    '("babelhyphen*"
-      (TeX-arg-completing-read ("soft" "hard" "repeat" "nobreak" "empty") "Type/Text"))
+    ;; 2.6. Selection based on BCP 47 tags
+    '("babeladjust"
+      (TeX-arg-key-val (("autoload.bcp47" ("on" "off"))
+                        ("autoload.bcp47.options" ("import"))
+                        ("autoload.bcp47.prefix"))))
 
+    ;; 3.1. Captions
+    '("setlocalecaption"
+      (TeX-arg-completing-read (LaTeX-babel-active-languages))
+      (TeX-arg-completing-read ("preface"
+                                "ref"
+                                "abstract"
+                                "bib"
+                                "chapter"
+                                "appendix"
+                                "contents"
+                                "listfigure"
+                                "listtable"
+                                "index"
+                                "figure"
+                                "table"
+                                "part"
+                                "encl"
+                                "cc"
+                                "headto"
+                                "page"
+                                "see"
+                                "also"
+                                "proof"
+                                "glossary"))
+      "New value")
+
+    ;; 3.3. Language attributes
+    '("languageattribute"
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language")
+      t)
+
+    ;; 3.6. Hooks
+    '("AddBabelHook"
+      [TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language"]
+      "Name"
+      (TeX-arg-completing-read ("adddialect"
+                                "patterns"
+                                "hyphenation"
+                                "defaultcommands"
+                                "encodedcommands"
+                                "stopcommands"
+                                "write"
+                                "beforeextras"
+                                "afterextras"
+                                "stringprocess"
+                                "initiateactive"
+                                "afterreset"
+                                "begindocument"
+                                "foreign"
+                                "everylanguage"
+                                "loadkernel"
+                                "loadpatterns"
+                                "loadexceptions")
+                               "Event")
+      t)
+
+    ;; 3.7. Manage auxiliary files
+    '("BabelContentsFiles" 0)
+
+    ;; 3.8. Code based on the selector
+    '("IfBabelSelectorTF"
+      (TeX-arg-completing-read-multiple ("select"
+                                         "other"
+                                         "other*"
+                                         "foreign")
+                                        "Selectors")
+      2)
+
+    ;; 4. Creating a language
+    '("babelprovide"
+      [TeX-arg-key-val LaTeX-babel-babelprovide-key-val-options]
+      (TeX-arg-completing-read LaTeX-babel-language-list "Language"))
+
+
+    ;; 5.1. Hyphenation and line breaking - 1. Commands
     '("babelhyphenation"
       [TeX-arg-completing-read-multiple LaTeX-babel-language-list
                                         "Language(s)"]
       t)
 
-    ;; 1.23 Selecting scripts
-    '("ensureascii" "Text")
+    '("babelhyphen"
+      (TeX-arg-completing-read ("soft" "hard" "repeat" "nobreak" "empty") "Type/Text"))
+    '("babelhyphen*"
+      (TeX-arg-completing-read ("soft" "hard" "repeat" "nobreak" "empty") "Type/Text"))
 
-    ;; 1.25 Language attributes
-    '("languageattribute"
+    ;; 5.3. Shorthands – 1. Commands
+    '("shorthandon"    "Shorthands list")
+    '("shorthandoff"   "Shorthands list")
+    '("shorthandoff*"  "Shorthands list")
+    '("useshorthands"  "Character")
+    '("useshorthands*" "Character")
+    '("defineshorthand"
+      [TeX-arg-completing-read-multiple (LaTeX-babel-active-languages)
+                                        "Language(s)"]
+      t nil)
+    '("languageshorthands"
       (TeX-arg-completing-read (LaTeX-babel-active-languages)
-                               "Language")
-      t))
+                               "Language"))
+    '("babelshorthand"   "Short hand")
+    '("ifbabelshorthand" "Character" t nil)
+
+    ;; 5.9. Scripts
+    '("ensureascii" "Text") )
 
    ;; Don't increase indentation at various \if* macros:
    (let ((exceptions '("ifbabelshorthand"
@@ -357,8 +472,14 @@
        (add-to-list 'LaTeX-indent-begin-exceptions-list elt t))
      (LaTeX-indent-commands-regexp-make))
 
-   ;; New environments: 1.8 Auxiliary language selectors
+   ;; New environments:
    (LaTeX-add-environments
+    ;; 1.9. Basic language selectors
+    '("selectlanguage" LaTeX-env-args
+      (TeX-arg-completing-read (LaTeX-babel-active-languages)
+                               "Language"))
+
+    ;; 1.10. Auxiliary language selectors
     '("otherlanguage" LaTeX-env-args
       (TeX-arg-completing-read (LaTeX-babel-active-languages)
                                "Language"))
@@ -373,21 +494,45 @@
    ;; Fontification
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
-     (font-latex-add-keywords '(("selectlanguage"     "{")
+     (font-latex-add-keywords '(;; 1.8. Fonts in Unicode engines
+                                ("babelfont"          "[{[{")
+                                ;; 1.9 Basic language selectors
+                                ("selectlanguage"     "{")
+                                ;; 2.1. A few tools
                                 ("babeltags"          "{")
                                 ("babelensure"        "{{")
+                                ("AfterBabelLanguage" "{")
+                                ;; 2.2. Accessing language info
+                                ("languagename"       "")
+                                ("iflanguage"         "{{{")
+                                ("localeinfo"         "*{")
+                                ("getlocaleproperty"  "*|{\\{{")
+                                ("localeid"           "*{")
+                                ("ShowLocaleProperties" "{")
+                                ("LocaleForEach"      "")
+                                ;; 2.6. Selection based on BCP 47 tags
+                                ("babeladjust"        "{")
+                                ;; 3.1. Captions
+                                ("setlocalecaption"   "{{{")
+                                ;; 3.3. Language attributes
+                                ("languageattribute"  "{")
+                                ;; 3.6. Hooks
+                                ("AddBabelHook"       "[{{")
+                                ;; 3.7. Manage auxiliary files
+                                ("BabelContentsFiles" "")
+                                ;; 3.8. Code based on the selector
+                                ("IfBabelSelectorTF"  "{")
+                                ;; 4. Creating a language
+                                ("babelprovide"       "[{")
+                                ("babelhyphenation"   "[{")
+                                ("babelhyphen"        "*{")
+                                ;; 5.3. Shorthands – 1. Commands
                                 ("shorthandon"        "{")
                                 ("shorthandoff"       "*{")
                                 ("useshorthands"      "*{")
                                 ("languageshorthands" "{")
                                 ("babelshorthand"     "{")
-                                ("AfterBabelLanguage" "{")
-                                ("babelfont"          "[{[{")
-                                ("babelprovide"       "[{")
-                                ("languagename"       "")
-                                ("iflanguage"         "{{{")
-                                ("babelhyphen"        "*{")
-                                ("babelhyphenation"   "[{")
+                                ;; 5.9. Scripts
                                 ("ensureascii"        "{"))
                               'function)
      (font-latex-add-keywords '(("defineshorthand"    "[{{")
@@ -402,24 +547,13 @@
   (progn
     (TeX-load-style "fontenc")
     (append
+     ;; 2.3. Package options
      `(("KeepShorthandsActive")
-       ("activeacute")
-       ("activegrave")
-       ("shorthands" ("off"))
-       ("safe" ("none" "ref" "bib"))
-       ("math" ("active" "normal"))
-       ("config")
-       ("main" ,LaTeX-babel-language-list)
        ("headfoot" ,LaTeX-babel-language-list)
        ("noconfigs")
-       ("nocase")
-       ("silent")
+       ("config")
        ("showlanguages")
-       ("nocase")
        ("silent")
-       ("strings" ,(append
-                    LaTeX-fontenc-package-options
-                    '("generic" "unicode" "encoded")))
        ("hyphenmap" ("off" "first" "select"
                      "other" "other*"))
        ("bidi" ("default" "basic" "basic-r"
@@ -427,10 +561,21 @@
        ("layout" ("sectioning" "counters" "lists"
                   "contents" "footnotes"  "captions"
                   "columns" "graphics" "extras"))
-       ("provide" ("*"))
-       ("provide+" ("*"))
-       ("provide*" ("*"))
-       ("base"))
+       ("provide"  ("*" "!"))
+       ("provide+" ("*" "!"))
+       ("provide*" ("*" "!"))
+       ("main" ,LaTeX-babel-language-list)
+       ;; 2.4. The baseoption
+       ("base")
+       ;; 5.4. Shorthands - 2. Package options
+       ("activeacute")
+       ("activegrave")
+       ("shorthands" ("off"))
+       ("safe" ("none" "ref" "bib"))
+       ("math" ("active" "normal"))
+       ("strings" ,(append
+                    LaTeX-fontenc-package-options
+                    '("generic" "unicode" "encoded"))))
      (mapcar #'list LaTeX-babel-language-list)))
   "Package options for the babel package.")
 
