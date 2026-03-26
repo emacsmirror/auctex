@@ -1,4 +1,4 @@
-;;; lua-unicode-math.el --- AUCTeX style for `lua-unicode-math' v0.7  -*- lexical-binding: t; -*-
+;;; lua-unicode-math.el --- AUCTeX style for `lua-unicode-math' v0.8  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2026 Free Software Foundation, Inc.
 
@@ -24,8 +24,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `lua-unicode-math.sty' (v0.7) from
-;; 2026-02-03.  `lua-unicode-math.sty' is part of TeXlive.
+;; This file adds support for `lua-unicode-math.sty' (v0.8) from
+;; 2026-03-24.  `lua-unicode-math.sty' is part of TeXlive.
 
 ;;; Code:
 
@@ -57,7 +57,17 @@
                                 "GFS Neohellenic Math"
                                 "Erewhon Math"
                                 "XCharter Math"
-                                "Concrete Math")
+                                "Concrete Math"
+                                "Euler Math"
+                                "Arsenal Math"
+                                "Asana Math"
+                                "Garamond Math"
+                                "Lete Sans Math"
+                                "Luciole Math"
+                                "Old Standard Math"
+                                "IBM Plex Math"
+                                "Libertinus Math"
+                                "KpMath Sans")
                                "Math font name")
       (TeX-arg-conditional (member "fontspec" (TeX-style-list))
           ([TeX-arg-key-val (LaTeX-fontspec-font-features) "Font features"])
