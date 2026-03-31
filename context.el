@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2003-2025  Free Software Foundation, Inc.
+;; Copyright (C) 2003-2026  Free Software Foundation, Inc.
 
 ;; Author: Patrick Gundlach <pg@levana.de>
 ;;         Berend de Boer <berend@pobox.com>
@@ -1257,14 +1257,18 @@ header is at the start of a line."
   (concat
    (regexp-quote TeX-esc)
    (ConTeXt-environment-start-name)
-   ConTeXt-text))
+   (regexp-opt `( ,ConTeXt-text "component" "document" "MPpage"
+                  "product" "TEXpage"))
+   ;; Allow one level of argument inside braces
+   "\\(?:[ \t]*\\(?:\\[[^][]*?\\(?:{[^}{]*}[^][]*\\)*\\]\\)?\\|.*$\\)"))
 
 (defun ConTeXt-trailer-start ()
   "Default start of trailer marker for ConTeXt documents."
   (concat
    (regexp-quote TeX-esc)
    (ConTeXt-environment-stop-name)
-   ConTeXt-text))
+   (regexp-opt `( ,ConTeXt-text "component" "document" "MPpage"
+                  "product" "TEXpage"))))
 
 (defun ConTeXt-outline-offset ()
   "Offset to add to `ConTeXt-section-list' levels to get outline level."
