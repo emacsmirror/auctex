@@ -1,6 +1,6 @@
 ;;; standalone.el --- AUCTeX style for `standalone.cls|sty'   -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2024 Free Software Foundation, Inc.
+;; Copyright (C) 2024--2026 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -33,9 +33,7 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (defun LaTeX-standalone-auto-cleanup ()
   "Parse the value of \"class\" key and run the appropriate style hook."
@@ -53,8 +51,10 @@
 
    ;; General macros/env's provided by the class and the package:
    (TeX-add-symbols
-    '("ifstandalonebeamer" 0)
-    '("ifstandalone" 0))
+    '("ifstandalonebeamer"
+      TeX-arg-set-exit-mark (TeX-arg-literal "\\fi"))
+    '("ifstandalone"
+      TeX-arg-set-exit-mark (TeX-arg-literal "\\fi")))
 
    ;; Fontification:
    (when (and (featurep 'font-latex)
@@ -101,7 +101,7 @@
      (TeX-add-symbols
       '("standaloneconfig"
         (TeX-arg-key-val (("group" ("true" "false"))
-                          ("mode" ("tex" "image" "tex|image" "build"
+                          ("mode" ("tex" "image" "image|tex" "build"
                                    "buildmissing" "buildnew"))
                           ("extension")
                           ("build"))))
@@ -109,7 +109,7 @@
         [TeX-arg-key-val (lambda ()
                            (append (LaTeX-graphicx-key-val-options)
                                    '(("group" ("true" "false"))
-                                     ("mode" ("tex" "image" "tex|image" "build"
+                                     ("mode" ("tex" "image" "image|tex" "build"
                                               "buildmissing" "buildnew"))
                                      ("extension")
                                      ("build"))))]
