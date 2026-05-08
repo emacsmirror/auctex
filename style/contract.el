@@ -1,6 +1,6 @@
 ;;; contract.el --- AUCTeX style for `contract.sty' (v0.91)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2024--2025 Free Software Foundation, Inc.
+;; Copyright (C) 2024--2026 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -32,9 +32,7 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (defconst LaTeX-contract-clause-key-val
   '(("dummy")
@@ -103,13 +101,17 @@
 
    ;; 5 Cross References
    (let ((macs '("refL" "refS" "refN" "refClause" "refClauseN"
-                 "refPar" "refParL" "refParS" "refParN"
-                 "refSentence" "refSentenceL"" refSentenceS" "refSentenceN")))
+                 "refPar" "refParL" "refParS"
+                 "refSentence" "refSentenceL" "refSentenceS" "refSentenceN")))
      (dolist (mac macs)
        (TeX-add-symbols `(,mac TeX-arg-ref)))
+     (TeX-add-symbols
+      '("refParN" [TeX-arg-completing-read ("arabic" "roman")] TeX-arg-ref))
      (when (and (featurep 'font-latex)
                 (eq TeX-install-font-lock 'font-latex-setup))
        (font-latex-add-keywords (mapcar (lambda (x) (list x "{")) macs)
+                                'reference)
+       (font-latex-add-keywords '(("refParN" "[{"))
                                 'reference)))
 
    (LaTeX-paragraph-commands-add-locally '("Clause" "SubClause"))
