@@ -1,4 +1,4 @@
-;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v16.12.0)  -*- lexical-binding: t; -*-
+;;; simpleicons.el --- AUCTeX style for `simpleicons.sty' (v16.17.0)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023--2026 Free Software Foundation, Inc.
 
@@ -24,8 +24,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `simpleicons.sty' (v16.12.0) from
-;; 2025-03-20.  `simpleicons.sty' is part of TeXLive.
+;; This file adds support for `simpleicons.sty' (v16.17.0) from
+;; 2026-04-24.  `simpleicons.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -469,6 +469,7 @@
     "bytedance"
     "c"
     "cachet"
+    "cachyos"
     "caddy"
     "cadillac"
     "cafepress"
@@ -792,6 +793,7 @@
     "diaspora"
     "dicebear"
     "dictionarydotcom"
+    "dify"
     "digg"
     "digikeyelectronics"
     "digitalocean"
@@ -967,6 +969,7 @@
     "faceit"
     "facepunch"
     "fairphone"
+    "faker"
     "falco"
     "falcon"
     "fampay"
@@ -1040,6 +1043,7 @@
     "fluke"
     "flutter"
     "flux"
+    "fluxer"
     "flydotio"
     "flyway"
     "fmod"
@@ -1738,6 +1742,7 @@
     "local"
     "localsend"
     "localxpose"
+    "locust"
     "lodash"
     "logmein"
     "logseq"
@@ -2108,6 +2113,7 @@
     "openaigym"
     "openapiinitiative"
     "openbadges"
+    "openbao"
     "openbsd"
     "openbugbounty"
     "opencage"
@@ -2372,6 +2378,7 @@
     "progress"
     "prometheus"
     "pronounsdotpage"
+    "prosemirror"
     "prosieben"
     "proteus"
     "protocolsdotio"
@@ -2417,6 +2424,7 @@
     "qase"
     "qatarairways"
     "qbittorrent"
+    "qdrant"
     "qemu"
     "qgis"
     "qi"
@@ -2612,6 +2620,7 @@
     "runrundotit"
     "rust"
     "rustdesk"
+    "rustfs"
     "rxdb"
     "ryanair"
     "rye"
@@ -2805,6 +2814,7 @@
     "speedtest"
     "speedypage"
     "sphinx"
+    "spidermonkey"
     "spigotmc"
     "spine"
     "spinnaker"
@@ -3091,6 +3101,7 @@
     "tripdotcom"
     "trivago"
     "trivy"
+    "trmnl"
     "trove"
     "trpc"
     "truenas"
@@ -3117,6 +3128,7 @@
     "twinkly"
     "twinmotion"
     "twitch"
+    "ty"
     "typeform"
     "typeorm"
     "typer"
@@ -3240,6 +3252,7 @@
     "vivo"
     "vk"
     "vlcmediaplayer"
+    "vllm"
     "vmware"
     "vodafone"
     "voelkner"
