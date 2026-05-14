@@ -1,6 +1,6 @@
 ;;; expl3.el --- AUCTeX style for `expl3.sty'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015--2025 Free Software Foundation, Inc.
+;; Copyright (C) 2015--2026 Free Software Foundation, Inc.
 
 ;; Author: Tassilo Horn <tsdh@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -47,7 +47,7 @@
   "Read and insert an expl3 macro.
 OPTIONAL is ignored.  PROMPT replaces the standard one only when asking
 for the macro name.  If DEFINITION is non-nil, add the chosen macro to
-the list of defined macros.  Ask also for macro parameters if NO-PARAM
+the list of defined macros.  Don't ask for macro parameters if NO-PARAM
 is non-nil."
   (let* ((macro (completing-read
                  (TeX-argument-prompt nil prompt
