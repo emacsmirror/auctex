@@ -44,8 +44,8 @@ configuration triggers the error by starting Emacs without such
 customizations.  You can do this by invoking Emacs with the following
 command line:
 @example
-emacs -q -no-site-file --eval "(progn (setq package-load-list '((auctex
-t))) (package-initialize))"
+emacs -q -no-site-file --eval "(progn (package-initialize t)
+(package-activate 'auctex))"
 @end example
 Use @samp{runemacs} instead of @samp{emacs} on @w{MS Windows}.
 
