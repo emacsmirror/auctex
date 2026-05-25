@@ -103,8 +103,8 @@
    (let ((macs '("refL" "refS" "refN" "refClause" "refClauseN"
                  "refPar" "refParL" "refParS"
                  "refSentence" "refSentenceL" "refSentenceS" "refSentenceN")))
-     (dolist (mac macs)
-       (TeX-add-symbols `(,mac TeX-arg-ref)))
+     (apply #'TeX-add-symbols
+            (mapcar (lambda (x) (list x 'TeX-arg-ref)) macs))
      (TeX-add-symbols
       '("refParN" [TeX-arg-completing-read ("arabic" "roman")] TeX-arg-ref))
      (when (and (featurep 'font-latex)
