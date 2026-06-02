@@ -1,6 +1,6 @@
-;;; eso-pic.el --- AUCTeX style for `eso-pic.sty' (v3.0a)  -*- lexical-binding: t; -*-
+;;; eso-pic.el --- AUCTeX style for `eso-pic.sty' (v3.0e)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014, 2020, 2021 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2026 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `eso-pic.sty' (v3.0a) from 2020/10/14.
+;; This file adds support for `eso-pic.sty' (v3.0e) from 2026-05-31.
 ;; `eso-pic.sty' is part of TeXLive.
 
 ;;; Code:
@@ -78,7 +78,8 @@
     ("subgridcolor")
     ("subgridstyle" ("solid" "dotted"))
     ("colorgrid"    ("true" "false"))
-    ("dvips"        ("true" "false")))
+    ("dvips"        ("true" "false"))
+    ("enabled"      ("true" "false")))
   "Package options for the eso-pic package.")
 
 (defun LaTeX-eso-pic-package-options nil
