@@ -13,8 +13,9 @@
 
 - Activate new TeX xref backend (~tex-etags~) provided by Emacs 31.
 
-- Add new support files =style/lineno.el=, =style/lua-unicode-math.el=,
-  =style/sourcesans.el= and =style/sourceserif.el=.
+- Add new support files =style/handstroke.el=, =style/lineno.el=,
+  =style/lua-unicode-math.el=, =style/sourcesans.el= and
+  =style/sourceserif.el=.
 
 ** Changed
 
