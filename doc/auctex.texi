@@ -16,7 +16,7 @@ This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated @TeX{} environment for Emacs.
 
-Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2024
+Copyright @copyright{} 1992-1995, 2001, 2002, 2004-2026
 Free Software Foundation, Inc.
 
 @quotation
@@ -2761,8 +2761,7 @@ every time you edit a @LaTeX{} document, add it to a hook:
 @kindex C-c C-o C-f
 
 @lisp
-(add-hook 'LaTeX-mode-hook (lambda ()
-                             (TeX-fold-mode 1)))
+(add-hook 'LaTeX-mode-hook #'TeX-fold-mode)
 @end lisp
 
 If it should be activated in all @AUCTeX{} modes, use
