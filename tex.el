@@ -2552,6 +2552,23 @@ be relative to that."
   :group 'TeX-file
   :type 'string)
 
+(defun TeX--output-dir-safe-p (value)
+  "Return non-nil if VALUE is safe as a file-local `TeX-output-dir'.
+VALUE is considered safe when it is either nil or a relative path that
+stays inside the master file's directory, i.e., it must not be absolute
+and must not contain a `..' component."
+  (or (null value)
+      (and (stringp value)
+           ;; We call `make-directory' on `TeX-output-dir' in
+           ;; `TeX--master-output-dir' and the value is passed to the
+           ;; TeX process as --output-directory; both an absolute path
+           ;; and `..' components could escape the document tree, so
+           ;; consider them unsafe.
+           (not (file-name-absolute-p value))
+           ;; TODO: Use `file-name-split' once we bump compatibility to
+           ;; emacs >= 29.1.
+           (not (member ".." (split-string value "[/\\]" t))))))
+
 (defcustom TeX-output-dir nil
   "The path of the directory where output files should be placed.
 
@@ -2560,7 +2577,7 @@ file in `TeX-master'.  The path cannot contain a directory that
 starts with '.'.  If this variable is nil, the output directory
 is assumed to be the same as the directory of `TeX-master'."
   :group 'TeX-file
-  :safe #'string-or-null-p
+  :safe #'TeX--output-dir-safe-p
   :type '(choice (const :tag "Directory of master file" nil)
                  (string :tag "Custom" "build"))
   :local t)
@@ -2594,7 +2611,7 @@ ARGNAME is prepended to the quoted output directory.  If
 `TeX-output-dir' is nil then return an empty string."
   (let ((out-dir (TeX--master-output-dir (TeX-master-directory) t t)))
     (if out-dir
-        (concat argname "\"" out-dir "\"")
+        (concat argname (shell-quote-argument out-dir))
       "")))
 
 (defun TeX-master-output-file (extension)
