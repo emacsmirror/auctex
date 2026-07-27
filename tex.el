@@ -8588,7 +8588,7 @@ Return nil only if no errors were found."
     (cond
      ((and (string-match "ConTeXt" name) (boundp 'ConTeXt-Mark-version)
            (with-current-buffer TeX-command-buffer
-             (string= ConTeXt-Mark-version "IV")))
+             (member ConTeXt-Mark-version '("IV" "LMTX"))))
       (when (re-search-backward " > result saved in file: \\(.*?\\), " nil t)
         (let ((output-file (TeX-match-buffer 1)))
           ;; Shave off quotation marks if present.

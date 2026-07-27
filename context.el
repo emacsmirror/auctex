@@ -489,12 +489,15 @@ in your init file such as .emacs.d/init.el or .emacs."
     ConTeXt-section-section))
 
 ;; Define before first use.
-(defcustom ConTeXt-Mark-version "II"
+(defcustom ConTeXt-Mark-version "LMTX"
   "ConTeXt Mark version used for running ConTeXt."
-  :type 'string
   :group 'TeX-command
-  :safe #'stringp
-  :local t)
+  :type  '(radio (string :tag "LMTX"    "LMTX")
+                 (string :tag "Mark IV" "IV")
+                 (string :tag "Mark II" "II"))
+  :safe (lambda (x) (member x '("II" "IV" "LMTX")))
+  :local t
+  :package-version '(auctex . "14.2.0"))
 
 (defun ConTeXt-numbered-section-heading ()
   "Hook to prompt for ConTeXt section name.
@@ -1843,43 +1846,40 @@ else.  There might be text before point."
 (defun ConTeXt-expand-command ()
   "Expand ConTeXt command.
 Use `ConTeXt-Mark-version' to choose the command."
-  (cond
-   ((string= ConTeXt-Mark-version "IV")
-    "context")
-   ;; In any other case fall back on Mark II.
-   (t
-    "texexec")))
+  (pcase ConTeXt-Mark-version
+    ((or "IV" "LMTX") "context")
+    ;; In any other case fall back on Mark II.
+    (_ "texexec")))
 
 (defun ConTeXt-expand-options ()
   "Expand options for context command."
-  (cond
-   ;; Mark IV
-   ((string= ConTeXt-Mark-version "IV")
-    (concat
-     (if TeX-source-correlate-mode
-         "--synctex=repeat ")
-     ;; Omit nonstop option when we set synctex option.  According to
-     ;; Jim <zlists+context@jdvb.ca> in bug#70399 report,
-     ;; "if context is called with "--nonstopmode" (or "--nonstop")
-     ;;  the "--synctex=..." request to create a synctex file is
-     ;;  over-ridden."
-     (unless (or TeX-interactive-mode TeX-source-correlate-mode)
-       ConTeXt-texexec-option-nonstop)))
-   ;; In any other case fall back on Mark II.
-   (t
-    (concat
-     (let ((engine (eval (nth 4 (TeX-engine-in-engine-alist TeX-engine)) t)))
-       (when engine
-         (format "--engine=%s " engine)))
-     (unless (string= ConTeXt-current-interface "en")
-       (format "--interface=%s " ConTeXt-current-interface))
-     (when TeX-source-correlate-mode
-       (format "--passon=\"%s\" "
-               (if (eq (TeX-source-correlate-method-active) 'synctex)
-                   TeX-synctex-tex-flags
-                 TeX-source-specials-tex-flags)))
-     (unless TeX-interactive-mode
-       ConTeXt-texexec-option-nonstop)))))
+  (pcase ConTeXt-Mark-version
+    ;; Mark IV or LMTX
+    ((or "IV" "LMTX")
+     (concat
+      (if TeX-source-correlate-mode
+          "--synctex=repeat ")
+      ;; Omit nonstop option when we set synctex option.  According to
+      ;; Jim <zlists+context@jdvb.ca> in bug#70399 report,
+      ;; "if context is called with "--nonstopmode" (or "--nonstop")
+      ;;  the "--synctex=..." request to create a synctex file is
+      ;;  over-ridden."
+      (unless (or TeX-interactive-mode TeX-source-correlate-mode)
+        ConTeXt-texexec-option-nonstop)))
+    ;; In any other case fall back on Mark II.
+    (_ (concat
+        (let ((engine (eval (nth 4 (TeX-engine-in-engine-alist TeX-engine)) t)))
+          (when engine
+            (format "--engine=%s " engine)))
+        (unless (string= ConTeXt-current-interface "en")
+          (format "--interface=%s " ConTeXt-current-interface))
+        (when TeX-source-correlate-mode
+          (format "--passon=\"%s\" "
+                  (if (eq (TeX-source-correlate-method-active) 'synctex)
+                      TeX-synctex-tex-flags
+                    TeX-source-specials-tex-flags)))
+        (unless TeX-interactive-mode
+          ConTeXt-texexec-option-nonstop)))))
 
 ;;; Mode
 
