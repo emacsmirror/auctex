@@ -19,6 +19,9 @@
 
 ** Changed
 
+- Change behavior of ~TeX-output-dir~ for security considerations.  The
+  value can be set to a subdirectory of the master file, otherwise the
+  user is asked for permission.
 - Support new language names provided by babel-german v2.99.
 - Remove ~--jobname~ argument from default LuaLaTeX invocation.  If this
   causes trouble for you, we first recommend to update your (very old)
