@@ -2572,10 +2572,11 @@ and must not contain a `..' component."
 (defcustom TeX-output-dir nil
   "The path of the directory where output files should be placed.
 
-A relative path is interpreted as being relative to the master
-file in `TeX-master'.  The path cannot contain a directory that
-starts with '.'.  If this variable is nil, the output directory
-is assumed to be the same as the directory of `TeX-master'."
+A relative path is interpreted as being relative to the master file in
+`TeX-master'.  Subdirectories of `TeX-master' are considered safe,
+otherwise the user asked for permission.  If this variable is nil, the
+output directory is assumed to be the same as the directory of
+`TeX-master'."
   :group 'TeX-file
   :safe #'TeX--output-dir-safe-p
   :type '(choice (const :tag "Directory of master file" nil)
