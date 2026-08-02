@@ -2574,8 +2574,8 @@ and must not contain a `..' component."
 
 A relative path is interpreted as being relative to the master file in
 `TeX-master'.  Subdirectories of `TeX-master' are considered safe,
-otherwise the user asked for permission.  If this variable is nil, the
-output directory is assumed to be the same as the directory of
+otherwise the user is asked for permission.  If this variable is nil,
+the output directory is assumed to be the same as the directory of
 `TeX-master'."
   :group 'TeX-file
   :safe #'TeX--output-dir-safe-p
