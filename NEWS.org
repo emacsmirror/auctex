@@ -30,9 +30,9 @@
   #+begin_src emacs-lisp
     (luatex "LuaTeX" "luatex" "lualatex --jobname=%(s-filename-only)" "luatex")
   #+end_src
-- Change default value of ~ConTeXt-Mark-version~ to =LMTX= which is the
-  current ConTeXt version.  Internally, there is no difference for LMTX
-  and Mark IV behavior.
+- Change default value of ~ConTeXt-Mark-version~ to =XL= which is the
+  current ConTeXt version.  Internally, there is no difference for Mark
+  XL and Mark IV behavior.
 
 ** Fixed
 

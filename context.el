@@ -489,13 +489,13 @@ in your init file such as .emacs.d/init.el or .emacs."
     ConTeXt-section-section))
 
 ;; Define before first use.
-(defcustom ConTeXt-Mark-version "LMTX"
+(defcustom ConTeXt-Mark-version "XL"
   "ConTeXt Mark version used for running ConTeXt."
   :group 'TeX-command
-  :type  '(radio (string :tag "LMTX"    "LMTX")
+  :type  '(radio (string :tag "Mark XL" "XL")
                  (string :tag "Mark IV" "IV")
                  (string :tag "Mark II" "II"))
-  :safe (lambda (x) (member x '("II" "IV" "LMTX")))
+  :safe (lambda (x) (member x '("II" "IV" "XL")))
   :local t
   :package-version '(auctex . "14.2.0"))
 
@@ -1847,15 +1847,15 @@ else.  There might be text before point."
   "Expand ConTeXt command.
 Use `ConTeXt-Mark-version' to choose the command."
   (pcase ConTeXt-Mark-version
-    ((or "IV" "LMTX") "context")
+    ((or "IV" "XL") "context")
     ;; In any other case fall back on Mark II.
     (_ "texexec")))
 
 (defun ConTeXt-expand-options ()
   "Expand options for context command."
   (pcase ConTeXt-Mark-version
-    ;; Mark IV or LMTX
-    ((or "IV" "LMTX")
+    ;; Mark IV or XL (LMTX)
+    ((or "IV" "XL")
      (concat
       (if TeX-source-correlate-mode
           "--synctex=repeat ")
