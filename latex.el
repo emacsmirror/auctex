@@ -7775,9 +7775,11 @@ this point.  If nil, limit to the previous 15 lines."
     (when result
       (append result (list cnt-distance)))))
 
-(defun LaTeX-completion-candidates-key-val (key-vals)
+(defun LaTeX-completion-candidates-key-val (key-vals &optional props)
   "Return completion candidates from KEY-VALS based on buffer position.
-KEY-VALS is an alist of key-value pairs."
+KEY-VALS is an alist of key-value pairs.  PROPS is a property list for
+additional information as recognized by `completion-extra-properties'
+and is appended to the return value."
   (let ((end (point))
         (func (lambda (kv &optional k)
                 (if k
@@ -7827,14 +7829,17 @@ KEY-VALS is an alist of key-value pairs."
         (skip-chars-forward "^a-zA-Z0-9" end)
         (setq beg (point))
         ;; This caters also for the case where nothing is typed yet:
-        (list beg end (completion-table-dynamic
-                       (lambda (_)
-                         (funcall func key-vals)))
-              :exclusive 'no)))))
+        (append (list beg end (completion-table-dynamic
+                               (lambda (_)
+                                 (funcall func key-vals)))
+                      :exclusive 'no)
+                props)))))
 
-(defun LaTeX-completion-candidates-completing-read-multiple (collection)
+(defun LaTeX-completion-candidates-completing-read-multiple (collection &optional props)
   "Return completion candidates from COLLECTION based on buffer position.
-COLLECTION is a list of strings."
+COLLECTION is a list of strings.  PROPS is a property list for
+additional information as recognized by `completion-extra-properties'
+and is appended to the return value."
   (let ((end (point))
         beg list-beg)
     (save-excursion
@@ -7847,11 +7852,13 @@ COLLECTION is a list of strings."
         (goto-char list-beg))
       (skip-chars-forward "^a-zA-Z0-9\\\\" end)
       (setq beg (point)))
-    (list beg end collection :exclusive 'no)))
+    (append (list beg end collection :exclusive 'no) props)))
 
-(defun LaTeX-completion-candidates-completing-read (collection)
+(defun LaTeX-completion-candidates-completing-read (collection &optional props)
   "Return completion candidates from COLLECTION based on buffer position.
-COLLECTION is a list of strings."
+COLLECTION is a list of strings.  PROPS is a property list for
+additional information as recognized by `completion-extra-properties'
+and is appended to the return value."
   (let ((end (point))
         beg)
     (save-excursion
@@ -7861,7 +7868,7 @@ COLLECTION is a list of strings."
       (forward-char)
       (skip-chars-forward "^a-zA-Z0-9\\\\" end)
       (setq beg (point)))
-    (list beg end collection :exclusive 'no)))
+    (append (list beg end collection :exclusive 'no) props)))
 
 (defun LaTeX-completion-documentclass-usepackage (entry)
   "Return completion candidates for \\usepackage and \\documentclass arguments.
@@ -8062,11 +8069,21 @@ or `LaTeX-environment-list' and returns it."
 
 (defvar LaTeX-completion-function-map-alist-keyval nil
   "Alist mapping style funcs to completion-candidates counterparts.
-Each element is a cons with the name of the function used in an
-AUCTeX style file which queries and inserts something in the
-buffer as car and a function delievering completion candidates as
-cdr.  This list contains only mapping for functions which perform
-key=val completions.  See also
+Each element is a cons with the name of the function used in an AUCTeX
+style file which queries and inserts something in the buffer as car and
+a function delievering completion candidates as cdr.  This list contains
+only mapping for functions which perform key=val completions.  See also
+`LaTeX-completion-function-map-alist-cr' or
+`LaTeX-completion-function-map-alist-crm'.")
+
+(defvar LaTeX-completion-function-map-alist-crm
+  '((TeX-arg-ref . LaTeX-completion-label-list))
+  "Alist mapping style funcs to completion-candidates counterparts.
+Each element is a cons with the name of the function used in an AUCTeX
+style file which queries and inserts something in the buffer as car and
+a function delievering completion candidates as cdr.  This list contains
+only mapping for functions which perform completing-read.  See also
+`LaTeX-completion-function-map-alist-keyval' or
 `LaTeX-completion-function-map-alist-cr'.")
 
 (defvar LaTeX-completion-function-map-alist-cr
@@ -8077,12 +8094,20 @@ key=val completions.  See also
                                             (concat TeX-esc (car x)))
                                           (LaTeX-length-list)))))
   "Alist mapping style funcs to completion-candidates counterparts.
-Each element is a cons with the name of the function used in an
-AUCTeX style file which queries and inserts something in the
-buffer as car and a function delievering completion candidates as
-cdr.  This list contains only mapping for functions which perform
-completing-read.  See also
-`LaTeX-completion-function-map-alist-keyval'.")
+Each element is a cons with the name of the function used in an AUCTeX
+style file which queries and inserts something in the buffer as car and
+a function delievering completion candidates as cdr.  This list contains
+only mapping for functions which perform completing-read.  See also
+`LaTeX-completion-function-map-alist-keyval' or
+`LaTeX-completion-function-map-alist-crm'.")
+
+(defvar LaTeX-completion-extra-props-alist
+  '((LaTeX-completion-label-list (:annotation-function
+                                  LaTeX-completion-label-annotation-function)))
+  "Alist of extra properties for in-buffer completion.
+The car of each element is a function which returns completion
+candidates.  The cdr is a list of extra properties passed to
+`LaTeX-completion-candidates-*' functions.")
 
 (defun LaTeX-completion-parse-arg (arg)
   "Parse ARG and call the correct candidates completion function.
@@ -8134,11 +8159,21 @@ ARG is the entry for the current argument in buffer stored in
 
             ((assq head LaTeX-completion-function-map-alist-keyval)
              (LaTeX-completion-candidates-key-val
-              (funcall fun1 (cdr (assq head LaTeX-completion-function-map-alist-keyval)))))
+              (funcall fun1 (cdr (assq head LaTeX-completion-function-map-alist-keyval)))
+              (cadr (assq (cdr (assq head LaTeX-completion-function-map-alist-keyval))
+                          LaTeX-completion-extra-props-alist))))
 
             ((assq head LaTeX-completion-function-map-alist-cr)
              (LaTeX-completion-candidates-completing-read
-              (funcall fun1 (cdr (assq head LaTeX-completion-function-map-alist-cr)))))
+              (funcall fun1 (cdr (assq head LaTeX-completion-function-map-alist-cr)))
+              (cadr (assq (cdr (assq head LaTeX-completion-function-map-alist-cr))
+                          LaTeX-completion-extra-props-alist))))
+
+            ((assq head LaTeX-completion-function-map-alist-crm)
+             (LaTeX-completion-candidates-completing-read-multiple
+              (funcall fun1 (cdr (assq head LaTeX-completion-function-map-alist-crm)))
+              (cadr (assq (cdr (assq head LaTeX-completion-function-map-alist-crm))
+                          LaTeX-completion-extra-props-alist))))
 
             (t nil)))))
 

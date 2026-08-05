@@ -1,6 +1,6 @@
 ;;; cleveref.el --- AUCTeX style for `cleveref.sty' (v0.21.4)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2014--2026 Free Software Foundation, Inc.
 
 ;; Author: Matthew Leach <matthew@mattleach.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -32,9 +32,7 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (defun TeX-arg-cleveref-multiple-labels (optional &optional prompt)
   "Prompt for a series of labels completing with known labels.
@@ -158,6 +156,10 @@ string."
 
    ;; Add \label[type]{label} to AUCTeX parser
    (TeX-auto-add-regexp LaTeX-cleveref-label-regexp)
+
+   ;; Cater for in-buffer completion for the custom function
+   (add-to-list 'LaTeX-completion-function-map-alist-crm
+                '(TeX-arg-cleveref-multiple-labels . LaTeX-completion-label-list))
 
    ;; Tell RefTeX.  Check if `reftex-label-regexps' is bound and use a
    ;; local version of it.  Check if the regexp is already added in
