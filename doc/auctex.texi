@@ -5811,68 +5811,84 @@ any.  Typically the next argument is used to overwrite the default
 prompt.
 
 @ftable @code
+@vindex LaTeX-default-author
+@item LaTeX-arg-author
+Prompt for document author, using @code{LaTeX-default-author} as initial
+input.
+
+@item TeX-arg-bibliography
+Prompt for Bib@TeX{} database files completing with all databases available
+on your system.
+
+@item TeX-arg-bibstyle
+Prompt for a Bib@TeX{} style file completing with all style available on
+your system.
+
+@vindex TeX-arg-cite-note-p
+@item TeX-arg-cite
+Prompt for a Bib@TeX{} citation.  If the variable
+@code{TeX-arg-cite-note-p} is non-@code{nil}, ask also for optional note
+in citations.
+
+@c This function is basically the same as `TeX-arg-cite':
+@c @item TeX-arg-define-cite
+@c Prompt for a Bib@TeX{} citation.
+
+@item TeX-arg-completing-read
+Prompt for a value from a list of options and insert it as a @TeX{} macro
+argument.
+
+@item TeX-arg-completing-read-multiple
+Prompt for a comma-separated list of values from a list of options and
+insert it as a @TeX{} macro argument.
+
 @item TeX-arg-conditional
 Implements if @var{expr} @var{then} @var{else}.  If @var{expr} evaluates
 to true, parse @var{then} as an argument list, else parse @var{else} as an
 argument list.
 
-@item TeX-arg-literal
-Insert its arguments into the buffer.  Used for specifying extra syntax
-for a macro.
+@item TeX-arg-coordinate
+Insert x and y coordinates as a pair.  No arguments.
 
-@item TeX-arg-free
-Parse its arguments but use no braces when they are inserted.
-
-@item TeX-arg-eval
-Evaluate arguments and insert the result in the buffer.
-
-@item TeX-arg-label
-Prompt for a label completing with known labels.  If Ref@TeX{} is
-active, prompt for the reference format.
-
-@item TeX-arg-ref
-Prompt for a label completing with known labels.  If Ref@TeX{} is
-active, do not prompt for the reference format.  Usually, reference
-macros should use this function instead of @code{TeX-arg-label}.
-
-@item TeX-arg-index-tag
-Prompt for an index tag.  This is the name of an index, not the entry.
-
-@item TeX-arg-index
-Prompt for an index entry completing with known entries.
-
-@item TeX-arg-length
-Prompt for a @LaTeX{} length completing with known lengths.
-
-@item TeX-arg-macro
-Prompt for a @TeX{} macro with completion.
-
-@item TeX-arg-date
-@vindex TeX-date-format
-Prompt for a date, defaulting to the current date.  The format of the
-date is specified by the @code{TeX-date-format} option.  If you want to
-change the format when the @samp{babel} package is loaded with a
-specific language, set @code{TeX-date-format} inside the appropriate
-language hook (for details @pxref{European}).
-
-@item TeX-arg-version
-Prompt for the version of a file, using as initial input the current
-date.
-
-@item TeX-arg-environment
-Prompt for a @LaTeX{} environment with completion.
-
-@item TeX-arg-cite
-@vindex TeX-arg-cite-note-p
-Prompt for a Bib@TeX{} citation.  If the variable
-@code{TeX-arg-cite-note-p} is non-@code{nil}, ask also for optional note
-in citations.
+@item TeX-arg-corner
+Prompt for a @LaTeX{} side or corner position with completion.
 
 @item TeX-arg-counter
 Prompt for a @LaTeX{} counter completing with known counters.
 
-@item TeX-arg-savebox
-Prompt for a @LaTeX{} savebox completing with known saveboxes.
+@item TeX-arg-define-counter
+Prompt for a @LaTeX{} counter.
+
+@vindex TeX-date-format
+@item TeX-arg-date
+Prompt for a date, defaulting to the current date.  The format of the date
+is specified by the @code{TeX-date-format} option.  If you want to change
+the format when the @samp{babel} package is loaded with a specific
+language, set @code{TeX-date-format} inside the appropriate language hook
+(for details @pxref{European}).
+
+@vindex LaTeX-default-style
+@vindex LaTeX-default-options
+@vindex TeX-arg-input-file-search
+@vindex LaTeX-style-list
+@item TeX-arg-document
+Prompt for a @LaTeX{} document class, using @code{LaTeX-default-style} as
+default value and @code{LaTeX-default-options} as default list of options.
+If the variable @code{TeX-arg-input-file-search} is @code{t}, you will be
+able to complete with all @LaTeX{} classes available on your system,
+otherwise classes listed in the variable @code{LaTeX-style-list} will be
+used for completion.  It is also provided completion for options of many
+common classes.
+
+@item TeX-arg-environment
+Prompt for a @LaTeX{} environment with completion.
+
+@item TeX-arg-define-environment
+Prompt for a @LaTeX{} environment with completion.  Add environment to
+list of defined environments.
+
+@item TeX-arg-eval
+Evaluate arguments and insert the result in the buffer.
 
 @item TeX-arg-file
 Prompt for a filename in the current directory, and use it with the
@@ -5886,119 +5902,115 @@ being visited in the current buffer, with extension.
 Prompt for a filename and use as initial input the name of the file
 being visited in the current buffer, without extension.
 
-@item TeX-arg-input-file
+@item TeX-arg-free
+Parse its arguments but use no braces when they are inserted.
+
+@item TeX-arg-hook
+Prompt for a @LaTeX{} hook and insert it as a @TeX{} macro argument.
+
+@item TeX-read-hook
+Prompt for a @LaTeX{} hook and return it.
+
+@item TeX-arg-index
+Prompt for an index entry completing with known entries.
+
+@item TeX-arg-index-tag
+Prompt for an index tag.  This is the name of an index, not the entry.
+
 @vindex TeX-arg-input-file-search
+@item TeX-arg-input-file
 Prompt for the name of an input file in @TeX{}'s search path, and use it
 without the extension.  Run the style hooks for the file.  (Note that
 the behavior (type of prompt and inserted file name) of the function can
 be controlled by the variable @code{TeX-arg-input-file-search}.)
 
+@item TeX-arg-key-val
+Prompt for a @samp{key=value} list of options and insert it as a @TeX{}
+macro argument.
+
+@item TeX-read-key-val
+Prompt for a @samp{key=value} list of options and return them.
+
+@item TeX-arg-label
+Prompt for a label completing with known labels.  If Ref@TeX{} is active,
+prompt for the reference format.  @code{TeX-arg-ref} should be preferred
+over this function.
+
 @item TeX-arg-define-label
 Prompt for a label completing with known labels.  Add label to list of
 defined labels.
+
+@item TeX-arg-length
+Prompt for a @LaTeX{} length completing with known lengths.
 
 @item TeX-arg-define-length
 Prompt for a @LaTeX{} length completing with known lengths.  Add length
 to list of defined lengths.
 
-@item TeX-arg-define-macro
-Prompt for a @TeX{} macro with completion.  Add macro to list of defined
-macros.
-
-@item TeX-arg-define-environment
-Prompt for a @LaTeX{} environment with completion.  Add environment to
-list of defined environments.
-
-@item TeX-arg-define-cite
-Prompt for a Bib@TeX{} citation.
-
-@item TeX-arg-define-counter
-Prompt for a @LaTeX{} counter.
-
-@item TeX-arg-define-savebox
-Prompt for a @LaTeX{} savebox.
-
-@item TeX-arg-document
-@vindex LaTeX-default-style
-@vindex LaTeX-default-options
-@vindex TeX-arg-input-file-search
-@vindex LaTeX-style-list
-Prompt for a @LaTeX{} document class, using @code{LaTeX-default-style} as
-default value and @code{LaTeX-default-options} as default list of options.
-If the variable @code{TeX-arg-input-file-search} is @code{t}, you will be
-able to complete with all @LaTeX{} classes available on your system,
-otherwise classes listed in the variable @code{LaTeX-style-list} will be
-used for completion.  It is also provided completion for options of many
-common classes.
-
-@item LaTeX-arg-usepackage
-@vindex TeX-arg-input-file-search
-Prompt for @LaTeX{} packages.  If the variable
-@code{TeX-arg-input-file-search} is @code{t}, you will be able to complete
-with all @LaTeX{} packages available on your system.  It is also provided
-completion for options of many common packages.
-
-@item TeX-arg-bibstyle
-Prompt for a Bib@TeX{} style file completing with all style available on
-your system.
-
-@item TeX-arg-bibliography
-Prompt for Bib@TeX{} database files completing with all databases available
-on your system.
-
-@item TeX-arg-corner
-Prompt for a @LaTeX{} side or corner position with completion.
+@item TeX-arg-literal
+Insert its arguments into the buffer.  Used for specifying extra syntax
+for a macro.
 
 @item TeX-arg-lr
 Prompt for a @LaTeX{} side with completion.
 
-@item TeX-arg-tb
-Prompt for a @LaTeX{} side with completion.
+@item TeX-arg-macro
+Prompt for a @TeX{} macro with completion.
+
+@item TeX-arg-define-macro
+Prompt for a @TeX{} macro with completion.  Add macro to list of defined
+macros.
 
 @item TeX-arg-pagestyle
 Prompt for a @LaTeX{} pagestyle with completion.
+
+@item TeX-arg-pair
+Insert a pair of numbers, use arguments for prompt.  The numbers are
+surrounded by parentheses and separated with a comma.
+
+@item TeX-arg-ref
+Prompt for a label completing with known labels.  If Ref@TeX{} is
+active, do not prompt for the reference format.  Usually, reference
+macros should use this function instead of @code{TeX-arg-label}.
+
+@item TeX-arg-savebox
+Prompt for a @LaTeX{} savebox completing with known saveboxes.
+
+@item TeX-arg-define-savebox
+Prompt for a @LaTeX{} savebox.
+
+@item TeX-arg-set-exit-mark
+Set @code{TeX-exit-mark} to current point or a given position.
+
+@item TeX-arg-size
+Insert width and height as a pair.  No arguments.
+
+@item TeX-arg-space
+Insert one or more spaces.
+
+@item TeX-arg-string
+Insert a string.
+
+@item TeX-arg-tb
+Prompt for a @LaTeX{} side with completion.
+
+@vindex TeX-arg-input-file-search
+@item LaTeX-arg-usepackage
+Prompt for @LaTeX{} packages.  If the variable
+@code{TeX-arg-input-file-search} is @code{t}, you will be able to complete
+with all @LaTeX{} packages available on your system.  It is also provided
+completion for options of many common packages.
 
 @item TeX-arg-verb
 Prompt for delimiter and text.
 
 @item TeX-arg-verb-delim-or-brace
 Prompt for delimiter and text.  This function is similar to
-@code{TeX-arg-verb}, but is intended for macros which take their
-argument enclosed in delimiters or in braces.
+@code{TeX-arg-verb}, but is intended for macros which take their argument
+enclosed in delimiters or in braces.
 
-@item TeX-arg-pair
-Insert a pair of numbers, use arguments for prompt.  The numbers are
-surrounded by parentheses and separated with a comma.
-
-@item TeX-arg-size
-Insert width and height as a pair.  No arguments.
-
-@item TeX-arg-coordinate
-Insert x and y coordinates as a pair.  No arguments.
-
-@item LaTeX-arg-author
-@vindex LaTeX-default-author
-Prompt for document author, using @code{LaTeX-default-author} as initial
-input.
-
-@item TeX-read-hook
-Prompt for a @LaTeX{} hook and return it.
-
-@item TeX-arg-hook
-Prompt for a @LaTeX{} hook and insert it as a @TeX{} macro argument.
-
-@item TeX-read-key-val
-Prompt for a @samp{key=value} list of options and return them.
-
-@item TeX-arg-key-val
-Prompt for a @samp{key=value} list of options and insert it as a @TeX{}
-macro argument.
-
-@item TeX-arg-space
-Insert one or more spaces.
-
-@item TeX-arg-set-exit-mark
-Set @code{TeX-exit-mark} to current point or a given position.
+@item TeX-arg-version
+Prompt for the version of a file, using as initial input the current date.
 @end ftable
 
 If you add new hooks, you can assume that point is placed directly after
