@@ -6117,54 +6117,6 @@ Following is a list of available hooks for
 @code{LaTeX-add-environments}:
 
 @ftable @code
-@item LaTeX-env-item
-Insert the given environment and the first item.
-
-@item LaTeX-env-item-args
-Insert the given environment plus further arguments, and the first item.
-You can use this as a hook in case you want to specify multiple complex
-arguments just like in elements of @code{TeX-add-symbols}.  Here is an
-example from @file{enumitem.el} in order to prompt for a @samp{key=value}
-list to be inserted as an optional argument to the @samp{itemize}
-environment:
-@lisp
-(LaTeX-add-environments
- '("itemize" LaTeX-env-item-args
-   [TeX-arg-key-val (LaTeX-enumitem-key-val-options)]))
-@end lisp
-
-@item LaTeX-env-figure
-Insert the given figure-like environment with a caption and a label.
-
-@item LaTeX-env-array
-Insert the given array-like environment with position and column
-specifications.
-
-@item LaTeX-env-label
-Insert the given environment with a label.
-
-@item LaTeX-env-label-args
-Insert the given environment with a label and further arguments to the
-environment.
-
-@item LaTeX-env-list
-Insert the given list-like environment, a specifier for the label and
-the first item.
-
-@item LaTeX-env-minipage
-Insert the given minipage-like environment with position and width
-specifications.
-
-@item LaTeX-env-tabular*
-Insert the given tabular*-like environment with width, position and
-column specifications.
-
-@item LaTeX-env-picture
-Insert the given environment with width and height specifications.
-
-@item LaTeX-env-bib
-Insert the given environment with a label for a bibitem.
-
 @item LaTeX-env-args
 Insert the given environment with arguments.  You can use this as a hook
 in case you want to specify multiple complex arguments just like in
@@ -6181,16 +6133,67 @@ an optional argument of the @samp{lstlisting} environment:
  '("lstlisting" LaTeX-env-args
    [TeX-arg-key-val (LaTeX-listings-key-val-options)]))
 @end lisp
+
+@item LaTeX-env-array
+Insert the given array-like environment with position and column
+specifications.
+
+@item LaTeX-env-bib
+Insert the given environment with a label for a bibitem.
+
+@item LaTeX-env-document
+Insert a @samp{\documentclass} macro if there's none already and prompt
+for the insertion of @samp{\usepackage} macros.
+
+@item LaTeX-env-item
+Insert the given environment and the first item.
+
+@item LaTeX-env-item-args
+Insert the given environment plus further arguments, and the first item.
+Here is an example from @file{enumitem.el} in order to prompt for a
+@samp{key=value} list to be inserted as an optional argument to the
+@samp{itemize} environment:
+@lisp
+(LaTeX-add-environments
+ '("itemize" LaTeX-env-item-args
+   [TeX-arg-key-val (LaTeX-enumitem-key-val-options)]))
+@end lisp
+
+@item LaTeX-env-figure
+Insert the given figure-like environment with a caption and a label.
+
+@item LaTeX-env-label
+Insert the given environment with a label.
+
+@item LaTeX-env-label-args
+Insert the given environment with a label and further arguments to the
+environment.
+
+@item LaTeX-env-list
+Insert the given list-like environment, a specifier for the label and
+the first item.
+
+@item LaTeX-env-minipage
+Insert the given minipage-like environment with position and width
+specifications.
+
+@item LaTeX-env-picture
+Insert the given environment with width and height specifications.
+
+@item LaTeX-env-tabular*
+Insert the given tabular*-like environment with width, position and
+column specifications.
 @end ftable
 
 Some packages provide environments that are rarely useful to non-expert
 users.  Those should be marked as expert environments using
 @code{LaTeX-declare-expert-environments}.
 
-@defun LaTeX-declare-expert-environments @var{style} @var{environments}...
+@defun LaTeX-declare-expert-environments @var{style} @var{environments} @dots{}
 Declare @var{environments} as expert environments of @var{style}.
 
-Expert environments are completed depending on @code{TeX-complete-expert-commands}.
+Expert environments are completed depending on
+@code{TeX-complete-expert-commands}.
 @end defun
 
 
