@@ -1229,9 +1229,10 @@ If SHORT-CAPTION is non-nil pass it as an optional argument to
 
 (defun LaTeX-env-figure (environment)
   "Create ENVIRONMENT with \\caption and \\label commands."
-  (let* ((float (and LaTeX-float                ; LaTeX-float can be nil, i.e.
-                                        ; do not prompt
-                     (TeX-read-string "(Optional) Float position: " LaTeX-float)))
+  (let* ((float (and LaTeX-float ;; `LaTeX-float' can be nil, i.e., do not prompt
+                     (TeX-read-string
+                      (format-prompt "(Optional) Float position" LaTeX-float)
+                      nil nil LaTeX-float)))
          (caption (TeX-read-string "Caption: "))
          (short-caption (when (>= (length caption) LaTeX-short-caption-prompt-length)
                           (TeX-read-string "(Optional) Short caption: ")))
@@ -8221,8 +8222,8 @@ function `TeX--completion-at-point' which should come later in
 
 ;; The next defcustom and functions control the annotation of labels
 ;; during in-buffer completion which is done by
-;; `TeX--completion-at-point' also inside the arguments of \ref and
-;; such and not with the code above.
+;; `TeX--completion-at-point' inside the arguments of \ref and such as
+;; well as with `TeX-arg-ref'
 
 (defcustom LaTeX-label-annotation-max-length 30
   "Maximum number of characters for annotation of labels.

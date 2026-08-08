@@ -45,10 +45,10 @@
   "Create ENVIRONMENT with \\caption and \\label commands.
 This function is meant to be used for \"video\" environment
 provided by REVTeX class."
-  (let* ((float (and LaTeX-float ; LaTeX-float can be nil, i.e. do not prompt
+  (let* ((float (and LaTeX-float ;; LaTeX-float can be nil, i.e., do not prompt
                      (TeX-read-string
-                      (TeX-argument-prompt t nil "Float position")
-                      LaTeX-float)))
+                      (format-prompt "(Optional) Float position" LaTeX-float)
+                      nil nil LaTeX-float)))
          (caption (TeX-read-string
                    (TeX-argument-prompt nil nil "Caption")))
          (short-caption (when (>= (length caption) LaTeX-short-caption-prompt-length)
