@@ -1,6 +1,6 @@
 ;;; revtex4-2.el --- AUCTeX style for `revtex4-2.cls' (v4.2c)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2020--2026 Free Software Foundation, Inc.
 
 ;; Author: Arash Esbati <arash@gnu.org>
 ;; Maintainer: auctex-devel@gnu.org
