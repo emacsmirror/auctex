@@ -1526,12 +1526,18 @@ candidates separated by commas and/or equal signs.
 Sometimes the list of offered candidates is enriched by annotations which
 are appended to the candidates themself.  For labels which are referenced,
 the annotations are controlled by the variable
-@code{LaTeX-label-annotation-max-length} and Ref@TeX{} being enabled in
-the buffer since the annotations are gathered from it.
+@code{LaTeX-label-annotation-max-length}.  For citation keys, the variable
+@code{LaTeX-bib-annotation-max-length} is consulted.  Ref@TeX{} must be
+enabled in the buffer since the annotations are gathered from it.
 
 @defopt LaTeX-label-annotation-max-length
 Controls the length of the annotation attached to a label, default is 30.
 Setting this variable to 0 disables annotation of labels.
+@end defopt
+
+@defopt LaTeX-bib-annotation-max-length
+Controls the length of the annotation attached to a citation key, default
+is 50.  Setting this variable to 0 disables annotation of citation keys.
 @end defopt
 
 A more direct way to insert a macro is with @code{TeX-insert-macro},

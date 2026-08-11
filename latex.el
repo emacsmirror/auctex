@@ -32,16 +32,28 @@
 (require 'latex-flymake)
 
 ;; Silence the compiler for functions:
+(declare-function LaTeX-install-toolbar "tex-bar" nil)
 (declare-function multi-prompt "multi-prompt")
 (declare-function multi-prompt-key-value "multi-prompt")
-(declare-function LaTeX-install-toolbar "tex-bar" nil)
 (declare-function outline-level "ext:outline" nil)
 (declare-function outline-mark-subtree "ext:outline" nil)
+(declare-function reftex--query-search-regexps "ext:reftex-cite")
+(declare-function reftex-access-scan-info "ext:reftex")
+(declare-function reftex-all-assq "ext:reftex")
+(declare-function reftex-bib-or-thebib "ext:reftex-cite")
+(declare-function reftex-default-bibliography "ext:reftex-cite")
+(declare-function reftex-extract-bib-entries "ext:reftex-cite")
+(declare-function reftex-extract-bib-entries-from-thebibliography "ext:reftex-cite")
+(declare-function reftex-get-bib-field "ext:reftex-cite")
+(declare-function reftex-get-bibfile-list "ext:reftex-cite")
+(declare-function reftex-uniquify "ext:reftex")
 (declare-function turn-off-filladapt-mode "ext:filladapt" nil)
 
 ;; Silence the compiler for variables:
-(defvar outline-heading-alist)
 (defvar LaTeX-section-list-changed)
+(defvar outline-heading-alist)
+(defvar reftex-default-bibliography)
+(defvar reftex-docstruct-symbol)
 
 ;;; Syntax
 
@@ -8078,7 +8090,8 @@ only mapping for functions which perform key=val completions.  See also
 `LaTeX-completion-function-map-alist-crm'.")
 
 (defvar LaTeX-completion-function-map-alist-crm
-  '((TeX-arg-ref . LaTeX-completion-label-list))
+  '((TeX-arg-ref . LaTeX-completion-label-list)
+    (TeX-arg-cite . LaTeX-completion-bib-list))
   "Alist mapping style funcs to completion-candidates counterparts.
 Each element is a cons with the name of the function used in an AUCTeX
 style file which queries and inserts something in the buffer as car and
@@ -8104,7 +8117,9 @@ only mapping for functions which perform completing-read.  See also
 
 (defvar LaTeX-completion-extra-props-alist
   '((LaTeX-completion-label-list (:annotation-function
-                                  LaTeX-completion-label-annotation-function)))
+                                  LaTeX-completion-label-annotation-function))
+    (LaTeX-completion-bib-list (:annotation-function
+                                LaTeX-completion-bib-annotation-function)))
   "Alist of extra properties for in-buffer completion.
 The car of each element is a function which returns completion
 candidates.  The cdr is a list of extra properties passed to
@@ -8223,7 +8238,8 @@ function `TeX--completion-at-point' which should come later in
 ;; The next defcustom and functions control the annotation of labels
 ;; during in-buffer completion which is done by
 ;; `TeX--completion-at-point' inside the arguments of \ref and such as
-;; well as with `TeX-arg-ref'
+;; well as with `TeX-arg-ref'.  For the bib entries, we cater for
+;; `TeX-arg-cite':
 
 (defcustom LaTeX-label-annotation-max-length 30
   "Maximum number of characters for annotation of labels.
@@ -8267,6 +8283,71 @@ document with `reftex-parse-all' or `TeX-normal-mode'."
             (when (stringp (car label))
               (push (car label) labels)))))
     (LaTeX-label-list)))
+
+(defcustom LaTeX-bib-annotation-max-length 50
+  "Maximum number of characters for annotation of bib entries.
+Setting this variable to 0 disables annotation of bib entries during
+in-buffer completion."
+  :group 'LaTeX-label
+  :type 'integer)
+
+(defvar-local LaTeX--completion-bib-list-from-reftex nil
+  "List of bib entries retrieved from RefTeX.
+The value is set in `LaTeX-completion-bib-list' and used in
+`LaTeX-completion-bib-annotation-function'.")
+
+(defun LaTeX-completion-bib-list ()
+  "Return a list of bib entries in current document.
+If RefTeX is active, use its advanced mechanism, otherwise use
+`LaTeX-bibitem-list' provided by AUCTeX."
+  (if (and (bound-and-true-p reftex-mode)
+           (require 'reftex-cite nil t))
+      ;; `reftex--query-search-regexps' calls `completing-read', so
+      ;; prevent this here:
+      (cl-letf (((symbol-function #'reftex--query-search-regexps)
+                 (lambda (_) '("."))))
+        (reftex-access-scan-info)
+        (setq LaTeX--completion-bib-list-from-reftex
+              ;; This part is extracted from `reftex-offer-bib-menu':
+              (pcase (reftex-bib-or-thebib)
+                ('thebib (reftex-extract-bib-entries-from-thebibliography
+                          (reftex-uniquify
+                           (mapcar #'cdr
+                                   (reftex-all-assq
+                                    'thebib (symbol-value reftex-docstruct-symbol))))))
+                ('bib (reftex-extract-bib-entries (reftex-get-bibfile-list)))
+                ((pred (lambda (x) (and (null x) reftex-default-bibliography)))
+                 (reftex-extract-bib-entries (reftex-default-bibliography)))))
+        (when LaTeX--completion-bib-list-from-reftex
+          (mapcar (lambda (x) (substring-no-properties (car x)))
+                  LaTeX--completion-bib-list-from-reftex)))
+    (LaTeX-bibitem-list)))
+
+(defun LaTeX-completion-bib-annotation-function (key)
+  "Return context for bib KEY in a TeX file.
+Context is a string gathered from RefTeX.  Context is the `title' field
+of the key stored in the bibtex database.  For the \\thebibliography
+environment, the text after the \\bibitem is used.
+
+Return nil if `LaTeX-bib-annotation-max-length' is set to 0 or
+RefTeX-mode is not activated.  Context is stripped to the number of
+characters defined in `LaTeX-bib-annotation-max-length'."
+  (when (and LaTeX--completion-bib-list-from-reftex
+             (bound-and-true-p reftex-mode)
+             (> LaTeX-bib-annotation-max-length 0)
+             (require 'reftex-cite nil t))
+    (let ((annot (reftex-get-bib-field
+                  (if (eq (reftex-bib-or-thebib) 'thebib)
+                      "&text"
+                    "title")
+                  (assoc key LaTeX--completion-bib-list-from-reftex))))
+      (unless (string-empty-p annot)
+        (concat " "
+                (string-trim-right
+                 (substring-no-properties annot 0
+                                          (when (>= (length annot)
+                                                    LaTeX-bib-annotation-max-length)
+                                            LaTeX-bib-annotation-max-length))))))))
 
 ;;; Mode
 
