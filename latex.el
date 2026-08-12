@@ -8246,7 +8246,8 @@ function `TeX--completion-at-point' which should come later in
 Setting this variable to 0 disables label annotation during
 in-buffer completion."
   :group 'LaTeX-label
-  :type 'integer)
+  :type 'integer
+  :package-version '(auctex . "14.0.0"))
 
 (defun LaTeX-completion-label-annotation-function (label)
   "Return context for LABEL in a TeX file.
@@ -8289,7 +8290,8 @@ document with `reftex-parse-all' or `TeX-normal-mode'."
 Setting this variable to 0 disables annotation of bib entries during
 in-buffer completion."
   :group 'LaTeX-label
-  :type 'integer)
+  :type 'integer
+  :package-version '(auctex . "14.2.0"))
 
 (defvar-local LaTeX--completion-bib-list-from-reftex nil
   "List of bib entries retrieved from RefTeX.
