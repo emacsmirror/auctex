@@ -9653,18 +9653,24 @@ wrapped in \\(?:...\\)? then."
    ;; We are done.  Just search until the next closing bracket
    "[^]]*\\]"))
 
-(defun LaTeX-keyval-caption-reftex-context-function (env)
-  "Extract and return a key=val caption context string for RefTeX in ENV.
-ENV is the name of current environment passed to this function by
-RefTeX.  The context string is the value given to the caption key.  If
-no caption key is found, an error is issued.  See also the docstring of
-`reftex-label-alist' and its description for CONTEXT-METHOD."
-  (let* ((envstart (save-excursion
-                     (re-search-backward (concat "\\\\begin{" env "}")
-                                         nil t)))
+(defun LaTeX-keyval-caption-reftex-context-function (env-or-mac)
+  "Return a key=val caption context string for RefTeX in ENV-OR-MAC.
+ENV-OR-MAC is the name of current environment or macro passed to this
+function by RefTeX.  The context string is the value given to the
+caption key.  If no caption key is found, an error is issued.  See also
+the docstring of `reftex-label-alist' and its description for
+CONTEXT-METHOD."
+  (let* ((start (save-excursion
+                  (search-backward
+                   ;; ENV-OR-MAC is a macro if it starts with `TeX-esc':
+                   (if (string-match-p (concat "\\`" (regexp-quote TeX-esc))
+                                       env-or-mac)
+                       env-or-mac
+                     (concat "\\begin{" env-or-mac "}"))
+                   nil t)))
          (capt-key (save-excursion
                      (re-search-backward "\\<caption[ \t\n\r%]*=[ \t\n\r%]*"
-                                         envstart t)))
+                                         start t)))
          capt-start capt-end)
     (if capt-key
         (save-excursion
