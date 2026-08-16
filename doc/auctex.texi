@@ -4717,6 +4717,21 @@ your files.
 %%% End:
 @end example
 
+If you're using non-@acronym{ASCII} characters in the name of the master
+file, you should give Emacs a hint about the correct coding of the current
+file like this:
+
+@example
+%%% Local Variables:
+%%% coding: utf-8
+%%% TeX-master: "ä-master"
+%%% End:
+@end example
+
+@noindent
+In general, we recommend to use @acronym{UTF}-8 for any
+non-@acronym{ASCII} text.
+
 You should always set this variable to the name of the top level document.  If
 you always use the same name for your top level documents, you can set
 @code{TeX-master} in your init file such as @file{init.el} or @file{.emacs}.
