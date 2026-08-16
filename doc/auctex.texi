@@ -3950,14 +3950,15 @@ If non-@code{nil}, @TeX{} will produce @samp{file:line:error} style error
 messages.
 @end defopt
 
-@ConTeXt{} users can choose between Mark II and Mark IV versions.  This
-is controlled by @code{ConTeXt-Mark-version} option.
+@ConTeXt{} users can choose between Mark II, Mark IV and Mark XL versions.
+This is controlled by @code{ConTeXt-Mark-version} option.
 
 @defopt ConTeXt-Mark-version
-This variables specifies which version of Mark should be used.  Values
-currently supported are @code{"II"}, the default, and @code{"IV"}.  It
-can be set globally using customization interface or on a per-file
-basis, by specifying it as a file variable.
+This variable specifies which version of Mark should be used.  Values
+currently supported are @code{"II"}, @code{"IV"} and @code{"XL"} which is
+the default.  It can be set globally using customization interface or on a
+per-file basis, by specifying it as a file variable.  Currently, there is
+no difference for @code{"IV"} and @code{"XL"} behavior.
 @end defopt
 
 @node Viewing
