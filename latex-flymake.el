@@ -1,6 +1,6 @@
 ;;; latex-flymake.el --- Flymake integration  -*- lexical-binding: t; -*-
 
-;; Copyright (C), 2018--2024 Free Software Foundation, Inc.
+;; Copyright (C), 2018--2026 Free Software Foundation, Inc.
 
 ;; Author: Alex Branham <branham@utexas.edu>
 ;; Maintainer: auctex-devel@gnu.org
@@ -52,6 +52,7 @@ See the chktex manual for warning numbers and details about how to use
 flags."
   :type '(choice (const :tag "Use chktex defaults" nil)
                  (repeat :tag "Custom chktex options" string))
+  :link '(url-link "man:chktex(1)")
   :group 'LaTeX)
 
 (defun LaTeX-flymake (report-fn &rest _args)
