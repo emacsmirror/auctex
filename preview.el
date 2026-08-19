@@ -1,6 +1,6 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2001-2025  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2026  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, text, convenience
@@ -4009,8 +4009,14 @@ name(\\([^)]+\\))\\)\\|\
 (defun preview-get-dpi ()
   (let* ((monitor-attrs (frame-monitor-attributes))
          (mm-dims (cdr (assoc 'mm-size monitor-attrs)))
-         (mm-width (or (nth 0 mm-dims) 1))
-         (mm-height (or (nth 1 mm-dims) 1))
+         (mm-width (or (and (integerp (nth 0 mm-dims))
+                            (> (nth 0 mm-dims) 0)
+                            (nth 0 mm-dims))
+                       1))
+         (mm-height (or (and (integerp (nth 1 mm-dims))
+                             (> (nth 1 mm-dims) 0)
+                             (nth 1 mm-dims))
+                        1))
          (pixel-dims (cl-cdddr (assoc 'geometry monitor-attrs)))
          (pixel-width (nth 0 pixel-dims))
          (pixel-height (nth 1 pixel-dims)))
