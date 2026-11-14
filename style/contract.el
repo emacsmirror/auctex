@@ -1,4 +1,4 @@
-;;; contract.el --- AUCTeX style for `contract.sty' (v0.91)  -*- lexical-binding: t; -*-
+;;; contract.el --- AUCTeX style for `contract.sty' (v0.93)  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2024--2026 Free Software Foundation, Inc.
 
@@ -24,7 +24,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for the contract package.
+;; This file adds support for `contract.sty' (v0.93) from 2026-10-27.
+;; `contract.sty' is part of TeXLive.
 
 ;;; Code:
 
@@ -33,6 +34,7 @@
 
 ;; Silence the compiler:
 (declare-function font-latex-add-keywords "font-latex" (keywords class))
+(defvar LaTeX-KOMA-font-elements)
 
 (defconst LaTeX-contract-clause-key-val
   '(("dummy")
@@ -59,6 +61,14 @@
 
    ;; Add the macro to the parser:
    (TeX-auto-add-regexp LaTeX-contract-DeclareNewJuraEnvironment-regexp)
+
+   ;; Run the style hook for `scrkbase.sty':
+   (TeX-run-style-hooks "scrkbase")
+
+   ;; Append new font elements to `LaTeX-KOMA-font-elements':
+   (let ((elts '("Clause" "contract.Clause" "parnumber" "sentencenumber")))
+     (dolist (elt elts)
+       (add-to-list 'LaTeX-KOMA-font-elements elt t)))
 
    ;; 4 Environment for Contracts
    (LaTeX-add-environments '("contract"))
@@ -117,6 +127,17 @@
    (LaTeX-paragraph-commands-add-locally '("Clause" "SubClause"))
 
    (LaTeX-add-counters "par" "sentence")
+
+   ;; Tell RefTeX: This is semi fun since the \(Sub\)?Clause macros
+   ;; don't have a mandatory argument which is needed by RefTeX in order
+   ;; to parse the argument correctly, but it also better than nothing.
+   ;; Respect any additions to `reftex-section-levels' made by user:
+   (and (bound-and-true-p reftex-mode)
+        (boundp 'reftex-section-levels)
+        (not (assoc "Clause" reftex-section-levels))
+        (fboundp 'reftex-add-section-levels)
+        (reftex-add-section-levels '(("Clause" . 3)
+                                     ("SubClause" . 4))))
 
    ;; Fontification
    (when (and (featurep 'font-latex)

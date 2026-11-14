@@ -160,7 +160,7 @@
      LaTeX-typearea-package-options-list
      LaTeX-KOMA-key-val-options)))
 
-(defvar LaTeX-KOMA-font-elements
+(defvar-local LaTeX-KOMA-font-elements
   '("author"
     "caption"
     "captionlabel"
@@ -215,7 +215,9 @@
     "subsubsection"
     "title"
     "titlehead")
-  "List of KOMA-Script's font elements.")
+  "List of KOMA-Script's font elements.
+This variable is defined as a buffer-local one so that other style hooks
+can add elements without using `make-local-variable' on it.")
 
 (TeX-add-style-hook
  "scrkbase"
