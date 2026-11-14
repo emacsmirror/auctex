@@ -8997,7 +8997,8 @@ function would return non-nil and `(match-string 1)' would return
    "indent" "noindent" "today"
    "appendix"
    "dots"
-   "makeatletter" "makeatother" "jobname")
+   "makeatletter" "makeatother" "jobname"
+   "frenchspacing" "nonfrenchspacing")
 
   (when (string-equal LaTeX-version "2e")
     (LaTeX-add-environments
