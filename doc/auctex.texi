@@ -632,69 +632,74 @@ commands, with @code{@point{}} indicating the position where the text
 will be inserted.
 
 @table @kbd
-@item C-c C-f C-b
 @kindex C-c C-f C-b
 @cindex @code{\textbf}
+@item C-c C-f C-b
 Insert @b{bold face} @samp{\textbf@{@point{}@}} text.
 
-@item C-c C-f C-m
 @kindex C-c C-f C-m
 @cindex @code{\textmd}
+@item C-c C-f C-m
 Insert @r{medium face} @samp{\textmd@{@point{}@}} text.
 
-@item C-c C-f C-i
 @kindex C-c C-f C-i
 @cindex @code{\textit}
+@item C-c C-f C-i
 Insert @i{italics} @samp{\textit@{@point{}@}} text.
 
-@item C-c C-f C-e
 @kindex C-c C-f C-e
 @cindex @code{\emph}
+@item C-c C-f C-e
 Insert @emph{emphasized} @samp{\emph@{@point{}@}} text.
 
-@item C-c C-f C-s
+@kindex C-c C-f C-o
+@cindex @code{\strongemph}
+@item C-c C-f C-o
+Insert @b{strong emphasized} @samp{\strongemph@{@point{}@}} text.
+
 @kindex C-c C-f C-s
 @cindex @code{\textsl}
+@item C-c C-f C-s
 Insert @slanted{slanted} @samp{\textsl@{@point{}@}} text.
 
-@item C-c C-f C-r
 @kindex C-c C-f C-r
 @cindex @code{\textrm}
+@item C-c C-f C-r
 Insert @r{roman} @samp{\textrm@{@point{}@}} text.
 
-@item C-c C-f C-f
 @kindex C-c C-f C-f
 @cindex @code{\textsf}
+@item C-c C-f C-f
 Insert @sansserif{sans serif} @samp{\textsf@{@point{}@}} text.
 
-@item C-c C-f C-t
 @kindex C-c C-f C-t
 @cindex @code{\texttt}
+@item C-c C-f C-t
 Insert @t{typewriter} @samp{\texttt@{@point{}@}} text.
 
-@item C-c C-f C-c
 @kindex C-c C-f C-c
 @cindex @code{\textsc}
+@item C-c C-f C-c
 Insert @sc{small caps} @samp{\textsc@{@point{}@}} text.
 
-@item C-c C-f C-l
 @kindex C-c C-f C-l
 @cindex @code{\textulc}
+@item C-c C-f C-l
 Insert upper lower case @samp{\textulc@{@point{}@}} text.
 
-@item C-c C-f C-w
 @kindex C-c C-f C-w
 @cindex @code{\textsw}
+@item C-c C-f C-w
 Insert @sc{swash} @samp{\textsw@{@point{}@}} text.
 
-@item C-c C-f C-n
 @kindex C-c C-f C-n
 @cindex @code{\textnormal}
+@item C-c C-f C-n
 Insert normal @samp{\textnormal@{@point{}@}} text.
 
-@item C-c C-f C-d
 @kindex C-c C-f C-c
 @cindex Deleting fonts
+@item C-c C-f C-d
 Delete the innermost font specification containing point.
 
 @end table

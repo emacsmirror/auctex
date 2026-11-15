@@ -11,6 +11,8 @@
 
 ** Added
 
+- Add support for the new LaTeX macro =\strongemph= which is bound to
+  =C-c C-f C-o=.
 - Add new support files =style/fontscale.el=, =style/mfb-oldstyle.el=
   and =style/moreverb.el=.
 

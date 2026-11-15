@@ -302,6 +302,13 @@
                                                   LaTeX-font-shape))
                                         "Font declarations"))
 
+    '("DeclareStrongEmphSequence"
+      (TeX-arg-completing-read-multiple (lambda ()
+                                          (mapcar (lambda (x)
+                                                    (concat TeX-esc x))
+                                                  LaTeX-font-shape))
+                                        "Font declarations"))
+
     ;; 6.9 Providing font family substitutions
     '("DeclareFontFamilySubstitution"
       (TeX-arg-completing-read LaTeX-fontenc-package-options "Encoding")
@@ -400,7 +407,8 @@
                                 ("DeclareFontSeriesChangeRule" "{{{{")
                                 ("DeclareFontShapeChangeRule " "{{{{")
 
-                                ("DeclareEmphSequence" "{")
+                                ("DeclareEmphSequence"       "{")
+                                ("DeclareStrongEmphSequence" "{")
 
                                 ("DeclareFontFamilySubstitution" "{{{")
 

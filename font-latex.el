@@ -445,7 +445,7 @@ variable `font-latex-fontify-sectioning'." ',num)
     ("bold-command"
      (("textbf" "{") ("textsc" "{") ("textssc" "{") ("textulc" "{")
       ("textup" "{") ("textsw" "{") ("boldsymbol" "{") ("pmb" "{")
-      ("mathbf" "{"))
+      ("mathbf" "{") ("strongemph" "{"))
      font-latex-bold-face 1 command)
     ("italic-command"
      (("emph" "{") ("textit" "{") ("textsl" "{") ("mathit" "{"))

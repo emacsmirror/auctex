@@ -7036,6 +7036,7 @@ corresponds to the variables `LaTeX-environment-menu-name' and
     "-"
     ("Insert Font"
      ["Emphasize"    (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+     ["Strong Emphasize"  (TeX-font nil ?\C-o) :keys "C-c C-f C-o"]
      "-"
      ["Roman"        (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
      ["Sans Serif"   (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
@@ -7054,6 +7055,7 @@ corresponds to the variables `LaTeX-environment-menu-name' and
      ["Normal"       (TeX-font nil ?\C-n) :keys "C-c C-f C-n"])
     ("Replace Font"
      ["Emphasize"    (TeX-font  t  ?\C-e) :keys "C-u C-c C-f C-e"]
+     ["Strong Emphasize"  (TeX-font  t  ?\C-o) :keys "C-u C-c C-f C-o"]
      "-"
      ["Roman"        (TeX-font  t  ?\C-r) :keys "C-u C-c C-f C-r"]
      ["Sans Serif"   (TeX-font  t  ?\C-f) :keys "C-u C-c C-f C-f"]
@@ -7116,6 +7118,7 @@ corresponds to the variables `LaTeX-environment-menu-name' and
     (?\C-l "\\textulc{"    "}")
     (?\C-m "\\textmd{"     "}")
     (?\C-n "\\textnormal{" "}" "\\mathnormal{" "}")
+    (?\C-o "\\strongemph{" "}")
     (?\C-r "\\textrm{"     "}" "\\mathrm{"     "}")
     (?\C-s "\\textsl{"     "}" "\\mathbb{"     "}")
     (?\C-t "\\texttt{"     "}" "\\mathtt{"     "}")
@@ -7134,7 +7137,8 @@ corresponds to the variables `LaTeX-environment-menu-name' and
                     :inline t
                     (string :tag "Math Prefix")
                     (string :tag "Math Suffix")))
-           (option (sexp :format "Replace\n" :value t)))))
+           (option (sexp :format "Replace\n" :value t))))
+  :package-version '(auctex . "14.2.1"))
 
 
 ;;; Simple Commands
@@ -9182,6 +9186,9 @@ function would return non-nil and `(match-string 1)' would return
      "bfdefault" "mddefault"
      "itdefault" "sldefault" "scdefault" "updefault"
      "sscdefault" "swdefault" "ulcdefault"
+     ;; These were added to LaTeX kernel with 2020-02-02 an 2026-11-01
+     ;; releases:
+     "emreset" "emforce" "strongemreset" "strongemforce"
      ;; This macro is for `spaced small caps'.  Currently, only some
      ;; commercial fonts offer this.  It should be moved into
      ;; `LaTeX-font-list' once it is needed more frequently.

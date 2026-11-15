@@ -306,7 +306,6 @@ to appropriate keys which are eventually prepended to
     ;; \emshape seems to be an internal macro
     "emshape"
     '("emfontdeclare" t)
-    "emreset"
 
     ;; 4.6 Strong emphasis
     '("strong" t)
