@@ -31,9 +31,7 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (defun LaTeX-env-doc-no-comment (environment)
   "Insert ENVIRONMENT and make sure there is no commented empty line inside."
@@ -378,6 +376,7 @@ percent sign at the beginning of a line before
     "AlsoImplementation"
     "IndexInput"
     '("changes" "version" TeX-arg-date t)
+    '("cs" (TeX-arg-completing-read (TeX-symbol-list) "Macro"))
     "generalname"
     "RecordChanges"
     "PrintChanges"
@@ -447,7 +446,8 @@ percent sign at the beginning of a line before
      (font-latex-add-keywords '(("DescribeMacro" "[|{\\")
                                 ("DescribeEnv"   "[{"))
                               'variable)
-     (font-latex-add-keywords '(("meta"       "{"))
+     (font-latex-add-keywords '(("meta"       "{")
+                                ("cs"         "{"))
                               'textual)
      (font-latex-add-keywords '(("DocInput"   "{")
                                 ("IndexInput" "{"))

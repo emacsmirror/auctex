@@ -1,6 +1,6 @@
 ;;; ltxdoc.el --- AUCTeX style for `ltxdoc.cls'  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004--2022 Free Software Foundation, Inc.
+;; Copyright (C) 2004--2026 Free Software Foundation, Inc.
 
 ;; Author: Frank Küster <frank@kuesterei.ch>
 ;; Maintainer: auctex-devel@gnu.org
@@ -30,9 +30,7 @@
 (require 'tex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 (defvar LaTeX-article-class-options)
 
 (TeX-add-style-hook
@@ -49,7 +47,6 @@
 
    (TeX-add-symbols
     '("cmd" TeX-arg-macro)
-    '("cs" (TeX-arg-completing-read (TeX-symbol-list) "Macro"))
     '("marg" "Mandatory argument")
     '("oarg" "Optional argument")
     '("parg" "Picture mode argument")
@@ -70,7 +67,6 @@
    (when (and (featurep 'font-latex)
               (eq TeX-install-font-lock 'font-latex-setup))
      (font-latex-add-keywords '(("cmd"  "{")
-                                ("cs"   "{")
                                 ("marg" "{")
                                 ("oarg" "{")
                                 ("parg" "{"))
