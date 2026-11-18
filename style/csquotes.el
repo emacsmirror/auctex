@@ -1,6 +1,6 @@
-;;; csquotes.el --- AUCTeX style for `csquotes.sty' (v5.2j)  -*- lexical-binding: t; -*-
+;;; csquotes.el --- AUCTeX style for `csquotes.sty' (v5.2p)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2004--2023 Free Software Foundation, Inc.
+;; Copyright (C) 2004--2026 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
@@ -24,8 +24,8 @@
 
 ;;; Commentary:
 
-;; This file adds support for `csquotes.sty', version 5.2j from
-;; 2019/12/06.
+;; This file adds support for `csquotes.sty', version 5.2p from
+;; 2026-05-19.
 
 ;;; Code:
 
@@ -33,9 +33,7 @@
 (require 'latex)
 
 ;; Silence the compiler:
-(declare-function font-latex-add-keywords
-                  "font-latex"
-                  (keywords class))
+(declare-function font-latex-add-keywords "font-latex" (keywords class))
 
 (defun LaTeX-csquotes-language-list ()
   "Return a list of active languages for csquotes macros.
@@ -62,7 +60,18 @@ retrieve the active languages."
                                   ("finnish")    ("french")   ("german")
                                   ("greek")      ("italian")  ("norwegian")
                                   ("portuguese") ("russian")  ("serbian")
-                                  ("spanish")    ("swedish"))))
+                                  ("spanish")    ("swedish")))
+         (quote-style-lang-aliases '("american" "australian" "austrian"
+                                     "brazil" "brazilian" "british"
+                                     "canadian" "croatian"
+                                     "danish" "english" "french" "german"
+                                     "italian" "latin" "mexican"
+                                     "naustrian" "newzealand" "ngerman"
+                                     "norsk" "norwegian" "nswissgerman"
+                                     "nynorsk" "portuges" "portuguese"
+                                     "serbian" "spanish" "swedish" "swiss"
+                                     "swissgerman" "UKenglish" "USenglish"
+                                     "welsh")))
      ;; New symbols
      (TeX-add-symbols
 
@@ -116,8 +125,11 @@ retrieve the active languages."
       `("setquotestyle"
         [TeX-arg-completing-read ,quote-style-variant-list
                                  "Quote style variant"]
-        (TeX-arg-completing-read ,quote-style-name-list
-                                 "Quote style name or alias"))
+        (TeX-arg-conditional (= (char-before) ?\])
+            ((TeX-arg-completing-read ,quote-style-name-list
+                                      "Quote style"))
+          ((TeX-arg-completing-read ,quote-style-lang-aliases
+                                    "Quote alias"))))
       "setquotestyle*"
 
       ;; 4.1 Quoting Regular Text
@@ -137,7 +149,7 @@ retrieve the active languages."
       '("MakeHyphenQuote"
         (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         "Opening quotation mark" "Closing quotation mark")
-      '("MakeHyphenQuote"
+      '("MakeHyphenQuote*"
         (TeX-arg-completing-read (LaTeX-csquotes-language-list))
         "Opening quotation mark" "Closing quotation mark")
 
@@ -163,36 +175,36 @@ retrieve the active languages."
       "DeleteQuotes"
 
       ;; 5.1 Formal Quoting of Regular Text
-      '("textcquote"  ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
-      '("textcquote*" ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+      '("textcquote"  ["Pre-note"] ["Post-note"] TeX-arg-cite ["Punctuation"] t)
+      '("textcquote*" ["Pre-note"] ["Post-note"] TeX-arg-cite ["Punctuation"] t)
 
       ;; 5.2 Formal Quoting of Text in a Foreign Language
       '("foreigntextcquote"
         (TeX-arg-completing-read (LaTeX-csquotes-language-list))
-        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] TeX-arg-cite ["Punctuation"] t)
       '("foreigntextcquote*"
         (TeX-arg-completing-read (LaTeX-csquotes-language-list))
-        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] TeX-arg-cite ["Punctuation"] t)
       '("hyphentextcquote"
         (TeX-arg-completing-read (LaTeX-csquotes-language-list))
-        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] TeX-arg-cite ["Punctuation"] t)
       '("hyphentextcquote*"
         (TeX-arg-completing-read (LaTeX-csquotes-language-list))
-        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] TeX-arg-cite ["Punctuation"] t)
 
       ;; 5.3 Block Quoting of Regular Text
-      '("blockcquote" ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+      '("blockcquote" ["Pre-note"] ["Post-note"] TeX-arg-cite ["Punctuation"] t)
 
       ;; 5.4 Block Quoting of Text in a Foreign Language
       '("foreignblockcquote"
         (TeX-arg-completing-read (LaTeX-csquotes-language-list))
-        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] TeX-arg-cite ["Punctuation"] t)
       '("hyphenblockcquote"
         (TeX-arg-completing-read (LaTeX-csquotes-language-list))
-        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] TeX-arg-cite ["Punctuation"] t)
       '("hybridblockcquote"
         (TeX-arg-completing-read (LaTeX-csquotes-language-list))
-        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+        ["Pre-note"] ["Post-note"] TeX-arg-cite ["Punctuation"] t)
 
       ;; 7 Auxiliary Commands
       '("textelp" 1)
@@ -279,15 +291,15 @@ retrieve the active languages."
 
       ;; 6.2 Integrated Display Environments
       '("displaycquote" LaTeX-env-args
-        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"])
+        ["Pre-note"] ["Post-note"] TeX-arg-cite ["Punctuation"])
 
       '("foreigndisplaycquote" LaTeX-env-args
         (TeX-arg-completing-read (LaTeX-csquotes-language-list))
-        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"])
+        ["Pre-note"] ["Post-note"] TeX-arg-cite ["Punctuation"])
 
       '("hyphendisplaycquote" LaTeX-env-args
         (TeX-arg-completing-read (LaTeX-csquotes-language-list))
-        ["Pre-note"] ["Post-note"] "Key" ["Punctuation"]))
+        ["Pre-note"] ["Post-note"] TeX-arg-cite ["Punctuation"]))
 
      ;; Quotation marks
      (when (and (> (length LaTeX-csquotes-open-quote) 0)
@@ -389,13 +401,19 @@ retrieve the active languages."
     ("german"     ("quotes" "guillemets" "swiss"))
     ("hungarian")
     ("italian"    ("guillemets" "quotes"))
+    ("latin"      ("italianguillemets" "germanquotes" "germanguillemets"
+                   "britishquotes" "americanquotes"))
     ("latvian")
+    ("lithuanian")
     ("norwegian"  ("guillemets" "quotes"))
     ("polish"     ("guillemets" "guillemets*"))
     ("portuguese" ("portuguese" "brazilian"))
+    ("romanian")
     ("serbian"    ("quotes" "guillemets" "german"))
+    ("slovenian"  ("quotes" "guillemets"))
     ("spanish"    ("spanish" "mexican"))
     ("swedish"    ("quotes" "guillemets" "guillemets*"))
+    ("welsh"      ("british"))
     ("maxlevel")
     ("autopunct"     ("true" "false"))
     ("threshold")
