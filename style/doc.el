@@ -410,7 +410,7 @@ percent sign at the beginning of a line before
    (TeX-ispell-skip-setcar
     `((,(concat (regexp-quote TeX-esc)
                 (regexp-opt '("DescribeMacro" "DescribeEnv"
-                              "meta")))
+                              "meta" "cs")))
        ispell-tex-arg-end)
       ("\\\\begin{\\(macro\\|environment\\)}" ispell-tex-arg-end)
       ("\\\\changes" ispell-tex-arg-end 2)
