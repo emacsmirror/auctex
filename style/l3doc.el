@@ -215,7 +215,7 @@ For syntax environment from l3doc class."
    ;; Extend Ispell skip list:
    (TeX-ispell-skip-setcar
     `((,(concat (regexp-quote TeX-esc)
-                (regexp-opt '("cs" "tn" "meta"
+                (regexp-opt '("tn" "meta"
                               "Arg" "marg" "org" "parg"
                               "file" "env" "pkg" "cls"
                               "NB")))
